@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
+             version="3.0">
+    <persistence-unit name="tradesys">
+        <class>Models.UserEntity</class>
+        <class>Models.UserRoleEntity</class>
+        <class>Models.RoleEntity</class>
+
+        <properties>
+            <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://14.225.210.49:5435/tradesys"/>
+            <property name="hibernate.connection.username" value="wmsrdb"/>
+            <property name="hibernate.connection.password" value="Wms_Rdb_@2023"/>
+            <property name="hibernate.naming.physical-strategy" value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
+
+            <property name="hbm2ddl.auto" value="update"/>
+        </properties>
+    </persistence-unit>
+</persistence>
