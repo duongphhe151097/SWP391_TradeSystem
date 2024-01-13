@@ -1,3 +1,8 @@
-# SWP391 TradeSystem
+# SWP391_TradeSystem
 
-Test
+Cách clone project
+`git clone <url>`
+
+Kiểm tra trạng thái
+``git status``
+
