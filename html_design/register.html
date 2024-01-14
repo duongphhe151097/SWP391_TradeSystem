@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/register.css">
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="vh-100 d-flex justify-content-center align-items-center">
+        <div class="col-md-5 p-5 shadow rounded-3">
+            <div class="register">
+                <div>
+                    <h3>Đăng kí</h1>
+                </div>
+                <form>
+                    <div class="form-group">
+                        <label for="fullnameInput">Họ và tên</label>
+                        <input type="text" class="form-control" id="fullnameInput" aria-describedby="nameHelp"
+                            placeholder="Nhập họ và tên" name="fullname">
+                        <small id="nameHelp" class="form-text text-muted">We'll never share your email with
+                            anyone
+                            else.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="emailInput">Email</label>
+                        <input type="email" class="form-control" id="emailInput" aria-describedby="emailHelp"
+                            placeholder="Nhập email" name="email">
+                        <small id="emailHelp" class="form-text text-muted">We'll never share your email with
+                            anyone
+                            else.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="usernameInput">Tên đăng nhập</label>
+                        <input type="text" pattern="0\d{9}$|^(\+84|84|0)(3[2-9]|5[6-9]|7[0-9]|8[1-9]|9[0-9])\d{7}"
+                            class="form-control" id="usernameInput" aria-describedby="usernameHelp"
+                            placeholder="Nhập số điện thoại" name="username">
+                        <small id="usernameHelp" class="form-text text-muted">We'll never share your email with
+                            anyone
+                            else.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="passwordInput">Mật khẩu</label>
+                        <input type="password" class="form-control" id="passwordInput" aria-describedby="passwordHelp"
+                            placeholder="Mật khẩu (ít nhất 8 kí tự)" name="password">
+                        <small id="passwordHelp" class="form-text text-muted">We'll never share your email with
+                            anyone
+                            else.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="re_passwordInput">Nhập lại mật khẩu</label>
+                        <input type="password" class="form-control" id="re_passwordInput"
+                            aria-describedby="repasswordHelp" placeholder="Nhập lại mật khẩu" name="repassword">
+                        <small id="repasswordHelp" class="form-text text-muted">We'll never share your email
+                            with
+                            anyone
+                            else.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="form-row">
+                            <div class="col mt-4">
+                                <img src="/img/captcha.png" alt="Captcha">
+                            </div>
+                            <div class="col">
+                                <label for="captchaInput">Mã captcha</label>
+                                <input type="text" id="captchaInput" class="form-control" placeholder="Nhập mã captcha"
+                                    name="captcha">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-5">
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary">Đăng kí</button>
+                        </div>
+
+                        <div class="link mt-3">
+                            <div class="form-row">
+                                <div class="col d-flex justify-content-end">
+                                    <a href="">Đã có tài khoản? Đăng nhập</a>
+                                </div>
+                                <div class="col d-flex justify-content-start ml-5">
+                                    <a href="">Quên mật khẩu</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+</html>

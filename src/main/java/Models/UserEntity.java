@@ -2,13 +2,11 @@ package Models;
 
 import Models.Common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.UUID;
 
@@ -19,6 +17,7 @@ import java.util.UUID;
 @Setter
 @Entity(name = "user")
 @Table(name = "`user`")
+@Builder
 public class UserEntity extends BaseEntity implements Serializable {
     @Id
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
@@ -54,6 +53,9 @@ public class UserEntity extends BaseEntity implements Serializable {
 
     @Column(name = "`rating`")
     private float rating;
+
+    @Column(name = "`balance`")
+    private BigDecimal balance;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role",

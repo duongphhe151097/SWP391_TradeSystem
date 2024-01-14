@@ -19,4 +19,11 @@ public class BaseController extends HttpServlet {
             e.printStackTrace();
         }
     }
+
+    protected String getBaseURL(HttpServletRequest request){
+        StringBuffer buffer = request.getRequestURL();
+        buffer.substring(0, buffer.length() - 9);
+
+        return buffer.toString();
+    }
 }
