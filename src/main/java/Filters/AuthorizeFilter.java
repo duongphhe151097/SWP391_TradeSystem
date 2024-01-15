@@ -38,7 +38,7 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
 
         HttpSession session = request.getSession(false);
 
-        UserEntity user = (UserEntity) session.getAttribute(CommonConstants.USER_SESSION);
+//        UserEntity user = (UserEntity) session.getAttribute(CommonConstants.USER_SESSION);
         if (validAuthorize) {
             System.out.println("Valid");
         } else {

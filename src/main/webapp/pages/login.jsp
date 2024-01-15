@@ -12,7 +12,9 @@
     <jsp:include page="../common/common-css.jsp"/>
 </head>
 <body>
-    <h1><c:out value="${requestScope.PAGE_TITLE}"/> </h1>
+<h1><c:out value="${requestScope.PAGE_TITLE}"/></h1>
+<h1><c:out value="${requestScope.CAPTCHA_CODE}"/></h1>
+<img src="<c:url value="/captcha"/> " alt="Captcha img">
 </body>
 <jsp:include page="../common/common-js.jsp"/>
 </html>

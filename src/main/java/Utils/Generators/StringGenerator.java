@@ -8,13 +8,13 @@ public class StringGenerator {
     private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
     private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String DIGITS = "0123456789";
-    private static final String SPECIAL_CHARS = "!@#$%^&*()-_=+[]{}|;:'\",.<>/?";
+//    private static final String SPECIAL_CHARS = "!#$%&'()*+,-./:;<=>?@[\\]_";
 
     public static String generateRandomString(int length) {
         StringBuilder stringBuilder = new StringBuilder();
         SecureRandom random = new SecureRandom();
 
-        String allCharacters = LOWERCASE + UPPERCASE + DIGITS + SPECIAL_CHARS;
+        String allCharacters = LOWERCASE + UPPERCASE + DIGITS;
 
         for (int i = 0; i < length; i++) {
             int randomIndex = random.nextInt(allCharacters.length());

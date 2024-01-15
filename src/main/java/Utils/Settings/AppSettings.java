@@ -42,4 +42,12 @@ public class AppSettings {
     public static int getPageSize() {
         return Integer.parseInt(setting.getKey("PAGE_SIZE"));
     }
+
+    public static String getMailUser() {
+        return setting.getKey("MAIL_USER");
+    }
+
+    public static String getMailPassword() {
+        return setting.getKey("MAIL_PASSWORD");
+    }
 }
