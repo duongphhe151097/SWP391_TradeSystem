@@ -120,6 +120,7 @@ public class RegisterController extends BaseController {
                 req.setAttribute("VAR_EMAIL", email);
                 req.setAttribute("VAR_USERNAME", username);
                 req.setAttribute("USERNAME_ERROR", "Tên tài khoản đã tồn tại");
+                dispatcher.forward(req, resp);
                 return;
             }
 
@@ -130,6 +131,7 @@ public class RegisterController extends BaseController {
                 req.setAttribute("VAR_EMAIL", email);
                 req.setAttribute("VAR_USERNAME", username);
                 req.setAttribute("EMAIL_ERROR", "Email đã tồn tại");
+                dispatcher.forward(req, resp);
                 return;
             }
 

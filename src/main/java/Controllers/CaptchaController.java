@@ -22,7 +22,8 @@ public class CaptchaController extends BaseController {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        try (OutputStream stream = resp.getOutputStream()) {
+        OutputStream stream = resp.getOutputStream();
+        try {
             resp.setContentType("image/png");
 
             Config captchaConfig = new Config();
@@ -51,6 +52,8 @@ public class CaptchaController extends BaseController {
             ImageIO.write(captchaImage, "png", stream);
         } catch (Exception e) {
             e.printStackTrace();
+        }finally {
+            stream.flush();
         }
     }
 
