@@ -100,8 +100,6 @@ public class RegisterController extends BaseController {
             Optional<CaptchaEntity> captchaEntity = captchaRepository.getCaptchaById(captcha);
 
             if(captchaEntity.isEmpty()){
-                captchaRepository.deleteCaptcha(captcha);
-
                 req.setAttribute("VAR_FULLNAME", fullname);
                 req.setAttribute("VAR_EMAIL", email);
                 req.setAttribute("VAR_USERNAME", username);
@@ -109,6 +107,9 @@ public class RegisterController extends BaseController {
                 dispatcher.forward(req,resp);
                 return;
             }
+
+            //Delete captcha
+            captchaRepository.deleteCaptcha(captcha);
 
             //Khởi tạo UserRepo
             UserRepository repository = new UserRepository();
@@ -151,7 +152,7 @@ public class RegisterController extends BaseController {
                     .fullName(fullname)
                     .status((short) 0)
                     .avatar("")
-                    .balance(BigDecimal.ONE)
+                    .balance(BigDecimal.ZERO)
                     .address("")
                     .phoneNumber("")
                     .rating(0)
