@@ -10,6 +10,7 @@
 </h1>
 <br/>
 <a href="hello-servlet">Hello Servlet</a>
-<h1><c:out value="Hello"/></h1>
+<h1><c:out value="${requestScope.USER_ID}"/></h1>
+<h1><c:out value="${requestScope.SESSION_ID}"/></h1>
 </body>
 </html>

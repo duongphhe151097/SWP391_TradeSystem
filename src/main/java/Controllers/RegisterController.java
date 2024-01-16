@@ -8,6 +8,8 @@ import ExternalServices.SendMailService;
 import Models.CaptchaEntity;
 import Models.TokenActivationEntity;
 import Models.UserEntity;
+import Utils.Constants.ActivationType;
+import Utils.Constants.UserConstant;
 import Utils.Generators.StringGenerator;
 import Utils.Validation.StringValidator;
 import jakarta.persistence.EntityManagerFactory;
@@ -150,11 +152,12 @@ public class RegisterController extends BaseController {
                     .salt(salt)
                     .email(email)
                     .fullName(fullname)
-                    .status((short) 0)
+                    .status(UserConstant.PENDING)
+                    .attemp((short) 0)
                     .avatar("")
                     .balance(BigDecimal.ZERO)
-                    .address("")
-                    .phoneNumber("")
+                    .address("Không có")
+                    .phoneNumber("Không có")
                     .rating(0)
                     .build();
             userEntity.setCreateBy("");
@@ -168,10 +171,19 @@ public class RegisterController extends BaseController {
 
             //Save active token
             TokenActivationRepository tokenActivationRepository = new TokenActivationRepository();
-            tokenActivationRepository.addToken(new TokenActivationEntity(activeToken, user.getId(), LocalDateTime.now(), LocalDateTime.now().plusDays(7)));
+            TokenActivationEntity tokenActivationEntity = TokenActivationEntity.builder()
+                    .token(activeToken)
+                    .userId(user.getId())
+                    .type(ActivationType.ACTIVE_REQUEST)
+                    .isUsed(false)
+                    .createAt(LocalDateTime.now())
+                    .expriedAt(LocalDateTime.now().plusDays(1))
+                    .build();
+            tokenActivationRepository.addToken(tokenActivationEntity);
 
             req.setAttribute("SUCCESS_MESSAGE", "Tài khoản đã được tạo! Hãy truy cập email để kích hoạt tài khoản!");
             dispatcher.forward(req, resp);
+
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("FAILED_MESSAGE", "Có lỗi xảy ra khi tạo tài khoản");

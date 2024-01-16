@@ -16,11 +16,9 @@ import java.util.Optional;
 @WebFilter(filterName = "AuthorizeFilter", urlPatterns = "/*")
 public class AuthorizeFilter extends BaseFilter implements Filter {
     private ServletContext context;
-//    private UserDao userDao;
 
     public void init(FilterConfig config) throws ServletException {
         this.context = config.getServletContext();
-//        this.userDao = new UserDao();
         System.out.println("Init Check Authorization");
     }
 
