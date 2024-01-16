@@ -22,8 +22,6 @@ public class BaseController extends HttpServlet {
 
     protected String getBaseURL(HttpServletRequest request){
         StringBuffer buffer = request.getRequestURL();
-        buffer.substring(0, buffer.length() - 9);
-
-        return buffer.toString();
+        return buffer.toString().replace(request.getRequestURI(), request.getContextPath());
     }
 }

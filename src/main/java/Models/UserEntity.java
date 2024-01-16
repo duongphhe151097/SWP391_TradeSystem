@@ -51,6 +51,9 @@ public class UserEntity extends BaseEntity implements Serializable {
     @Column(name = "`status`", nullable = false)
     private short status;
 
+    @Column(name = "`attemp`", nullable = false)
+    private short attemp;
+
     @Column(name = "`rating`")
     private float rating;
 
