@@ -7,6 +7,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -62,8 +63,15 @@ public class UserEntity extends BaseEntity implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role",
-            joinColumns = {@JoinColumn(name = "user_id", nullable = false)},
+            joinColumns = {@JoinColumn(referencedColumnName = "id", nullable = false)},
             inverseJoinColumns ={@JoinColumn(name = "role_id", nullable = false)}
     )
     private Set<RoleEntity> roleEntities;
+
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "userEntity")
+//    private List<TokenActivationEntity> tokenActivationEntities;
+//
+//    @OneToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "`id`",referencedColumnName = "`user_id`", insertable = false, updatable = false)
+//    private SessionManagerEntity sessionManager;
 }

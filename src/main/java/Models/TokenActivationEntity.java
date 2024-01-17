@@ -22,7 +22,7 @@ public class TokenActivationEntity {
     @Column(name = "`token`", length = 50, nullable = false)
     private String token;
 
-    @Basic
+    @Id
     @Column(name = "`user_id`", nullable = false)
     private UUID userId;
 
@@ -43,6 +43,7 @@ public class TokenActivationEntity {
     @Column(name = "`expried_at`", updatable = false)
     private LocalDateTime expriedAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private UserEntity userEntity;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "`user_id`", insertable = false, updatable = false)
+//    private UserEntity userEntity;
 }

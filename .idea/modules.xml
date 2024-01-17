@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DSource.iml" filepath="$PROJECT_DIR$/DSource.iml" />
+      <module fileurl="file://$PROJECT_DIR$/tradesys.iml" filepath="$PROJECT_DIR$/tradesys.iml" />
     </modules>
   </component>
 </project>

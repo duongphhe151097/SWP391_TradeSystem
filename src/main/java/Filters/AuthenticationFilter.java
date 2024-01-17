@@ -1,5 +1,7 @@
 package Filters;
 
+import DataAccess.SessionManagerRepository;
+import Models.SessionManagerEntity;
 import Models.UserEntity;
 import Utils.Annotations.Authentication;
 import Utils.Constants.CommonConstants;
@@ -17,9 +19,11 @@ import java.util.*;
 @WebFilter(filterName = "AuthenticationFilter", urlPatterns = "/*")
 public class AuthenticationFilter extends BaseFilter implements Filter {
     private ServletContext context;
+    private SessionManagerRepository sessionManagerRepository;
 
     public void init(FilterConfig config) {
         this.context = config.getServletContext();
+        sessionManagerRepository = new SessionManagerRepository();
         System.out.println("Init Filter Check Authentication");
     }
 
@@ -48,23 +52,31 @@ public class AuthenticationFilter extends BaseFilter implements Filter {
         }
 
         //Case page non-public
-        //Todo: CÓ THỂ VIẾT LẠI LOGIC ĐOẠN NÀY DÙNG COOKIES
         HttpSession session = request.getSession(false);
         String JSESSIONID = getCookieValue(request, CommonConstants.SESSION_COOKIE_KEY);
-        if (session == null || JSESSIONID.isBlank()) {
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/login.jsp");
+
+        if (session == null || JSESSIONID.isEmpty()) {
             request.setAttribute("FAILED_MESSAGE", "Bạn cần đăng nhập trước để truy cập!");
-            request.getRequestDispatcher("/pages/login.jsp")
-                    .forward(request, response);
+            dispatcher.forward(request, response);
             return;
         }
 
         String userId = (String) session.getAttribute(UserConstant.SESSION_USERID);
+        Optional<SessionManagerEntity> sessionManagerEntity = sessionManagerRepository
+                .getSessionByUserId(UUID.fromString(userId));
 
+        if (sessionManagerEntity.isEmpty()) {
+            request.setAttribute("FAILED_MESSAGE", "Bạn cần đăng nhập trước để truy cập!");
+            dispatcher.forward(request, response);
+            return;
+        }
 
-        //Todo:
-        //Tìm trong db xem tồn tại session id tương ứng với JSESSIONID hiện tại ko
-        //Nếu tồn tại => đi tiếp
-        //Nếu ko => redirect sang login "Đã có thiết bị khác đăng nhập! "
+        if (!sessionManagerEntity.get().getSessionId().equals(JSESSIONID)) {
+            request.setAttribute("FAILED_MESSAGE", "Đã có thiết bị khác đăng nhập!");
+            dispatcher.forward(request, response);
+            return;
+        }
 
         chain.doFilter(request, response);
     }
@@ -101,10 +113,10 @@ public class AuthenticationFilter extends BaseFilter implements Filter {
         return false;
     }
 
-    private String getCookieValue(HttpServletRequest request, String key){
+    private String getCookieValue(HttpServletRequest request, String key) {
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies){
-            if(cookie.getName().equals(key)) return cookie.getValue();
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(key)) return cookie.getValue();
         }
 
         return "";
