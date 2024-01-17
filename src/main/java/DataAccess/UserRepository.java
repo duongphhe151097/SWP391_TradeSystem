@@ -15,8 +15,7 @@ public class UserRepository {
     private final EntityTransaction transaction;
 
     public UserRepository() {
-        EntityManagerFactory factory = DbFactory.getFactory();
-        this.entityManager = factory.createEntityManager();
+        this.entityManager = DbFactory.getFactory().createEntityManager();
         this.transaction = entityManager.getTransaction();
     }
 
@@ -28,50 +27,11 @@ public class UserRepository {
                     .getSingleResult();
 
             return Optional.ofNullable(entity);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         return Optional.empty();
-    }
-
-    public static void main(String[] args) {
-        UserRepository userRepository = new UserRepository();
-        EntityManagerFactory factory = DbFactory.getFactory();
-        EntityManager manager = factory.createEntityManager();
-        EntityTransaction entityTransaction = manager.getTransaction();
-
-        entityTransaction.begin();
-        manager.createQuery("UPDATE user u SET u.password = :password WHERE u.username = :username")
-                .setParameter("password", "22222")
-                .setParameter("username", "duongph")
-                .executeUpdate();
-
-//        UserEntity entity = manager.createQuery("FROM user u WHERE u.username = :username", UserEntity.class)
-//                .setParameter("username", "duongph")
-//                .getSingleResult();
-//        entity.setPassword("00000");
-        entityTransaction.commit();
-
-
-//        UserEntity user = userRepository.getUserById(UUID.fromString("5884f182-472c-4cbc-a167-7e55ce4c3369")).get();
-//        System.out.println(user.getUsername());
-
-
-//        UserEntity userEntity = new UserEntity();
-//        userEntity.setUsername("duongph");
-//        userEntity.setPassword("12345");
-//        userEntity.setSalt("a");
-//        userEntity.setEmail("duongph@gmail.com");
-//        userEntity.setFullName("test");
-//        userEntity.setPhoneNumber("0123");
-//        userEntity.setAddress("test");
-//        userEntity.setAvatar("a");
-//        userEntity.setStatus((short)1);
-//        userEntity.setRating(0);
-//        userEntity.setDelete(true);
-//        userEntity.setCreateBy("duongph");
-//        userRepository.addUser(userEntity);
     }
 
     public Optional<UserEntity> getUserByUsername(String username) {
@@ -82,7 +42,7 @@ public class UserRepository {
                     .getSingleResult();
 
             return Optional.ofNullable(entity);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -97,7 +57,7 @@ public class UserRepository {
                     .getSingleResult();
 
             return Optional.ofNullable(entity);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

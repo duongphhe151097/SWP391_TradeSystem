@@ -7,7 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Entity
+@Entity(name = "session")
 @Table(name = "`session_manager`")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +19,6 @@ public class SessionManagerEntity {
     @Column(name = "`session_id`", length = 32, nullable = false)
     private String sessionId;
 
-    @Basic
     @Column(name = "`user_id`", nullable = false)
     private UUID userId;
 
@@ -36,4 +35,7 @@ public class SessionManagerEntity {
     @Column(name = "`create_by`")
     private String createBy;
 
+//    @OneToOne
+//    @JoinColumn(name = "`user_id`",referencedColumnName = "`id`", insertable = false, updatable = false)
+//    private UserEntity userEntity;
 }

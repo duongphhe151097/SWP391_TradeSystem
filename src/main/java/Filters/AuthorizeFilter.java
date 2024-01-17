@@ -3,6 +3,7 @@ package Filters;
 import Models.UserEntity;
 import Utils.Annotations.Authorization;
 import Utils.Constants.CommonConstants;
+import Utils.Constants.UserConstant;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.*;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,17 +32,20 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
         String requestPath = getRequestPath(fullRequestUrl, request.getContextPath());
 
         Map<String, String> urlPatters = getMappingUrl(context);
-        String pageSignature = getAuthorizationController(requestPath, urlPatters);
+        String roleRequire = getAuthorizationController(requestPath, urlPatters);
         boolean validAuthorize = false;
 
-        HttpSession session = request.getSession(false);
-
-//        UserEntity user = (UserEntity) session.getAttribute(CommonConstants.USER_SESSION);
-        if (validAuthorize) {
-            System.out.println("Valid");
-        } else {
-            System.out.println("Not Valid");
-        }
+//        HttpSession session = request.getSession(false);
+//        if(session == null){
+//
+//        }
+//
+//        String userId = (String) session.getAttribute(UserConstant.SESSION_USERID);
+//        if (validAuthorize) {
+//            System.out.println("Valid");
+//        } else {
+//            System.out.println("Not Valid");
+//        }
 
         chain.doFilter(request, response);
     }
