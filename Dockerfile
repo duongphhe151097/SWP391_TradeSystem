@@ -3,6 +3,7 @@ FROM maven:3.8.6-openjdk-11-slim AS build
 
 WORKDIR /app
 COPY . .
+RUN cp -r /deploy_settings/persistence.xml /src/main/resources/META-INF/persistence.xml
 RUN mvn clean package
 
 # Setup tomcat
