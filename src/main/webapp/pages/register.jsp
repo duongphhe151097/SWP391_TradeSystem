@@ -77,8 +77,7 @@
 
                 <div class="form-group">
                     <div class="form-row">
-                        <div class="col mt-4">
-                            <img src="<c:url value="/captcha"/>" alt="Captcha">
+                        <div class="col mt-4" id="captcha">
                         </div>
                         <div class="col">
                             <label for="captchaInput">Mã captcha</label>

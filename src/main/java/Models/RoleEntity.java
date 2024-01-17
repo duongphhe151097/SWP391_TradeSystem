@@ -1,10 +1,8 @@
 package Models;
 
+import Models.Common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
@@ -14,7 +12,8 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-public class RoleEntity {
+@EqualsAndHashCode(callSuper = true)
+public class RoleEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`role_id`", nullable = false, unique = true)

@@ -1,5 +1,6 @@
 package Models;
 
+import Models.Common.BaseEntity;
 import Models.EntityKey.TokenActivationKey;
 import jakarta.persistence.*;
 import lombok.*;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Table(name = "`token_activation`")
 @IdClass(TokenActivationKey.class)
 @Builder
-public class TokenActivationEntity {
+public class TokenActivationEntity extends BaseEntity {
 
     @Id
     @Column(name = "`token`", length = 50, nullable = false)
@@ -44,6 +45,6 @@ public class TokenActivationEntity {
     private LocalDateTime expriedAt;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "`user_id`", insertable = false, updatable = false)
+//    @JoinColumn(name = "`user_id`", referencedColumnName = "`id`")
 //    private UserEntity userEntity;
 }

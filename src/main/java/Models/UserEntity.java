@@ -63,8 +63,8 @@ public class UserEntity extends BaseEntity implements Serializable {
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role",
-            joinColumns = {@JoinColumn(referencedColumnName = "id", nullable = false)},
-            inverseJoinColumns ={@JoinColumn(name = "role_id", nullable = false)}
+            joinColumns = {@JoinColumn(name = "user_id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", nullable = false)}
     )
     private Set<RoleEntity> roleEntities;
 

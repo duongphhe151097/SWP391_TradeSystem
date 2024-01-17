@@ -1,10 +1,13 @@
 package Models;
 
+import Models.Common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity(name = "captcha")
 @Table(name = "`captcha`")
@@ -13,8 +16,12 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class CaptchaEntity {
+public class CaptchaEntity extends BaseEntity {
     @Id
+    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
+    @Column(name = "`id`", columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
+
     @Basic
     @Column(name = "`captcha_id`", nullable = false, updatable = false)
     private String captchaId;
@@ -24,11 +31,6 @@ public class CaptchaEntity {
     private String data;
 
     @Basic
-    @Column(name = "`create_at`", updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createAt;
-
-    @Basic
-    @Column(name = "`create_by`")
-    private String createBy;
+    @Column(name = "`expried_at`", updatable = false)
+    private LocalDateTime expriedAt;
 }

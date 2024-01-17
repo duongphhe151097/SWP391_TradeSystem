@@ -13,7 +13,7 @@
 
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
-            <property name="hibernate.connection.url" value="jdbc:postgresql://14.225.210.49:5435/tradesys"/>
+            <property name="hibernate.connection.url" value="jdbc:postgresql://postgre_container/tradesys"/>
             <property name="hibernate.connection.username" value="wmsrdb"/>
             <property name="hibernate.connection.password" value="Wms_Rdb_@2023"/>
             <property name="hibernate.naming.physical-strategy" value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>

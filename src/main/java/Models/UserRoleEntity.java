@@ -1,5 +1,6 @@
 package Models;
 
+import Models.Common.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,7 +18,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Getter
 @Setter
-public class UserRoleEntity {
+public class UserRoleEntity extends BaseEntity {
     @Id
     @Column(name = "role_id", nullable = false)
     private int roleId;

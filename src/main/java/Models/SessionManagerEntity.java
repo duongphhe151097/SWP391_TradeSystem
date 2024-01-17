@@ -1,5 +1,6 @@
 package Models;
 
+import Models.Common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-public class SessionManagerEntity {
+public class SessionManagerEntity extends BaseEntity {
     @Id
     @Column(name = "`session_id`", length = 32, nullable = false)
     private String sessionId;

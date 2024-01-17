@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public class CaptchaRepository {
     private final EntityManager entityManager;
@@ -16,22 +17,29 @@ public class CaptchaRepository {
         transaction = entityManager.getTransaction();
     }
 
-    public void addCaptcha(CaptchaEntity entity) {
+    public Optional<CaptchaEntity> addCaptcha(CaptchaEntity entity) {
         try {
             transaction.begin();
-            CaptchaEntity userEntity = (CaptchaEntity) entityManager.merge(entity);
-            entityManager.persist(userEntity);
+            CaptchaEntity captchaEntity = (CaptchaEntity) entityManager.merge(entity);
+            entityManager.persist(captchaEntity);
             transaction.commit();
+
+            return Optional.of(captchaEntity);
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
         }
+
+        return Optional.empty();
     }
 
-    public Optional<CaptchaEntity> getCaptchaById(String id) {
+    public Optional<CaptchaEntity> getCaptchaById(String captchaId, UUID id) {
         try {
             CaptchaEntity entity = entityManager
-                    .createQuery("select c from captcha c where c.id = :id", CaptchaEntity.class)
+                    .createQuery("select c from captcha c " +
+                            "where c.captchaId = :captchaId " +
+                            "and c.id = :id", CaptchaEntity.class)
+                    .setParameter("captchaId", captchaId)
                     .setParameter("id", id)
                     .getSingleResult();
 
@@ -42,11 +50,12 @@ public class CaptchaRepository {
         return Optional.empty();
     }
 
-    public void deleteCaptcha(String id) {
+    public void deleteCaptcha(String captchaId, UUID id) {
         try {
             transaction.begin();
-            entityManager.createQuery("delete captcha c where c.id = :id")
+            entityManager.createQuery("delete captcha c where c.id = :id and c.captchaId = :captchaId")
                     .setParameter("id", id)
+                    .setParameter("captchaId", captchaId)
                     .executeUpdate();
             transaction.commit();
         } catch (Exception e) {
