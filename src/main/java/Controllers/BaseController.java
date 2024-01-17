@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class BaseController extends HttpServlet {
-    protected void printJson(HttpServletRequest request, HttpServletResponse response, String message) {
+    protected void printJson(HttpServletResponse response, String message) {
         try{
             PrintWriter out = response.getWriter();
             response.setContentType("application/json");

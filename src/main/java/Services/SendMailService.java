@@ -1,5 +1,4 @@
-package ExternalServices;
-
+package Services;
 
 import Utils.Settings.AppSettings;
 import jakarta.mail.Authenticator;
@@ -17,7 +16,7 @@ public class SendMailService {
     public static boolean sendMail(String to, String subject, String content) {
         try {
             Properties props = new Properties();
-            props.put("mail.smtp.host", "smtp.mailgun.org");
+            props.put("mail.smtp.host", "smtp.gmail.com");
             props.put("mail.smtp.port", "587");
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true"); //TLS
@@ -42,9 +41,5 @@ public class SendMailService {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public static void main(String[] args) {
-        SendMailService.sendMail("hongduong5441@gmail.com", "Test Send Mail", "Success");
     }
 }
