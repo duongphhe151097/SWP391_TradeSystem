@@ -57,7 +57,7 @@ public class LoginController extends BaseController {
             }
 
             if (!isPassword) {
-                req.setAttribute("USERNAME_ERROR", "Mật khẩu không hợp lệ");
+                req.setAttribute("PASSWORD_ERROR", "Mật khẩu không hợp lệ");
             }
 
             if (!isValidCaptcha) {
@@ -112,6 +112,11 @@ public class LoginController extends BaseController {
             HttpSession session = req.getSession();
             session.setAttribute(UserConstant.SESSION_USERID, existUser.get().getId());
             SessionManagerRepository sessionManagerRepository = new SessionManagerRepository();
+
+            Optional<SessionManagerEntity> existSession = sessionManagerRepository.getSessionByUserId(existUser.get().getId());
+            if(existSession.isPresent()){
+                sessionManagerRepository.removeSession(existSession.get().getSessionId(), existUser.get().getId());
+            }
             SessionManagerEntity sessionManagerEntity = SessionManagerEntity.builder()
                     .sessionId(session.getId())
                     .userId(existUser.get().getId())

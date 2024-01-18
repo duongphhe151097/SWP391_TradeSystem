@@ -135,7 +135,7 @@ public class RegisterController extends BaseController {
             }
 
             //Check xem email đã tồn tại hay chưa
-            Optional<UserEntity> existEmail = repository.getUserByEmail(username);
+            Optional<UserEntity> existEmail = repository.getUserByEmail(email);
             if (existEmail.isPresent()) {
                 req.setAttribute("VAR_FULLNAME", fullname);
                 req.setAttribute("VAR_EMAIL", email);

@@ -65,17 +65,30 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
         //Case page non-public
         HttpSession session = request.getSession(false);
         String JSESSIONID = getCookieValue(request, CommonConstants.SESSION_COOKIE_KEY);
+
+        //If request to /login JSESSIONID must be empty
+        if (requestPath.endsWith("/login")) {
+            JSESSIONID = "";
+        }
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/login.jsp");
 
-        if (session == null || JSESSIONID.isEmpty()) {
+        if (session == null || JSESSIONID.isBlank()) {
             request.setAttribute("FAILED_MESSAGE", "Bạn cần đăng nhập trước để truy cập!");
             dispatcher.forward(request, response);
             return;
         }
 
-        String userId = (String) session.getAttribute(UserConstant.SESSION_USERID);
+        //Session id exist but, not exist userId in session
+        UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
+        if (userId == null) {
+            request.setAttribute("FAILED_MESSAGE", "Bạn cần đăng nhập trước để truy cập!");
+            dispatcher.forward(request, response);
+            return;
+        }
+
         Optional<SessionManagerEntity> sessionManagerEntity = sessionManagerRepository
-                .getSessionByUserId(UUID.fromString(userId));
+                .getSessionByUserId(userId);
 
         if (sessionManagerEntity.isEmpty()) {
             request.setAttribute("FAILED_MESSAGE", "Bạn cần đăng nhập trước để truy cập!");
@@ -94,7 +107,7 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
             return;
         }
 
-        Optional<Set<RoleEntity>> userRole = roleRepository.getRoleByUserId(UUID.fromString(userId));
+        Optional<Set<RoleEntity>> userRole = roleRepository.getRoleByUserId(userId);
         if (userRole.isEmpty() || !containRole(userRole.get(), roles)) {
             request.setAttribute("STATUS_CODE", "403");
             request.setAttribute("ERROR_MESSAGE", "Bạn không có quyền truy cập!");
@@ -167,6 +180,10 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
 
     private String getCookieValue(HttpServletRequest request, String key) {
         Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return "";
+        }
+
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(key)) return cookie.getValue();
         }
