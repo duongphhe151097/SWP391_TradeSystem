@@ -20,6 +20,7 @@ public class RoleRepository {
 
     public Optional<Set<RoleEntity>> getRoleByUserId(UUID userId) {
         try {
+            entityManager.clear();
             Set<RoleEntity> roles = entityManager
                     .getReference(UserEntity.class, userId)
                     .getRoleEntities();
