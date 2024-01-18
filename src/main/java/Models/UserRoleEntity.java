@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.UUID;
 
 @Entity(name = "userRole")
@@ -27,7 +28,20 @@ public class UserRoleEntity extends BaseEntity {
     @Column(name = "user_id", nullable = false)
     private UUID userId;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserRoleEntity userRole = (UserRoleEntity) o;
+        return roleId == userRole.roleId && Objects.equals(userId, userRole.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(roleId, userId);
+    }
+
+    //    @ManyToOne(fetch = FetchType.EAGER)
 //    @JoinColumn(
 //            name = "user_id",
 //            nullable = false,
