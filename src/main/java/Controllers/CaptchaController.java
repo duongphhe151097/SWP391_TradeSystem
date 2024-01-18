@@ -1,32 +1,21 @@
 package Controllers;
 
-import DataAccess.CaptchaRepository;
 import Dtos.CaptchaDto;
-import Models.CaptchaEntity;
 import Services.CaptchaService;
-import Utils.Annotations.Authentication;
-import Utils.Constants.CommonConstants;
-import Utils.Convert.StringConvertor;
+import Utils.Annotations.Authorization;
 import com.google.gson.Gson;
-import com.mewebstudio.captcha.Captcha;
-import com.mewebstudio.captcha.Config;
-import com.mewebstudio.captcha.GeneratedCaptcha;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.javatuples.Pair;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.util.Optional;
 import java.util.UUID;
 
 @WebServlet(name = "CaptchaController", urlPatterns = "/captcha")
-@Authentication(isPublic = true)
+@Authorization(role = "",isPublic = true)
 public class CaptchaController extends BaseController {
     private CaptchaService captchaService;
     private Gson gson;

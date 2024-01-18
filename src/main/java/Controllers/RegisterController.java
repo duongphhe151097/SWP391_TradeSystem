@@ -1,14 +1,12 @@
 package Controllers;
 
-import DataAccess.CaptchaRepository;
 import DataAccess.TokenActivationRepository;
 import DataAccess.UserRepository;
-import Models.CaptchaEntity;
 import Models.TokenActivationEntity;
 import Models.UserEntity;
 import Services.CaptchaService;
 import Services.SendMailService;
-import Utils.Annotations.Authentication;
+import Utils.Annotations.Authorization;
 import Utils.Constants.ActivationType;
 import Utils.Constants.UserConstant;
 import Utils.Generators.StringGenerator;
@@ -18,7 +16,6 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.javatuples.Pair;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -27,7 +24,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @WebServlet(name = "RegisterController", urlPatterns = "/register")
-@Authentication(isPublic = true)
+@Authorization(role = "",isPublic = true)
 public class RegisterController extends BaseController {
     private CaptchaService captchaService;
 

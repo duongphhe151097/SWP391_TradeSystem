@@ -1,11 +1,9 @@
 package Controllers;
 
-import DataAccess.CaptchaRepository;
 import DataAccess.UserRepository;
-import Models.CaptchaEntity;
 import Models.UserEntity;
 import Services.CaptchaService;
-import Utils.Annotations.Authentication;
+import Utils.Annotations.Authorization;
 import Utils.Constants.UserConstant;
 import Utils.Generators.StringGenerator;
 import Utils.Validation.StringValidator;
@@ -17,10 +15,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.UUID;
 
 @WebServlet(name = "LoginController", urlPatterns = "/login")
-@Authentication(isPublic = true)
+@Authorization(role = "",isPublic = true)
 public class LoginController extends BaseController {
     private CaptchaService captchaService;
 

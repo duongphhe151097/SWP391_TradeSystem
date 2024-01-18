@@ -1,5 +1,6 @@
 package Controllers;
 
+import Utils.Annotations.Authorization;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 @WebServlet(name = "HomeController", value = {"/home", "/"})
+@Authorization(role = "",isPublic = true)
 public class HomeController extends HttpServlet {
 
     @Override
