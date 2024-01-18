@@ -22,7 +22,7 @@ public class TokenActivationEntity extends BaseEntity {
 
     @Id
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    @Column(name = "`id`", nullable = false)
+    @Column(name = "`id`", columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 
     @Id

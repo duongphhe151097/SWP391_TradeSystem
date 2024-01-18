@@ -78,10 +78,10 @@
                     <div class="link mt-3">
                         <div class="form-row">
                             <div class="col d-flex justify-content-end">
-                                <a href="/tradesys_war_exploded/register">Chưa có tài khoản? Đăng kí</a>
+                                <a href="<c:url value="/register"/>">Chưa có tài khoản? Đăng kí</a>
                             </div>
                             <div class="col d-flex justify-content-start ml-5">
-                                <a href="">Quên mật khẩu?</a>
+                                <a href="<c:url value="/forgot"/>">Quên mật khẩu?</a>
                             </div>
                         </div>
                     </div>
