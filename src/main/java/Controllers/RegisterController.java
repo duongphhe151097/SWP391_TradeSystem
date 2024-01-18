@@ -178,6 +178,7 @@ public class RegisterController extends BaseController {
             //Save active token
             TokenActivationRepository tokenActivationRepository = new TokenActivationRepository();
             TokenActivationEntity tokenActivationEntity = TokenActivationEntity.builder()
+                    .id(UUID.randomUUID())
                     .token(activeToken)
                     .userId(user.getId())
                     .type(ActivationType.ACTIVE_REQUEST)
