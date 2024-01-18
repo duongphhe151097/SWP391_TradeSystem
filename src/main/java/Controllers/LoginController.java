@@ -1,6 +1,10 @@
 package Controllers;
 
+import DataAccess.CaptchaRepository;
+import DataAccess.SessionManagerRepository;
 import DataAccess.UserRepository;
+import Models.CaptchaEntity;
+import Models.SessionManagerEntity;
 import Models.UserEntity;
 import Services.CaptchaService;
 import Utils.Annotations.Authorization;
@@ -12,8 +16,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @WebServlet(name = "LoginController", urlPatterns = "/login")
@@ -36,7 +42,7 @@ public class LoginController extends BaseController {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String captcha = req.getParameter("captcha");
-        String hiddenCaptchaId = req.getParameter("");
+        String hiddenCaptchaId = req.getParameter("hidden_id");
 
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/login.jsp");
 
@@ -73,7 +79,7 @@ public class LoginController extends BaseController {
             }
 
             //Check captcha
-            if (captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
+            if (!captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
                 req.setAttribute("VAR_USERNAME", username);
                 req.setAttribute("VAR_EMAIL", password);
                 req.setAttribute("CAPTCHA_ERROR", "Captcha bạn nhập không đúng!");
@@ -102,6 +108,16 @@ public class LoginController extends BaseController {
                 dispatcher.forward(req, resp);
                 return;
             }
+
+            HttpSession session = req.getSession();
+            session.setAttribute(UserConstant.SESSION_USERID, existUser.get().getId());
+            SessionManagerRepository sessionManagerRepository = new SessionManagerRepository();
+            SessionManagerEntity sessionManagerEntity = SessionManagerEntity.builder()
+                    .sessionId(session.getId())
+                    .userId(existUser.get().getId())
+                    .lastActive(LocalDateTime.now())
+                    .build();
+            sessionManagerRepository.addSession(sessionManagerEntity);
 
             resp.sendRedirect("home");
         } catch (Exception e) {
