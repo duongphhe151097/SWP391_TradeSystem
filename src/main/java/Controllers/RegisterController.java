@@ -114,7 +114,7 @@ public class RegisterController extends BaseController {
             }
 
             //Check captcha
-            if (captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
+            if (!captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
                 req.setAttribute("VAR_FULLNAME", fullname);
                 req.setAttribute("VAR_EMAIL", email);
                 req.setAttribute("VAR_USERNAME", username);
