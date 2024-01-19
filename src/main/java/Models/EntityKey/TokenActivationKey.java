@@ -1,6 +1,5 @@
 package Models.EntityKey;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 

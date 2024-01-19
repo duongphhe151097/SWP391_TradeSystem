@@ -1,8 +1,8 @@
 package Utils.Generators;
 
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.MessageDigest;
 
 public class StringGenerator {
     private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";

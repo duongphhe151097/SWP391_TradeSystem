@@ -1,7 +1,6 @@
 package DataAccess;
 
 import Models.CaptchaEntity;
-import Models.UserEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
@@ -10,14 +9,13 @@ import java.util.UUID;
 
 public class CaptchaRepository {
     private final EntityManager entityManager;
-    private final EntityTransaction transaction;
 
     public CaptchaRepository() {
         entityManager = DbFactory.getFactory().createEntityManager();
-        transaction = entityManager.getTransaction();
     }
 
     public Optional<CaptchaEntity> addCaptcha(CaptchaEntity entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             CaptchaEntity captchaEntity = (CaptchaEntity) entityManager.merge(entity);
@@ -44,13 +42,14 @@ public class CaptchaRepository {
                     .getSingleResult();
 
             return Optional.ofNullable(entity);
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return Optional.empty();
     }
 
     public void deleteCaptcha(String captchaId, UUID id) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             entityManager.createQuery("delete captcha c where c.id = :id and c.captchaId = :captchaId")

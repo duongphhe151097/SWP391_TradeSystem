@@ -1,12 +1,11 @@
 package Controllers;
 
 import Utils.Annotations.Authorization;
-import jakarta.servlet.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
 
 import java.io.IOException;
-import java.util.Enumeration;
 
 @WebServlet(name = "HomeController", value = {"/home", "/"})
 @Authorization(role = "ADMIN", isPublic = false)
