@@ -19,7 +19,7 @@ public class SessionService {
         this.sessionManagerRepository = new SessionManagerRepository();
     }
 
-    public SessionDto isValidSession(HttpServletRequest request){
+    public SessionDto isValidSession(HttpServletRequest request) {
         SessionDto commonErrorResponse = SessionDto.builder()
                 .isValid(false)
                 .message("Bạn cần đăng nhập trước để truy cập!")
@@ -30,22 +30,33 @@ public class SessionService {
             HttpSession session = request.getSession(false);
             String JSESSIONID = getCookieValue(request, CommonConstants.SESSION_COOKIE_KEY);
 
-            if(session == null || JSESSIONID.isBlank())
+            //Check if session null or JSESSIONID in cookie not exist return err
+            if (session == null || JSESSIONID.isBlank())
                 return commonErrorResponse;
 
+            //userId not exist in session return err
             UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
             if (userId == null)
                 return commonErrorResponse;
 
+            //Check sessionId and userId exist in db or not
             Optional<SessionManagerEntity> sessionManagerEntity = sessionManagerRepository
                     .getSessionByUserId(userId);
 
             if (sessionManagerEntity.isEmpty())
                 return commonErrorResponse;
 
-            if (!sessionManagerEntity.get().getSessionId().equals(JSESSIONID)){
+            /*If JSESSIONID not equal with current sessionId
+            Cause: Other client login to this account
+            Return: return error*/
+            if (!sessionManagerEntity.get().getSessionId().equals(JSESSIONID)) {
                 session.invalidate();
-                return commonErrorResponse;
+                return SessionDto.builder()
+                        .isValid(false)
+                        .message("Đã có thiết bị khác đăng nhập vào tài khoản!")
+                        .session(null)
+                        .userId(null)
+                        .build();
             }
 
             return SessionDto.builder()
@@ -54,7 +65,7 @@ public class SessionService {
                     .session(session)
                     .userId(userId)
                     .build();
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

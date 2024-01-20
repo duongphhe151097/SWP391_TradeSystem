@@ -16,6 +16,8 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebFilter(filterName = "AuthorizeFilter", urlPatterns = "/*")
 public class AuthorizeFilter extends BaseFilter implements Filter {
@@ -107,7 +109,17 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
             String entryKey = entry.getKey();
             //
             if (entryKey.contains("*")) entryKey = entryKey.replace("*", "");
-            if (requestPath.endsWith(entryKey) && !(entryKey.equals(".jsp") || entryKey.equals(".jspx"))) return true;
+            //Check request url have file extension or not
+            String regexFileExtension = "\\.[a-zA-Z0-9]+$";
+            Pattern regexFileExtensionPattern = Pattern.compile(regexFileExtension);
+            Matcher matcher = regexFileExtensionPattern.matcher(requestPath);
+            if (matcher.find()) {
+                if (requestPath.endsWith(".jsp") || requestPath.endsWith(".jspx")) return false;
+
+                if (requestPath.endsWith(entryKey)) return true;
+            } else {
+                if (requestPath.equals(entryKey)) return true;
+            }
         }
 
         return false;
@@ -118,7 +130,7 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
         SessionDto sessionInfo = sessionService.isValidSession(request);
         String[] exceptionPath = new String[]{"/login", "/register", "/forgot"};
 
-        if (sessionInfo.isValid() && Arrays.stream(exceptionPath).anyMatch(requestPath::endsWith)) {
+        if (sessionInfo.isValid() && Arrays.asList(exceptionPath).contains(requestPath)) {
             response.sendRedirect("home");
             return;
         }
