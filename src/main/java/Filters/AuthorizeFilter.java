@@ -1,35 +1,34 @@
 package Filters;
 
 import DataAccess.RoleRepository;
-import DataAccess.SessionManagerRepository;
+import Dtos.SessionDto;
 import Models.RoleEntity;
-import Models.SessionManagerEntity;
-import Models.UserEntity;
+import Services.SessionService;
 import Utils.Annotations.Authorization;
-import Utils.Constants.CommonConstants;
-import Utils.Constants.UserConstant;
 import jakarta.servlet.*;
-import jakarta.servlet.annotation.*;
-import jakarta.servlet.http.Cookie;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.javatuples.Pair;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebFilter(filterName = "AuthorizeFilter", urlPatterns = "/*")
 public class AuthorizeFilter extends BaseFilter implements Filter {
     private ServletContext context;
     private RoleRepository roleRepository;
-    private SessionManagerRepository sessionManagerRepository;
+    private SessionService sessionService;
 
     public void init(FilterConfig config) throws ServletException {
         this.context = config.getServletContext();
         this.roleRepository = new RoleRepository();
-        this.sessionManagerRepository = new SessionManagerRepository();
+        this.sessionService = new SessionService();
         System.out.println("Init Check Authorization");
     }
 
@@ -58,65 +57,10 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
 
         //If is public page => next
         if (isPublic) {
-            chain.doFilter(request, response);
-            return;
+            publicPageProcess(chain, request, response, requestPath);
+        } else {
+            privatePageProcess(chain, request, response, requestPath, roles);
         }
-
-        //Case page non-public
-        HttpSession session = request.getSession(false);
-        String JSESSIONID = getCookieValue(request, CommonConstants.SESSION_COOKIE_KEY);
-
-        //If request to /login JSESSIONID must be empty
-        if (requestPath.endsWith("/login")) {
-            JSESSIONID = "";
-        }
-
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/login.jsp");
-
-        if (session == null || JSESSIONID.isBlank()) {
-            request.setAttribute("FAILED_MESSAGE", "Bạn cần đăng nhập trước để truy cập!");
-            dispatcher.forward(request, response);
-            return;
-        }
-
-        //Session id exist but, not exist userId in session
-        UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
-        if (userId == null) {
-            request.setAttribute("FAILED_MESSAGE", "Bạn cần đăng nhập trước để truy cập!");
-            dispatcher.forward(request, response);
-            return;
-        }
-
-        Optional<SessionManagerEntity> sessionManagerEntity = sessionManagerRepository
-                .getSessionByUserId(userId);
-
-        if (sessionManagerEntity.isEmpty()) {
-            request.setAttribute("FAILED_MESSAGE", "Bạn cần đăng nhập trước để truy cập!");
-            dispatcher.forward(request, response);
-            return;
-        }
-
-        if (!sessionManagerEntity.get().getSessionId().equals(JSESSIONID)) {
-            request.setAttribute("FAILED_MESSAGE", "Đã có thiết bị khác đăng nhập!");
-            dispatcher.forward(request, response);
-            return;
-        }
-
-        if (roles.length == 0) {
-            chain.doFilter(request, response);
-            return;
-        }
-
-        Optional<Set<RoleEntity>> userRole = roleRepository.getRoleByUserId(userId);
-        if (userRole.isEmpty() || !containRole(userRole.get(), roles)) {
-            request.setAttribute("STATUS_CODE", "403");
-            request.setAttribute("ERROR_MESSAGE", "Bạn không có quyền truy cập!");
-            request.getRequestDispatcher("/common/notfound.jsp")
-                    .forward(request, response);
-            return;
-        }
-
-        chain.doFilter(request, response);
     }
 
     private Pair<String, Boolean> getAuthorizationController(String requestPath, Map<String, String> urlPatters) {
@@ -130,9 +74,7 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
                     role = Optional.ofNullable(authorization)
                             .map(Authorization::role)
                             .orElse("");
-                    if (role.isBlank()) {
-                        role = "";
-                    }
+                    if (role.isBlank()) role = "";
 
                     isPublic = Optional.ofNullable(authorization)
                             .map(Authorization::isPublic)
@@ -148,12 +90,10 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
     }
 
     private String[] getAllRoleFromString(String roleRequire) {
-        if (roleRequire == null || roleRequire.isBlank())
-            return new String[]{};
-
-        if (roleRequire.contains(",")) {
-            return roleRequire.split(",");
-        }
+        // If input is null or blank return empty array
+        if (roleRequire == null || roleRequire.isBlank()) return new String[]{};
+        // If role string contains "," delim, split it
+        if (roleRequire.contains(",")) return roleRequire.split(",");
 
         return new String[]{roleRequire};
     }
@@ -167,27 +107,62 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
     private boolean pathFound(String requestPath, Map<String, String> urlPatters) {
         for (Map.Entry<String, String> entry : urlPatters.entrySet()) {
             String entryKey = entry.getKey();
+            //
+            if (entryKey.contains("*")) entryKey = entryKey.replace("*", "");
+            //Check request url have file extension or not
+            String regexFileExtension = "\\.[a-zA-Z0-9]+$";
+            Pattern regexFileExtensionPattern = Pattern.compile(regexFileExtension);
+            Matcher matcher = regexFileExtensionPattern.matcher(requestPath);
+            if (matcher.find()) {
+                if (requestPath.endsWith(".jsp") || requestPath.endsWith(".jspx")) return false;
 
-            if (entryKey.contains("*")) {
-                entryKey = entryKey.replace("*", "");
+                if (requestPath.endsWith(entryKey)) return true;
+            } else {
+                if (requestPath.equals(entryKey)) return true;
             }
-
-            if (requestPath.endsWith(entryKey) && !(entryKey.equals(".jsp") || entryKey.equals(".jspx"))) return true;
         }
 
         return false;
     }
 
-    private String getCookieValue(HttpServletRequest request, String key) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) {
-            return "";
+    public void publicPageProcess(FilterChain chain, HttpServletRequest request, HttpServletResponse response, String requestPath) throws ServletException, IOException {
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/login.jsp");
+        SessionDto sessionInfo = sessionService.isValidSession(request);
+        String[] exceptionPath = new String[]{"/login", "/register", "/forgot"};
+
+        if (sessionInfo.isValid() && Arrays.asList(exceptionPath).contains(requestPath)) {
+            response.sendRedirect("home");
+            return;
         }
 
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals(key)) return cookie.getValue();
+        chain.doFilter(request, response);
+    }
+
+    public void privatePageProcess(FilterChain chain, HttpServletRequest request, HttpServletResponse response, String requestPath, String[] roles) throws ServletException, IOException {
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/login.jsp");
+
+        //Case page non-public
+        SessionDto sessionInfo = sessionService.isValidSession(request);
+        if (!sessionInfo.isValid()) {
+            request.setAttribute("FAILED_MESSAGE", sessionInfo.getMessage());
+            dispatcher.forward(request, response);
+            return;
         }
 
-        return "";
+        if (roles.length == 0) {
+            chain.doFilter(request, response);
+            return;
+        }
+
+        Optional<Set<RoleEntity>> userRole = roleRepository.getRoleByUserId(sessionInfo.getUserId());
+        if (userRole.isEmpty() || !containRole(userRole.get(), roles)) {
+            request.setAttribute("STATUS_CODE", "403");
+            request.setAttribute("ERROR_MESSAGE", "Bạn không có quyền truy cập!");
+            request.getRequestDispatcher("/common/notfound.jsp")
+                    .forward(request, response);
+            return;
+        }
+
+        chain.doFilter(request, response);
     }
 }

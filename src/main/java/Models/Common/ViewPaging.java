@@ -1,7 +1,5 @@
 package Models.Common;
 
-import Models.Common.Pagination;
-
 import java.util.List;
 
 public class ViewPaging<T> {

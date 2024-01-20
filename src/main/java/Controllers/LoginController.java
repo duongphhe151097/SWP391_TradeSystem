@@ -1,9 +1,7 @@
 package Controllers;
 
-import DataAccess.CaptchaRepository;
 import DataAccess.SessionManagerRepository;
 import DataAccess.UserRepository;
-import Models.CaptchaEntity;
 import Models.SessionManagerEntity;
 import Models.UserEntity;
 import Services.CaptchaService;
