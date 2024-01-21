@@ -7,7 +7,7 @@ public class DbFactory {
     private static final String PERSISTANCE_NAME = "tradesys";
     private static EntityManagerFactory factory;
 
-    public static  EntityManagerFactory getFactory(){
+    public static EntityManagerFactory getFactory(){
         if(factory == null){
             factory = Persistence.createEntityManagerFactory(PERSISTANCE_NAME);
         }

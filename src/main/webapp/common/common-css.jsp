@@ -13,5 +13,5 @@
       integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
-<link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/css/navbar.css">
-<link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/img/favicon.ico">
+<link rel="stylesheet" href="<c:url value="/css/navbar.css"/>">
+<link rel="icon" type="image/x-icon" href="<c:url value="/img/favicon.ico"/>">
