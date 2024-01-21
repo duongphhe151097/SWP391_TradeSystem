@@ -45,7 +45,18 @@ public class SessionManagerRepository {
     }
 
     public void removeSession(String id, UUID userId) {
+        try {
+            transaction.begin();
 
+            entityManager.createQuery("DELETE session s WHERE s.sessionId = :sessionId AND s.userId = :userId")
+                    .setParameter("sessionId", id)
+                    .setParameter("userId", userId)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            transaction.rollback();
+        }
     }
 
 }

@@ -1,5 +1,6 @@
 package Controllers;
 
+import Utils.Annotations.Authorization;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 @WebServlet(name = "HomeController", value = {"/home", "/"})
+@Authorization(role = "ADMIN", isPublic = false)
 public class HomeController extends HttpServlet {
 
     @Override
@@ -15,7 +17,7 @@ public class HomeController extends HttpServlet {
         HttpSession session = request.getSession(false);
         String userId = (String) session.getAttribute("USER_ID");
         Cookie[] cookies = request.getCookies();
-        for (Cookie cookie : cookies){
+        for (Cookie cookie : cookies) {
             System.out.println(cookie.getName());
             System.out.println(cookie.getValue());
             cookie.setValue("");

@@ -10,6 +10,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TokenActivationKey implements Serializable {
+    private UUID id;
+
     private String token;
 
     private UUID userId;
