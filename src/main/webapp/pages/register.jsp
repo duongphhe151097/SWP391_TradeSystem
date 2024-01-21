@@ -23,11 +23,11 @@
                 </div>
                 
                 <div class="logo">
-                    <img src="${pageContext.request.contextPath}/img/logo.png" alt="Trade System Logo" class="img-fluid logo">
+                    <img src="<c:url value="/img/logo.png"/>" alt="Trade System Logo" class="img-fluid logo">
                 </div>
                 
             </div>
-            <form action="register" method="post">
+            <form action="<c:url value="/register"/>" method="post">
                 <div class="form-group">
                     <label for="fullnameInput">Họ và tên</label>
                     <input type="text" class="form-control" id="fullnameInput" aria-describedby="nameHelp"

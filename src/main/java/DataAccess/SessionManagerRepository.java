@@ -9,11 +9,9 @@ import java.util.UUID;
 
 public class SessionManagerRepository {
     private final EntityManager entityManager;
-    private final EntityTransaction transaction;
 
     public SessionManagerRepository() {
         entityManager = DbFactory.getFactory().createEntityManager();
-        transaction = entityManager.getTransaction();
     }
 
     public Optional<SessionManagerEntity> getSessionByUserId(UUID userId) {
@@ -33,6 +31,7 @@ public class SessionManagerRepository {
     }
 
     public void addSession(SessionManagerEntity entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             SessionManagerEntity sessionManagerEntity = (SessionManagerEntity) entityManager.merge(entity);
@@ -45,6 +44,7 @@ public class SessionManagerRepository {
     }
 
     public void removeSession(String id, UUID userId) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
 

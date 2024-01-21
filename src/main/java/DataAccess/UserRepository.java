@@ -2,21 +2,16 @@ package DataAccess;
 
 import Models.UserEntity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public class UserRepository {
     private final EntityManager entityManager;
-    private final EntityTransaction transaction;
 
     public UserRepository() {
         this.entityManager = DbFactory.getFactory().createEntityManager();
-        this.transaction = entityManager.getTransaction();
     }
 
     public Optional<UserEntity> getUserById(UUID userId) {
@@ -65,6 +60,7 @@ public class UserRepository {
     }
 
     public Optional<UserEntity> addUser(UserEntity user) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             UserEntity entity = (UserEntity) entityManager.merge(user);
@@ -82,6 +78,7 @@ public class UserRepository {
     }
 
     public boolean updateUserStatus(UUID userId, short status) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             entityManager.createQuery("UPDATE user u SET u.status = :status WHERE u.id = :id")

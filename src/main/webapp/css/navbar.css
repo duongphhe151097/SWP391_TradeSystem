@@ -1,0 +1,76 @@
+@import url("base.css");
+
+.search {
+    width: 500px;
+}
+
+.navbar {
+    min-height: 97px;
+}
+
+.navbar .nav-item {
+    margin-left: 1.25rem;
+}
+
+.navbar .nav-item:last-child {
+    margin-right: 0;
+}
+
+.navbar .nav-item .nav-link {
+    vertical-align: middle;
+    margin-right: 3rem;
+}
+
+.navbar .nav-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 100%;
+}
+
+.navbar .nav-item .custom-svg path {
+
+}
+
+.navbar .nav-item .user-name {
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+
+    margin: 1rem;
+}
+
+.navbar .nav-item.dropdown .dropdown-menu {
+    border: none;
+    -webkit-box-shadow: 0 3px 21px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 3px 21px 0 rgba(0, 0, 0, 0.2);
+}
+
+
+.navbar .nav-item.dropdown .navbar-dropdown {
+    position: absolute;
+    font-size: 1rem;
+    margin-top: 0;
+    right: 3rem;
+    left: auto;
+    top: 50px;
+    padding-top: 0;
+}
+
+.navbar .nav-item.dropdown .navbar-dropdown .dropdown-item {
+    margin-bottom: 0;
+    padding: 5px 25px;
+    cursor: pointer;
+    border-bottom: 1px solid #dee2e6;
+    line-height: 1;
+}
+
+
+.dropdown:hover>.dropdown-menu {
+    display: block;
+}
+
+.dropdown>.dropdown-toggle:active {
+    /*Without this, clicking will make it sticky*/
+    pointer-events: none;
+}
+
