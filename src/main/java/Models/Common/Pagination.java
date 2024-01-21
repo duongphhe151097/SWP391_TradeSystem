@@ -2,72 +2,47 @@ package Models.Common;
 
 import Utils.Settings.AppSettings;
 import Utils.Validation.NumberValidator;
+import lombok.Getter;
 
+@Getter
 public class Pagination {
-    private final int totalItem;
+    private final long totalItem;
     private final int currentPage;
     private final int pageSize;
     private final int totalPage;
     private final int startPage;
     private final int endPage;
+    private final int pageRangeOutput;
 
-    public Pagination(int totalItem, String page_input) {
-        this.totalItem = totalItem;
-        this.pageSize = AppSettings.getPageSize();
+    public Pagination(long totalItemInput, int pageInput, int pageRange, int pageSize) {
+        if (pageRange <= 0) pageRange = 10;
+        if (pageSize <= 0) pageSize = 10;
+        if (pageInput < 0) pageInput = 0;
 
-        int totalPage_internal = (int) Math.ceil((double) totalItem / (double) pageSize);
-        int currentPage_internal;
-        if (page_input != null) {
-            boolean isValid = NumberValidator.isInteger(page_input);
-            if (isValid) {
-                currentPage_internal = Integer.parseInt(page_input);
-            } else {
-                currentPage_internal = 1;
-            }
-        } else {
-            currentPage_internal = 1;
-        }
-        //Start page
-        int startPage_internal = currentPage_internal - 5;
-        int endPage_internal = currentPage_internal + 4;
-        if (startPage_internal <= 0) {
-            endPage_internal -= (startPage_internal - 1);
-            startPage_internal = 1;
-        }
-        //End page
-        if (endPage_internal > totalPage_internal) {
-            endPage_internal = totalPage_internal;
-            if (endPage_internal > 10) {
-                startPage_internal = endPage_internal - 9;
-            }
+        this.totalItem = totalItemInput;
+        this.pageSize = pageSize;
+        int totalPage = (int) Math.ceil(totalItem / (double) pageSize);
+
+        if (pageInput > totalPage) pageInput = totalPage;
+
+        int currentPage = pageInput > 0 ? pageInput : 1;
+        int startPage = currentPage - pageRange / 2;
+        int endPage = currentPage + ((int) Math.ceil((double) pageRange / 2) - 1);
+
+        if (startPage <= 0) {
+            endPage -= startPage - 1;
+            startPage = 1;
         }
 
-        this.currentPage = currentPage_internal;
-        this.totalPage = totalPage_internal;
-        this.startPage = startPage_internal;
-        this.endPage = endPage_internal;
-    }
+        if (endPage > totalPage) {
+            endPage = totalPage;
+            if (endPage > pageRange) startPage = endPage - (pageRange - 1);
+        }
 
-    public int getTotalItem() {
-        return totalItem;
-    }
-
-    public int getCurrentPage() {
-        return currentPage;
-    }
-
-    public int getPageSize() {
-        return pageSize;
-    }
-
-    public int getTotalPage() {
-        return totalPage;
-    }
-    public int getStartPage() {
-        return startPage;
-    }
-
-    public int getEndPage() {
-        return endPage;
+        this.currentPage = currentPage;
+        this.totalPage = totalPage;
+        this.startPage = startPage;
+        this.endPage = endPage;
+        this.pageRangeOutput = pageRange;
     }
 }

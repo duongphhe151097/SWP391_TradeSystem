@@ -1,0 +1,12 @@
+.input-group{
+    width: 10rem;
+    margin-right: 2px;
+}
+
+.input-group select {
+    height: 41px;
+}
+
+#search_input{
+    width: 16rem;
+}
