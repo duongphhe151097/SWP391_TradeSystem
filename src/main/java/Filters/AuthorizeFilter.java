@@ -29,7 +29,7 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
         this.context = config.getServletContext();
         this.roleRepository = new RoleRepository();
         this.sessionService = new SessionService();
-        System.out.println("Init Check Authorization");
+        System.out.println("Init Filter Check Authorization");
     }
 
     @Override
