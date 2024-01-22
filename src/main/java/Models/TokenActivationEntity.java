@@ -44,7 +44,10 @@ public class TokenActivationEntity extends BaseEntity {
     @Column(name = "`expried_at`", updatable = false)
     private LocalDateTime expriedAt;
 
+
 //    @ManyToOne(fetch = FetchType.LAZY)
 //    @JoinColumn(name = "`user_id`", referencedColumnName = "`id`")
 //    private UserEntity userEntity;
+
+
 }

@@ -1,9 +1,12 @@
 package DataAccess;
 
 import Models.UserEntity;
+import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.servlet.http.HttpServletRequest;
+import org.hibernate.Session;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -96,4 +99,18 @@ public class UserRepository {
         }
         return false;
     }
+    public void updateUser(UserEntity user) {
+        try {
+            transaction.begin();
+            entityManager.merge(user);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        }
+    }
+    private UserEntity getUserFromSession(HttpServletRequest request) {
+        return (UserEntity) request.getSession().getAttribute("user");
+    }
+
 }

@@ -75,7 +75,7 @@ public class LoginController extends BaseController {
                 return;
             }
 
-            //Check captcha
+            //Check captcha`
             if (captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
                 req.setAttribute("VAR_USERNAME", username);
                 req.setAttribute("VAR_EMAIL", password);

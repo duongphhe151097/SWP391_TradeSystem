@@ -1,5 +1,6 @@
 package Controllers;
 
+import Controllers.BaseController;
 import DataAccess.CaptchaRepository;
 import DataAccess.TokenActivationRepository;
 import DataAccess.UserRepository;
