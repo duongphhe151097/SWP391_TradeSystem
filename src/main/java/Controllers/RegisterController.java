@@ -1,9 +1,12 @@
 package Controllers;
 
+import DataAccess.RoleRepository;
 import DataAccess.TokenActivationRepository;
 import DataAccess.UserRepository;
+import Models.RoleEntity;
 import Models.TokenActivationEntity;
 import Models.UserEntity;
+import Models.UserRoleEntity;
 import Services.CaptchaService;
 import Services.SendMailService;
 import Utils.Annotations.Authorization;
@@ -20,17 +23,20 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @WebServlet(name = "RegisterController", urlPatterns = "/register")
 @Authorization(role = "",isPublic = true)
 public class RegisterController extends BaseController {
     private CaptchaService captchaService;
+    private RoleRepository roleRepository;
+    private UserRepository userRepository;
 
     @Override
     public void init() throws ServletException {
         this.captchaService = new CaptchaService();
+        this.roleRepository = new RoleRepository();
+        this.userRepository = new UserRepository();
     }
 
     @Override
@@ -120,11 +126,8 @@ public class RegisterController extends BaseController {
                 return;
             }
 
-            //Khởi tạo UserRepo
-            UserRepository repository = new UserRepository();
-
             //Check xem username đã tồn tại hay chưa
-            Optional<UserEntity> existUser = repository.getUserByUsername(username);
+            Optional<UserEntity> existUser = userRepository.getUserByUsername(username);
             if (existUser.isPresent()) {
                 req.setAttribute("VAR_FULLNAME", fullname);
                 req.setAttribute("VAR_EMAIL", email);
@@ -135,7 +138,7 @@ public class RegisterController extends BaseController {
             }
 
             //Check xem email đã tồn tại hay chưa
-            Optional<UserEntity> existEmail = repository.getUserByEmail(email);
+            Optional<UserEntity> existEmail = userRepository.getUserByEmail(email);
             if (existEmail.isPresent()) {
                 req.setAttribute("VAR_FULLNAME", fullname);
                 req.setAttribute("VAR_EMAIL", email);
@@ -151,6 +154,12 @@ public class RegisterController extends BaseController {
 
             //Tạo user entity từ dữ liệu nhận đc
             //Ở đây đang sử dụng builder, tương tự như sử dụng constructor hoặc method set nhưng gọn hơn
+            Optional<RoleEntity> roles = roleRepository.getRoleByName("USER");
+            int roleId = 1;
+            if(roles.isPresent()){
+                roleId = roles.get().getRoleId();
+            }
+
             UserEntity userEntity = UserEntity
                     .builder()
                     .id(UUID.randomUUID())
@@ -168,9 +177,16 @@ public class RegisterController extends BaseController {
                     .rating(0)
                     .build();
 
-            //Kiểu optional là đối tượng trả ra có thể là null hoặc not null
-            UserEntity user = repository.addUser(userEntity).get();
 
+            //Kiểu optional là đối tượng trả ra có thể là null hoặc not null
+            Optional<UserEntity> user = userRepository.addUser(userEntity);
+            if(user.isEmpty()){
+                req.setAttribute("FAILED_MESSAGE", "Có lỗi xảy ra khi tạo tài khoản");
+                dispatcher.forward(req, resp);
+                return;
+            }
+
+            roleRepository.addUserRole(user.get().getId(), roleId);
             //Send mail
             String activeToken = StringGenerator.generateRandomString(50);
             String activationLink = getBaseURL(req) + "/activate?t=" + activeToken;
@@ -181,7 +197,7 @@ public class RegisterController extends BaseController {
             TokenActivationEntity tokenActivationEntity = TokenActivationEntity.builder()
                     .id(UUID.randomUUID())
                     .token(activeToken)
-                    .userId(user.getId())
+                    .userId(user.get().getId())
                     .type(ActivationType.ACTIVE_REQUEST)
                     .isUsed(false)
                     .createAt(LocalDateTime.now())

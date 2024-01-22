@@ -47,14 +47,14 @@
                             <a class="nav-link" id="user-dropdown" href="#" data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 <img class="img-xs rounded-circle" src="<c:url value="/img/default_male.jpg"/>" alt="Profile image" />
-                                <span class="user-name">Admin</span>
+                                <span class="user-name">${sessionScope.SESSION_USERFULLNAME}</span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                                  aria-labelledby="user-dropdown">
                                 <div class="dropdown-header text-center">
                                     <img class="img-md rounded-circle" src="<c:url value="/img/default_male.jpg"/>" alt="Profile image" />
-                                    <p class="mb-1 mt-3 font-weight-semibold">Phạm Hồng Dương</p>
-                                    <p class="fw-light text-muted mb-0">admin@gmail.com</p>
+                                    <p class="mb-1 mt-3 font-weight-semibold">${sessionScope.SESSION_USERFULLNAME}</p>
+                                    <p class="fw-light text-muted mb-0">${sessionScope.SESSION_USEREMAIL}</p>
                                 </div>
                                 <a href="<c:url value="/profile"/>" class="dropdown-item">
                                     <span class="d-flex align-items-center">
