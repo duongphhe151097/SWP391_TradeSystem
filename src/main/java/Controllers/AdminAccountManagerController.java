@@ -46,7 +46,7 @@ public class AdminAccountManagerController extends BaseController {
                 pageRange = "5";
             }
 
-            if (search == null || search.isBlank()) {
+            if (StringValidator.isNullOrBlank(search)) {
                 search = "";
             }
 
@@ -55,12 +55,12 @@ public class AdminAccountManagerController extends BaseController {
             }
 
             LocalDateTime startDateConvert = null;
-            if (startDate != null && !startDate.isBlank()){
+            if (!StringValidator.isNullOrBlank(startDate)){
                 startDateConvert = DateTimeConvertor.toLocalDateTime(startDate);
             }
 
             LocalDateTime endDateConvert = null;
-            if (startDate != null && !startDate.isBlank()){
+            if (!StringValidator.isNullOrBlank(endDate)){
                 endDateConvert = DateTimeConvertor.toLocalDateTime(endDate);
             }
 
@@ -72,6 +72,7 @@ public class AdminAccountManagerController extends BaseController {
             int endPage = pagination.getPageSize();
             List<UserEntity> users = userRepository
                     .getAllWithPaging(startPage, endPage, search, filterStatus, startDateConvert, endDateConvert);
+
             req.setAttribute("FILTER_SEARCH", search);
             req.setAttribute("FILTER_STATUS", filterStatus);
             req.setAttribute("FILTER_STARTDATE", startDate);

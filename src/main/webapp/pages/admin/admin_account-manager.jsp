@@ -25,32 +25,6 @@
         </header>
         <ul class="nav d-flex">
             <li class=" w-100">
-                <a href="#">
-                        <span class="d-flex align-items-center">
-                            <span class="material-symbols-outlined">
-                                dashboard
-                            </span>
-                            <span class="item-name">
-                                Dashboard
-                            </span>
-                        </span>
-                </a>
-            </li>
-
-            <li class=" w-100">
-                <a href="#">
-                        <span class="d-flex align-items-center">
-                            <span class="material-symbols-outlined">
-                                dashboard
-                            </span>
-                            <span class="item-name">
-                                Dashboard
-                            </span>
-                        </span>
-                </a>
-            </li>
-
-            <li class=" w-100">
                 <a href="<c:url value="/admin/account"/>">
                         <span class="d-flex align-items-center">
                             <span class="material-symbols-outlined">
@@ -118,6 +92,9 @@
                 <div class="col-md-12">
                     <form method="get" action="<c:url value="/admin/account"/> ">
                         <div class="d-flex justify-content-end">
+                            <input type="hidden" value="${paging.currentPage}" name="current">
+                            <input type="hidden" value="${paging.pageSize}" name="size">
+                            <input type="hidden" value="${paging.pageRangeOutput}" name="range">
                             <div class="input-group mb-3 d-flex flex-column">
                                 <label for="start_date">Từ ngày</label>
                                 <input type="date" class="form-control w-100"
@@ -158,9 +135,6 @@
                                 <input type="text" class="form-control w-100" placeholder="Nhập email hoặc username"
                                        value="${requestScope.FILTER_SEARCH}" name="search" id="search_input">
                             </div>
-                            <input type="hidden" value="${paging.currentPage}" name="current">
-                            <input type="hidden" value="${paging.pageSize}" name="size">
-                            <input type="hidden" value="${paging.pageRangeOutput}" name="range">
                             <div class="ml-3 input-group mb-3 d-flex flex-column justify-content-end">
                                 <button type="submit" class="btn btn-primary">Tìm</button>
                             </div>
@@ -261,23 +235,30 @@
                     <div class="col-md-12">
                         <nav aria-label="Page navigation example">
                             <ul class="pagination">
-
                                 <li class="page-item <c:if test="${paging.currentPage == paging.startPage}">disabled</c:if>">
+                                    <c:set value="${f:pagingUrlGenerate(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                                           var="previous"/>
                                     <a class="page-link"
-                                       href="<c:url value="/admin/account?current=${paging.currentPage - 1}&size=${paging.pageSize}&range=${paging.pageRangeOutput}"/> ">Về
-                                        trang trước</a></li>
+                                       href="<c:url value="/admin/account${previous}"/> ">Về
+                                        trang trước</a>
+                                </li>
 
                                 <c:forEach begin="1" end="${paging.totalPage}" varStatus="loop">
                                     <li class="page-item <c:if test="${loop.index == paging.currentPage}">active</c:if>">
+                                        <c:set value="${f:pagingUrlGenerate(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                                               var="current"/>
                                         <a class="page-link"
-                                           href="<c:url value="/admin/account?current=${loop.index}&size=${paging.pageSize}&range=${paging.pageRangeOutput}"/>">${loop.index}</a>
+                                           href="<c:url value="/admin/account${current}"/>">${loop.index}</a>
                                     </li>
                                 </c:forEach>
 
                                 <li class="page-item <c:if test="${paging.currentPage == paging.endPage}">disabled</c:if>">
+                                    <c:set value="${f:pagingUrlGenerate(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                                           var="next"/>
                                     <a class="page-link"
-                                       href="<c:url value="/admin/account?current=${paging.currentPage + 1}&size=${paging.pageSize}&range=${paging.pageRangeOutput}"/>">Đến
-                                        trang tiếp</a></li>
+                                       href="<c:url value="/admin/account${next}"/>">Đến
+                                        trang tiếp</a>
+                                </li>
 
                             </ul>
                         </nav>

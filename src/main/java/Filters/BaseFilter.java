@@ -29,7 +29,7 @@ public class BaseFilter {
     }
 
     protected String getRequestPath(String fullRequestUrl, String contextPath){
-        return fullRequestUrl.replaceAll(contextPath, "");
+        return fullRequestUrl.replaceAll(contextPath, "").trim();
     }
 
     protected String getCookieValue(HttpServletRequest request, String key) {
