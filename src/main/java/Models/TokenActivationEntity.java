@@ -20,6 +20,9 @@ import java.util.UUID;
 public class TokenActivationEntity extends BaseEntity {
 
     @Id
+    @Column(name = "`id`", nullable = false)
+    private UUID Id;
+    @Id
     @Column(name = "`token`", length = 50, nullable = false)
     private String token;
 

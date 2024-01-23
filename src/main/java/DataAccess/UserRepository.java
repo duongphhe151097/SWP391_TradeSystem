@@ -1,15 +1,11 @@
 package DataAccess;
 
 import Models.UserEntity;
-import jakarta.persistence.Entity;
+import Utils.Generators.StringGenerator;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.servlet.http.HttpServletRequest;
-import org.hibernate.Session;
 
-import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -99,16 +95,33 @@ public class UserRepository {
         }
         return false;
     }
-    public void updateUser(UserEntity user) {
+    public void updateUserPassword(UUID userId, String newPassword, String salt) {
         try {
             transaction.begin();
+
+            UserEntity user = entityManager.find(UserEntity.class, userId);
+
+            if (user == null) {
+                System.out.println("User not found!");
+                return;
+            }
+
+            String hashedPassword = StringGenerator.hashingPassword(newPassword, salt);
+
+            user.setPassword(hashedPassword);
+            user.setSalt(salt);
             entityManager.merge(user);
+
             transaction.commit();
         } catch (Exception e) {
-            transaction.rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
             e.printStackTrace();
         }
     }
+
+
     private UserEntity getUserFromSession(HttpServletRequest request) {
         return (UserEntity) request.getSession().getAttribute("user");
     }

@@ -39,7 +39,7 @@ public class LoginController extends BaseController {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String captcha = req.getParameter("captcha");
-        String hiddenCaptchaId = req.getParameter("");
+        String hiddenCaptchaId = req.getParameter("hidden_id");
 
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/login.jsp");
 
@@ -75,7 +75,7 @@ public class LoginController extends BaseController {
                 return;
             }
 
-            //Check captcha`
+            //Check captcha
             if (captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
                 req.setAttribute("VAR_USERNAME", username);
                 req.setAttribute("VAR_EMAIL", password);

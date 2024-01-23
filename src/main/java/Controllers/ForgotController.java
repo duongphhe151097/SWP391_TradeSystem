@@ -4,6 +4,7 @@ import DataAccess.TokenActivationRepository;
 import DataAccess.UserRepository;
 import Models.TokenActivationEntity;
 import Models.UserEntity;
+import Services.CaptchaService;
 import Services.SendMailService;
 import Utils.Annotations.Authentication;
 import Utils.Generators.StringGenerator;
@@ -17,20 +18,28 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 @WebServlet(name = "ForgotController", urlPatterns = "/forgot")
 @Authentication(isPublic = true)
-public class ForgotController extends BaseController{
+public class ForgotController extends BaseController {
+    private CaptchaService captchaService;
+
+    public void init() throws ServletException {
+        this.captchaService = new CaptchaService();
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("/pages/forgot.jsp").forward(req, resp);
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/forgot.jsp");
+        dispatcher.forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String email = req.getParameter("email");
         String captcha = req.getParameter("captcha");
-        String hiddenCaptchaId = req.getParameter("");
+        String hiddenCaptchaId = req.getParameter("hidden_id");
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/forgot.jsp");
 
         try {
@@ -44,11 +53,22 @@ public class ForgotController extends BaseController{
                 return;
             }
             if (!isValidCaptcha) {
-                req.setAttribute("CAPTCHA_ERROR", "Captcha ko đc để trống!");
+                req.setAttribute("CAPTCHA_ERROR", "Captcha không được để trống!");
             }
 
             if (!isValidHiddenCaptcha) {
-                req.setAttribute("CAPTCHA_ERROR", "Captcha ko không hợp lệ");
+                req.setAttribute("CAPTCHA_ERROR", "Captcha không hợp lệ");
+            }
+            boolean isAllValid = StringValidator.isTrue(isValidEmail, isValidCaptcha, isValidHiddenCaptcha);
+            if (!isAllValid) {
+                dispatcher.forward(req, resp);
+                return;
+            }
+            if (captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
+                req.setAttribute("VAR_EMAIL", "email");
+                req.setAttribute("CAPTCHA_ERROR", "Captcha bạn nhập không đúng!");
+                dispatcher.forward(req, resp);
+                return;
             }
 
             UserRepository userRepository = new UserRepository();
@@ -64,6 +84,7 @@ public class ForgotController extends BaseController{
                 // Lưu reset token vào DB
                 TokenActivationRepository tokenRepository = new TokenActivationRepository();
                 TokenActivationEntity tokenEntity = TokenActivationEntity.builder()
+                        .Id(UUID.randomUUID())
                         .token(resetToken)
                         .userId(user.getId())
                         .type((short) 2)
@@ -71,8 +92,11 @@ public class ForgotController extends BaseController{
                         .createAt(LocalDateTime.now())
                         .expriedAt(LocalDateTime.now().plusDays(1))
                         .build();
+
                 tokenRepository.addToken(tokenEntity);
 
+                String resetLink = getBaseURL(req) + "/resetpassword?t=" + resetToken;
+                SendMailService.sendMail(email, "TradeSystem - Đặt lại mật khẩu", "Nhấn vào liên kết sau để đặt lại mật khẩu: " + resetLink);
 
                 req.setAttribute("SUCCESS_MESSAGE", "Đã gửi hướng dẫn đặt lại mật khẩu vào email của bạn!");
                 dispatcher.forward(req, resp);
