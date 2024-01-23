@@ -1,29 +1,29 @@
 package Models;
 
+import Models.Common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
-@Entity
-@Table(name = "role")
+@Entity(name = "role")
+@Table(name = "`role`")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class RoleEntity {
+@Builder
+@EqualsAndHashCode(callSuper = true)
+public class RoleEntity extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id", nullable = false, unique = true)
+    @Column(name = "`role_id`", nullable = false, unique = true)
     private int roleId;
 
-    @Column(name = "role_name", length = 50, nullable = false)
+    @Column(name = "`role_name`", length = 50, nullable = false)
     private String roleName;
 
-    @Column(name = "role_description")
+    @Column(name = "`role_description`")
     private String roleDescription;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "roleEntities")
