@@ -6,6 +6,7 @@ import DataAccess.UserRepository;
 import Models.RoleEntity;
 import Models.TokenActivationEntity;
 import Models.UserEntity;
+import Models.UserRoleEntity;
 import Services.CaptchaService;
 import Services.SendMailService;
 import Utils.Annotations.Authorization;
@@ -22,8 +23,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @WebServlet(name = "RegisterController", urlPatterns = "/register")
 @Authorization(role = "",isPublic = true)
