@@ -12,6 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @EqualsAndHashCode(callSuper = true)
 public class RoleEntity extends BaseEntity{
     @Id
