@@ -1,5 +1,7 @@
 package DataAccess;
 
+import Models.Common.Pagination;
+import Models.Common.ViewPaging;
 import Models.UserEntity;
 import Utils.Validation.StringValidator;
 import jakarta.persistence.EntityManager;
@@ -18,6 +20,7 @@ public class UserRepository {
     public UserRepository() {
         this.entityManager = DbFactory.getFactory().createEntityManager();
     }
+
 
     public Optional<UserEntity> getUserById(UUID userId) {
         try {
