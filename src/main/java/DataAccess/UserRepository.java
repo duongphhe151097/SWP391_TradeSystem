@@ -21,7 +21,6 @@ public class UserRepository {
         this.entityManager = DbFactory.getFactory().createEntityManager();
     }
 
-
     public Optional<UserEntity> getUserById(UUID userId) {
         try {
             UserEntity entity = entityManager
