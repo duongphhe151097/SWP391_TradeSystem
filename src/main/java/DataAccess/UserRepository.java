@@ -115,11 +115,11 @@ public class UserRepository {
             hql.append("AND u.status = :status ");
         }
 
-        if (startDate != null){
+        if (startDate != null) {
             hql.append("AND u.createAt >= :startDate ");
         }
 
-        if (endDate != null){
+        if (endDate != null) {
             hql.append("AND u.createAt <= :endDate");
         }
 
@@ -154,11 +154,11 @@ public class UserRepository {
             hql.append("AND u.status = :status ");
         }
 
-        if (startDate != null){
+        if (startDate != null) {
             hql.append("AND u.createAt >= :startDate ");
         }
 
-        if (endDate != null){
+        if (endDate != null) {
             hql.append("AND u.createAt <= :endDate");
         }
 
