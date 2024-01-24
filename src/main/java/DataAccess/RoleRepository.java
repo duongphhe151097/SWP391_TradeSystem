@@ -1,11 +1,13 @@
 package DataAccess;
 
+import Models.CaptchaEntity;
 import Models.RoleEntity;
 import Models.UserEntity;
 import Models.UserRoleEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
