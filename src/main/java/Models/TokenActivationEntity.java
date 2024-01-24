@@ -5,6 +5,7 @@ import Models.EntityKey.TokenActivationKey;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -20,8 +21,10 @@ import java.util.UUID;
 public class TokenActivationEntity extends BaseEntity {
 
     @Id
-    @Column(name = "`id`", nullable = false)
-    private UUID Id;
+    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
+    @Column(name = "`id`", columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID id;
+
     @Id
     @Column(name = "`token`", length = 50, nullable = false)
     private String token;

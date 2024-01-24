@@ -1,26 +1,24 @@
 package DataAccess;
 
 import Models.SessionManagerEntity;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public class SessionManagerRepository {
     private final EntityManager entityManager;
-    private final EntityTransaction transaction;
 
     public SessionManagerRepository() {
         entityManager = DbFactory.getFactory().createEntityManager();
-        transaction = entityManager.getTransaction();
     }
 
     public Optional<SessionManagerEntity> getSessionByUserId(UUID userId) {
         try {
             SessionManagerEntity entity = entityManager
                     .createQuery("SELECT s FROM session s " +
-                            "WHERE s.userId = :userId ", SessionManagerEntity.class)
+                            "WHERE s.userId = :userId", SessionManagerEntity.class)
                     .setParameter("userId", userId)
                     .getSingleResult();
 
@@ -33,6 +31,7 @@ public class SessionManagerRepository {
     }
 
     public void addSession(SessionManagerEntity entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             SessionManagerEntity sessionManagerEntity = (SessionManagerEntity) entityManager.merge(entity);
@@ -45,7 +44,19 @@ public class SessionManagerRepository {
     }
 
     public void removeSession(String id, UUID userId) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
 
+            entityManager.createQuery("DELETE session s WHERE s.sessionId = :sessionId AND s.userId = :userId")
+                    .setParameter("sessionId", id)
+                    .setParameter("userId", userId)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            transaction.rollback();
+        }
     }
 
 }

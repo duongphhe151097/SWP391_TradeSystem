@@ -23,11 +23,11 @@
                 </div>
 
                 <div class="logo">
-                    <img src="${pageContext.request.contextPath}/img/logo.png" alt="Trade System Logo" class="img-fluid logo">
+                    <img src="<c:url value="/img/logo.png"/>" alt="Trade System Logo" class="img-fluid logo">
                 </div>
 
             </div>
-            <form action="login" method="post">
+            <form action="<c:url value="/login"/>" method="post">
 
                 <div class="form-group">
                     <label for="usernameInput">Tên đăng nhập</label>
@@ -78,13 +78,10 @@
                     <div class="link mt-3">
                         <div class="form-row">
                             <div class="col d-flex justify-content-end">
-                                <a href="/tradesys_war_exploded/register">Chưa có tài khoản? Đăng kí</a>
+                                <a href="<c:url value="/register"/>">Chưa có tài khoản? Đăng kí</a>
                             </div>
                             <div class="col d-flex justify-content-start ml-5">
-                                <a href="/tradesys_war_exploded/forgot">Quên mật khẩu?</a>
-                            </div>
-                            <div class="col d-flex justify-content-start ml-5">
-                                <a href="/tradesys_war_exploded/change">Đổi Mật Khẩu</a>
+                                <a href="<c:url value="/forgot"/>">Quên mật khẩu?</a>
                             </div>
                         </div>
                     </div>
@@ -96,4 +93,5 @@
 </div>
 </body>
 <jsp:include page="../common/common-js.jsp"/>
+<script src="<c:url value="/js/captcha.js"/>"></script>
 </html>

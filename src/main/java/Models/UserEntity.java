@@ -8,7 +8,6 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

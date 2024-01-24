@@ -1,13 +1,9 @@
 package Utils.Convert;
 
-import Utils.Settings.AppSettings;
-
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 
 public class StringConvertor {

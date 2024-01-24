@@ -1,11 +1,11 @@
 package Controllers;
 
-import DataAccess.CaptchaRepository;
+import DataAccess.SessionManagerRepository;
 import DataAccess.UserRepository;
-import Models.CaptchaEntity;
+import Models.SessionManagerEntity;
 import Models.UserEntity;
 import Services.CaptchaService;
-import Utils.Annotations.Authentication;
+import Utils.Annotations.Authorization;
 import Utils.Constants.UserConstant;
 import Utils.Generators.StringGenerator;
 import Utils.Validation.StringValidator;
@@ -14,13 +14,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @WebServlet(name = "LoginController", urlPatterns = "/login")
-@Authentication(isPublic = true)
+@Authorization(role = "",isPublic = true)
 public class LoginController extends BaseController {
     private CaptchaService captchaService;
 
@@ -54,7 +55,7 @@ public class LoginController extends BaseController {
             }
 
             if (!isPassword) {
-                req.setAttribute("USERNAME_ERROR", "Mật khẩu không hợp lệ");
+                req.setAttribute("PASSWORD_ERROR", "Mật khẩu không hợp lệ");
             }
 
             if (!isValidCaptcha) {
@@ -76,7 +77,7 @@ public class LoginController extends BaseController {
             }
 
             //Check captcha
-            if (captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
+            if (!captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
                 req.setAttribute("VAR_USERNAME", username);
                 req.setAttribute("VAR_EMAIL", password);
                 req.setAttribute("CAPTCHA_ERROR", "Captcha bạn nhập không đúng!");
@@ -105,6 +106,24 @@ public class LoginController extends BaseController {
                 dispatcher.forward(req, resp);
                 return;
             }
+
+            HttpSession session = req.getSession();
+            session.setAttribute(UserConstant.SESSION_USERID, existUser.get().getId());
+            session.setAttribute(UserConstant.SESSION_USERNAME, existUser.get().getUsername());
+            session.setAttribute(UserConstant.SESSION_USEREMAIL, existUser.get().getEmail());
+            session.setAttribute(UserConstant.SESSION_USERFULLNAME, existUser.get().getFullName());
+            SessionManagerRepository sessionManagerRepository = new SessionManagerRepository();
+
+            Optional<SessionManagerEntity> existSession = sessionManagerRepository.getSessionByUserId(existUser.get().getId());
+            if(existSession.isPresent()){
+                sessionManagerRepository.removeSession(existSession.get().getSessionId(), existUser.get().getId());
+            }
+            SessionManagerEntity sessionManagerEntity = SessionManagerEntity.builder()
+                    .sessionId(session.getId())
+                    .userId(existUser.get().getId())
+                    .lastActive(LocalDateTime.now())
+                    .build();
+            sessionManagerRepository.addSession(sessionManagerEntity);
 
             resp.sendRedirect("home");
         } catch (Exception e) {

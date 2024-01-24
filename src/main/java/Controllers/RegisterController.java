@@ -2,14 +2,16 @@ package Controllers;
 
 import Controllers.BaseController;
 import DataAccess.CaptchaRepository;
+import DataAccess.RoleRepository;
 import DataAccess.TokenActivationRepository;
 import DataAccess.UserRepository;
-import Models.CaptchaEntity;
+import Models.RoleEntity;
 import Models.TokenActivationEntity;
 import Models.UserEntity;
+import Models.UserRoleEntity;
 import Services.CaptchaService;
 import Services.SendMailService;
-import Utils.Annotations.Authentication;
+import Utils.Annotations.Authorization;
 import Utils.Constants.ActivationType;
 import Utils.Constants.UserConstant;
 import Utils.Generators.StringGenerator;
@@ -19,22 +21,24 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.javatuples.Pair;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @WebServlet(name = "RegisterController", urlPatterns = "/register")
-@Authentication(isPublic = true)
+@Authorization(role = "",isPublic = true)
 public class RegisterController extends BaseController {
     private CaptchaService captchaService;
+    private RoleRepository roleRepository;
+    private UserRepository userRepository;
 
     @Override
     public void init() throws ServletException {
         this.captchaService = new CaptchaService();
+        this.roleRepository = new RoleRepository();
+        this.userRepository = new UserRepository();
     }
 
     @Override
@@ -115,7 +119,7 @@ public class RegisterController extends BaseController {
             }
 
             //Check captcha
-            if (captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
+            if (!captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
                 req.setAttribute("VAR_FULLNAME", fullname);
                 req.setAttribute("VAR_EMAIL", email);
                 req.setAttribute("VAR_USERNAME", username);
@@ -124,11 +128,8 @@ public class RegisterController extends BaseController {
                 return;
             }
 
-            //Khởi tạo UserRepo
-            UserRepository repository = new UserRepository();
-
             //Check xem username đã tồn tại hay chưa
-            Optional<UserEntity> existUser = repository.getUserByUsername(username);
+            Optional<UserEntity> existUser = userRepository.getUserByUsername(username);
             if (existUser.isPresent()) {
                 req.setAttribute("VAR_FULLNAME", fullname);
                 req.setAttribute("VAR_EMAIL", email);
@@ -139,7 +140,7 @@ public class RegisterController extends BaseController {
             }
 
             //Check xem email đã tồn tại hay chưa
-            Optional<UserEntity> existEmail = repository.getUserByEmail(username);
+            Optional<UserEntity> existEmail = userRepository.getUserByEmail(email);
             if (existEmail.isPresent()) {
                 req.setAttribute("VAR_FULLNAME", fullname);
                 req.setAttribute("VAR_EMAIL", email);
@@ -155,6 +156,12 @@ public class RegisterController extends BaseController {
 
             //Tạo user entity từ dữ liệu nhận đc
             //Ở đây đang sử dụng builder, tương tự như sử dụng constructor hoặc method set nhưng gọn hơn
+            Optional<RoleEntity> roles = roleRepository.getRoleByName("USER");
+            int roleId = 1;
+            if(roles.isPresent()){
+                roleId = roles.get().getRoleId();
+            }
+
             UserEntity userEntity = UserEntity
                     .builder()
                     .id(UUID.randomUUID())
@@ -172,18 +179,27 @@ public class RegisterController extends BaseController {
                     .rating(0)
                     .build();
 
-            //Kiểu optional là đối tượng trả ra có thể là null hoặc not null
-            UserEntity user = repository.addUser(userEntity).get();
 
+            //Kiểu optional là đối tượng trả ra có thể là null hoặc not null
+            Optional<UserEntity> user = userRepository.addUser(userEntity);
+            if(user.isEmpty()){
+                req.setAttribute("FAILED_MESSAGE", "Có lỗi xảy ra khi tạo tài khoản");
+                dispatcher.forward(req, resp);
+                return;
+            }
+
+            roleRepository.addUserRole(user.get().getId(), roleId);
             //Send mail
             String activeToken = StringGenerator.generateRandomString(50);
+            String activationLink = getBaseURL(req) + "/activate?t=" + activeToken;
             SendMailService.sendMail(email, "TradeSystem", "Active link: " + getBaseURL(req) + "/active?t=" + activeToken);
 
             //Save active token
             TokenActivationRepository tokenActivationRepository = new TokenActivationRepository();
             TokenActivationEntity tokenActivationEntity = TokenActivationEntity.builder()
+                    .id(UUID.randomUUID())
                     .token(activeToken)
-                    .userId(user.getId())
+                    .userId(user.get().getId())
                     .type(ActivationType.ACTIVE_REQUEST)
                     .isUsed(false)
                     .createAt(LocalDateTime.now())

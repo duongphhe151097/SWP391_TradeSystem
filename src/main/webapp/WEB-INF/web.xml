@@ -33,12 +33,13 @@
     </welcome-file-list>
     <session-config>
         <session-timeout>30</session-timeout>
+        <tracking-mode>COOKIE</tracking-mode>
+        <cookie-config>
+            <http-only>true</http-only>
+            <secure>true</secure>
+        </cookie-config>
     </session-config>
 
-    <filter-mapping>
-        <filter-name>AuthenticationFilter</filter-name>
-        <url-pattern />
-    </filter-mapping>
     <filter-mapping>
         <filter-name>AuthorizeFilter</filter-name>
         <url-pattern />

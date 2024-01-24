@@ -14,15 +14,14 @@ import java.util.UUID;
 
 public class TokenActivationRepository {
     private final EntityManager entityManager;
-    private final EntityTransaction transaction;
 
     public TokenActivationRepository() {
         entityManager = DbFactory.getFactory().createEntityManager();
-        transaction = entityManager.getTransaction();
     }
 
-    public void addToken(TokenActivationEntity entity) {
-        try {
+    public void addToken(TokenActivationEntity entity){
+        EntityTransaction transaction = entityManager.getTransaction();
+        try{
             transaction.begin();
             TokenActivationEntity tokenActivation = (TokenActivationEntity) entityManager.merge(entity);
             entityManager.persist(tokenActivation);

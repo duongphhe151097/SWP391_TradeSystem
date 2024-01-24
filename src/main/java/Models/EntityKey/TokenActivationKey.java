@@ -1,6 +1,5 @@
 package Models.EntityKey;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
@@ -10,6 +9,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TokenActivationKey implements Serializable {
+    private UUID id;
+
     private String token;
 
     private UUID userId;
