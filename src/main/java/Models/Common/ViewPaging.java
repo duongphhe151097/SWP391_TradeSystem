@@ -1,8 +1,10 @@
 package Models.Common;
 
+import Models.UserEntity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter

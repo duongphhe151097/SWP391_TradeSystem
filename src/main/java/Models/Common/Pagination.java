@@ -1,5 +1,7 @@
 package Models.Common;
 
+import Utils.Settings.AppSettings;
+import Utils.Validation.NumberValidator;
 import lombok.Getter;
 
 @Getter
