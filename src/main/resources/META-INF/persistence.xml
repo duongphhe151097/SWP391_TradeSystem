@@ -7,6 +7,9 @@
         <class>Models.UserEntity</class>
         <class>Models.UserRoleEntity</class>
         <class>Models.RoleEntity</class>
+        <class>Models.TokenActivationEntity</class>
+        <class>Models.CaptchaEntity</class>
+        <class>Models.SessionManagerEntity</class>
 
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
@@ -15,7 +18,7 @@
             <property name="hibernate.connection.password" value="Wms_Rdb_@2023"/>
             <property name="hibernate.naming.physical-strategy" value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
 
-            <property name="hbm2ddl.auto" value="update"/>
+            <property name="hbm2ddl.auto" value="validate"/>
         </properties>
     </persistence-unit>
 </persistence>

@@ -1,20 +1,22 @@
 package Utils.Generators;
 
+import Utils.Validation.StringValidator;
+
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.MessageDigest;
 
 public class StringGenerator {
     private static final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
     private static final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private static final String DIGITS = "0123456789";
-    private static final String SPECIAL_CHARS = "!@#$%^&*()-_=+[]{}|;:'\",.<>/?";
+//    private static final String SPECIAL_CHARS = "!#$%&'()*+,-./:;<=>?@[\\]_";
 
     public static String generateRandomString(int length) {
         StringBuilder stringBuilder = new StringBuilder();
         SecureRandom random = new SecureRandom();
 
-        String allCharacters = LOWERCASE + UPPERCASE + DIGITS + SPECIAL_CHARS;
+        String allCharacters = LOWERCASE + UPPERCASE + DIGITS;
 
         for (int i = 0; i < length; i++) {
             int randomIndex = random.nextInt(allCharacters.length());
@@ -43,7 +45,32 @@ public class StringGenerator {
         return generatedPassword;
     }
 
-    public static boolean verifyPassword(String originPassword, String hashedPassword, String salt){
+    public static boolean verifyPassword(String originPassword, String hashedPassword, String salt) {
         return hashedPassword.equals(hashingPassword(originPassword, salt));
+    }
+
+    public static String pagingUrlGenerate(String currentPage, String pageSize, String pageRange, String search, String status, String start, String end) {
+        StringBuilder result = new StringBuilder();
+        if (StringValidator.isNullOrBlank(currentPage)) {
+            currentPage = "";
+        }
+        result.append("?current=").append(currentPage);
+
+        if (StringValidator.isNullOrBlank(pageSize)) {
+            pageSize = "";
+        }
+        result.append("&size=").append(pageSize);
+
+        if (StringValidator.isNullOrBlank(pageRange)) {
+            pageRange = "";
+        }
+
+        result.append("&range=").append(pageRange);
+        if (!StringValidator.isNullOrBlank(search)) result.append("&search=").append(search);
+        if (!StringValidator.isNullOrBlank(status)) result.append("&f_status=").append(status);
+        if (StringValidator.isNullOrBlank(start)) result.append("&f_start=").append(start);
+        if (StringValidator.isNullOrBlank(end)) result.append("&f_end=").append(end);
+
+        return result.toString();
     }
 }
