@@ -6,7 +6,7 @@ import Models.TokenActivationEntity;
 import Models.UserEntity;
 import Services.CaptchaService;
 import Services.SendMailService;
-import Utils.Annotations.Authentication;
+import Utils.Annotations.Authorization;
 import Utils.Generators.StringGenerator;
 import Utils.Validation.StringValidator;
 import jakarta.servlet.RequestDispatcher;
@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @WebServlet(name = "ForgotController", urlPatterns = "/forgot")
-@Authentication(isPublic = true)
+@Authorization(role = "", isPublic = true)
 public class ForgotController extends BaseController {
     private CaptchaService captchaService;
 
@@ -84,7 +84,7 @@ public class ForgotController extends BaseController {
                 // Lưu reset token vào DB
                 TokenActivationRepository tokenRepository = new TokenActivationRepository();
                 TokenActivationEntity tokenEntity = TokenActivationEntity.builder()
-                        .Id(UUID.randomUUID())
+                        .id(UUID.randomUUID())
                         .token(resetToken)
                         .userId(user.getId())
                         .type((short) 2)

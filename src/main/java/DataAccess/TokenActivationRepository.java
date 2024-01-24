@@ -32,6 +32,8 @@ public class TokenActivationRepository {
     }
 
     public void markTokenAsUsed(String token) {
+        EntityTransaction transaction = entityManager.getTransaction();
+
         try {
             transaction.begin();
             TokenActivationEntity tokenEntity = entityManager.find(TokenActivationEntity.class, token);

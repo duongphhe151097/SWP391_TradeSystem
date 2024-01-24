@@ -103,6 +103,8 @@ public class UserRepository {
         return false;
     }
     public void updateUserPassword(UUID userId, String newPassword, String salt) {
+        EntityTransaction transaction = entityManager.getTransaction();
+
         try {
             transaction.begin();
 
@@ -128,9 +130,6 @@ public class UserRepository {
         }
     }
 
-
-    private UserEntity getUserFromSession(HttpServletRequest request) {
-        return (UserEntity) request.getSession().getAttribute("user");
 
     public long countAll(String search, String status, LocalDateTime startDate, LocalDateTime endDate) {
         StringBuilder hql = new StringBuilder();

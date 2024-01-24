@@ -20,70 +20,52 @@
                 </div>
             </div>
 
-            <c:choose>
-                <c:when test="${empty resetToken}">
-                    <form action="change" method="post">
-                        <div class="form-group">
-                            <label for="newPasswordInput">Mật khẩu mới</label>
-                            <input type="password" class="form-control" id="newPasswordInput" aria-describedby="newPasswordHelp"
-                                   placeholder="Nhập mật khẩu mới (ít nhất 8 kí tự)" name="newpassword">
-                            <c:if test="${requestScope.NEWPASSWORD_ERROR != null}">
-                                <small id="newPasswordHelp" class="form-text text-muted error-message">${requestScope.NEWPASSWORD_ERROR}</small>
-                            </c:if>
+            <form action="${pageContext.request.contextPath}/change" method="post">
+                <div class="form-group">
+                    <label for="oldPasswordInput">Mật khẩu cũ</label>
+                    <input type="password" class="form-control" id="oldPasswordInput" placeholder="Nhập mật khẩu cũ" name="oldPassword" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="newPasswordInput">Mật khẩu mới</label>
+                    <input type="password" class="form-control" id="newPasswordInput" placeholder="Nhập mật khẩu mới (ít nhất 8 kí tự)" name="newPassword" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="reNewPasswordInput">Nhập lại mật khẩu mới</label>
+                    <input type="password" class="form-control" id="reNewPasswordInput" placeholder="Nhập lại mật khẩu mới" name="reNewPassword" required>
+                </div>
+
+                <c:if test="${not empty resultMessage}">
+                    <div class="form-group">
+                        <p class="${resultMessage.startsWith('Thay đổi mật khẩu thành công!') ? 'success-message' : 'error-message'}">${resultMessage}</p>
+                    </div>
+                </c:if>
+                <c:if test="${not empty resultMessage}">
+                    <div class="alert alert-success" role="alert">
+                            ${resultMessage}
+                    </div>
+                </c:if>
+
+                <c:if test="${not empty errorMessage}">
+                    <div class="alert alert-danger" role="alert">
+                            ${errorMessage}
+                    </div>
+                </c:if>
+
+                <input type="submit" class="btn btn-primary" value="Đổi Mật Khẩu">
+
+                <div class="link mt-3">
+                    <div class="form-row">
+                        <div class="col d-flex justify-content-start ml-5">
+                            <a href="${pageContext.request.contextPath}/login">Quay lại Đăng nhập</a>
                         </div>
-
-                        <div class="form-group">
-                            <label for="reNewPasswordInput">Nhập lại mật khẩu mới</label>
-                            <input type="password" class="form-control" id="reNewPasswordInput" aria-describedby="reNewPasswordHelp"
-                                   placeholder="Nhập lại mật khẩu mới" name="renewpassword">
-                            <c:if test="${requestScope.RENEWPASSWORD_ERROR != null}">
-                                <small id="reNewPasswordHelp" class="form-text text-muted error-message">${requestScope.RENEWPASSWORD_ERROR}</small>
-                            </c:if>
+                        <div class="col d-flex justify-content-start ml-5">
+                            <a href="${pageContext.request.contextPath}/register">Chưa có tài khoản? Đăng kí</a>
                         </div>
-
-                        <c:if test="${requestScope.SUCCESS_MESSAGE != null || requestScope.FAILED_MESSAGE != null}">
-                            <div class="form-group">
-                                <c:if test="${requestScope.FAILED_MESSAGE != null}">
-                                    <p class="error-message">${requestScope.FAILED_MESSAGE}</p>
-                                </c:if>
-                            </div>
-                        </c:if>
-
-                        <input type="hidden" name="resetToken" value="<c:out value="${param.t}"/>">
-
-                        <div class="form-group mt-5">
-                            <div class="d-flex justify-content-center">
-                                <button type="submit" class="btn btn-primary">Đổi Mật Khẩu</button>
-                            </div>
-
-                            <div class="link mt-3">
-                                <div class="form-row">
-                                    <div class="col d-flex justify-content-start ml-5">
-                                        <a href="/tradesys_war_exploded/login">Quay lại Đăng nhập</a>
-                                    </div>
-                                    <div class="col d-flex justify-content-start ml-5">
-                                        <a href="/tradesys_war_exploded/register">Chưa có tài khoản? Đăng kí</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </c:when>
-
-                <c:when test="${not empty resetToken}">
-                    <form action="change" method="post">
-                        <div class="form-group">
-                            <label for="newpassword">Mật khẩu mới</label>
-                            <input type="password" class="form-control" id="newpassword" placeholder="Nhập mật khẩu mới" name="newpassword">
-                            <!-- Add other input fields as needed -->
-                        </div>
-
-                        <!-- Add other form elements as needed -->
-
-                        <button type="submit" class="btn btn-primary">Đổi Mật Khẩu</button>
-                    </form>
-                </c:when>
-            </c:choose>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>

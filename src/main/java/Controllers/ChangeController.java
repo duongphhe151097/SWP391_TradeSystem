@@ -1,67 +1,88 @@
 package Controllers;
 
-import DataAccess.TokenActivationRepository;
 import DataAccess.UserRepository;
-import Models.TokenActivationEntity;
 import Models.UserEntity;
+import Utils.Annotations.Authorization;
+import Utils.Constants.UserConstant;
 import Utils.Generators.StringGenerator;
 import Utils.Validation.StringValidator;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
-@WebServlet(name = "ChangeController", urlPatterns = "/change")
-public class ChangeController extends BaseController {
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+
+
+
+@WebServlet(name = "ChangeController", urlPatterns = "/change")
+@Authorization(role = "", isPublic = false)
+public class ChangeController extends BaseController {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/pages/change.jsp").forward(req, resp);
     }
+
     @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession();
+        UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
 
-        protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            String userIdStr = request.getParameter("userId");
-            String oldPassword = request.getParameter("oldPassword");
-            String newPassword = request.getParameter("newPassword");
-            String reNewPassword = request.getParameter("reNewPassword");
+        if (userId == null) {
+            // Người dùng chưa đăng nhập, có thể chuyển hướng hoặc xử lý tùy vào yêu cầu
+            resp.sendRedirect(req.getContextPath() + "/login.jsp");
+            return;
+        }
 
-            try {
-                boolean isUsername = StringValidator.isValidUsername(oldPassword);
-                boolean isPassword = StringValidator.isValidPassword(newPassword);
-//                boolean isValidCaptcha = captcha != null && !captcha.isBlank();
-//                boolean isValidHiddenCaptcha = hiddenCaptchaId != null && !hiddenCaptchaId.isBlank();
-                UUID userId = UUID.fromString(userIdStr);
+        String oldPassword = req.getParameter("oldPassword");
+        String newPassword = req.getParameter("newPassword");
+        String reNewPassword = req.getParameter("reNewPassword");
 
-                UserRepository userRepository = new UserRepository();
-                Optional<UserEntity> userOptional = userRepository.getUserById(userId);
+        try {
+            UserRepository userRepository = new UserRepository();
+            Optional<UserEntity> userOptional = userRepository.getUserById(userId);
 
-                if (userOptional.isPresent()) {
-                    UserEntity user = userOptional.get();
-                    String storedPassword = user.getPassword();
+            if (userOptional.isPresent()) {
+                UserEntity user = userOptional.get();
+                String storedPassword = user.getPassword();
+                String storedSalt = user.getSalt();
 
-                    // Kiểm tra xem mật khẩu cũ có khớp không
-                    if (storedPassword.equals(oldPassword)) {
+                // Giải mã mật khẩu cũ
+                String decryptedOldPassword = StringGenerator.hashingPassword(oldPassword, storedSalt);
 
-                        request.setAttribute("resultMessage", "Thay đổi mật khẩu thành công!");
+                // Kiểm tra xem mật khẩu cũ có khớp không
+                if (storedPassword.equals(decryptedOldPassword)) {
+                    // Kiểm tra tính hợp lệ của mật khẩu mới và xác nhận mật khẩu mới
+                    boolean isValidPassword = StringValidator.isValidPassword(newPassword);
+                    boolean isRePasswordMatch = newPassword.equals(reNewPassword);
+
+                    if (isValidPassword && isRePasswordMatch) {
+                        // Cập nhật mật khẩu mới
+                        String newSalt = StringGenerator.generateRandomString(50);
+                        String hashedNewPassword = StringGenerator.hashingPassword(newPassword, newSalt);
+
+                        userRepository.updateUserPassword(userId, hashedNewPassword, newSalt);
+
+                        req.setAttribute("resultMessage", "Thay đổi mật khẩu thành công!");
                     } else {
-                        request.setAttribute("resultMessage", "Mật khẩu cũ không đúng!");
+                        req.setAttribute("resultMessage", "Mật khẩu mới không hợp lệ hoặc không khớp!");
                     }
                 } else {
-                    request.setAttribute("resultMessage", "Người dùng không tồn tại!");
+                    req.setAttribute("resultMessage", "Mật khẩu cũ không đúng!");
                 }
-            } catch (IllegalArgumentException e) {
-                request.setAttribute("resultMessage", "ID người dùng không hợp lệ!");
+            } else {
+                req.setAttribute("resultMessage", "Người dùng không tồn tại!");
             }
-
-
-//            RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/result.jsp");
-//            dispatcher.forward(request, response);
+        } catch (IllegalArgumentException e) {
+            req.setAttribute("resultMessage", "ID người dùng không hợp lệ!");
         }
+
+        // Forward đến trang change.jsp để hiển thị thông báo kết quả
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/change.jsp");
+        dispatcher.forward(req, resp);
     }
+}

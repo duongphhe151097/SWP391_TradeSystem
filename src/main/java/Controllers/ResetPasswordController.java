@@ -3,6 +3,7 @@ package Controllers;
 import DataAccess.TokenActivationRepository;
 import DataAccess.UserRepository;
 import Models.TokenActivationEntity;
+import Utils.Annotations.Authorization;
 import Utils.Generators.StringGenerator;
 import Utils.Validation.StringValidator;
 import jakarta.servlet.ServletException;
@@ -14,6 +15,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 @WebServlet(name = "ResetPasswordController", urlPatterns = "/resetpassword")
+@Authorization(role = "", isPublic = true)
 public class ResetPasswordController extends BaseController{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
