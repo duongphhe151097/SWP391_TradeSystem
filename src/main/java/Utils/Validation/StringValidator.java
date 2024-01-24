@@ -1,5 +1,9 @@
 package Utils.Validation;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -68,5 +72,32 @@ public class StringValidator {
 
     public static boolean isValidFullname(String input) {
         return input != null && !input.isBlank() && input.length() <= 500;
+    }
+
+    public static boolean isValidUserStatus(String input) {
+        if (isNullOrBlank(input)) {
+            return false;
+        }
+        String[] validStatus = new String[]{"ALL", "0", "1", "2", "3"};
+        return Arrays.asList(validStatus).contains(input);
+    }
+
+    public static boolean isValidDateFormat(String input) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormat.setLenient(false);
+
+        try {
+            // Try to parse the input string
+            Date parsedDate = dateFormat.parse(input);
+            // If parsing is successful, the input string matches the pattern
+            return true;
+        } catch (ParseException e) {
+            // Parsing failed, so the input string does not match the pattern
+            return false;
+        }
+    }
+
+    public static boolean isNullOrBlank(String input){
+        return input == null || input.isBlank();
     }
 }

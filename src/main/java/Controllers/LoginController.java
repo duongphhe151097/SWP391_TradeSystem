@@ -109,6 +109,9 @@ public class LoginController extends BaseController {
 
             HttpSession session = req.getSession();
             session.setAttribute(UserConstant.SESSION_USERID, existUser.get().getId());
+            session.setAttribute(UserConstant.SESSION_USERNAME, existUser.get().getUsername());
+            session.setAttribute(UserConstant.SESSION_USEREMAIL, existUser.get().getEmail());
+            session.setAttribute(UserConstant.SESSION_USERFULLNAME, existUser.get().getFullName());
             SessionManagerRepository sessionManagerRepository = new SessionManagerRepository();
 
             Optional<SessionManagerEntity> existSession = sessionManagerRepository.getSessionByUserId(existUser.get().getId());

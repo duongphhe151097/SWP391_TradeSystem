@@ -1,8 +1,8 @@
 package DataAccess;
 
 import Models.SessionManagerEntity;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -18,7 +18,7 @@ public class SessionManagerRepository {
         try {
             SessionManagerEntity entity = entityManager
                     .createQuery("SELECT s FROM session s " +
-                            "WHERE s.userId = :userId ", SessionManagerEntity.class)
+                            "WHERE s.userId = :userId", SessionManagerEntity.class)
                     .setParameter("userId", userId)
                     .getSingleResult();
 
