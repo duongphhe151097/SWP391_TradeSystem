@@ -26,38 +26,39 @@ public class TokenController extends BaseController {
         String token = request.getParameter("token");
 
         if (token != null && !token.isEmpty()) {
-            TokenActivationRepository tokenRepository = new TokenActivationRepository();
-            Optional<TokenActivationEntity> tokenEntityOptional = tokenRepository.getTokenByToken(token);
+            try {
+                TokenActivationRepository tokenRepository = new TokenActivationRepository();
+                Optional<TokenActivationEntity> tokenEntityOptional = tokenRepository.getTokenByToken(token);
 
-            if (tokenEntityOptional.isPresent()) {
-                TokenActivationEntity tokenEntity = tokenEntityOptional.get();
+                if (tokenEntityOptional.isPresent()) {
+                    TokenActivationEntity tokenEntity = tokenEntityOptional.get();
 
-                if (!tokenEntity.isUsed() && tokenEntity.getExpriedAt().isAfter(LocalDateTime.now())) {
-                    // Activate the user (change status from 0 to 1)
-                    UserRepository userRepository = new UserRepository();
-                    Optional<UserEntity> userEntityOptional = userRepository.getUserById(tokenEntity.getUserId());
+                    if (!tokenEntity.isUsed() && tokenEntity.getExpriedAt().isAfter(LocalDateTime.now())) {
+                        // Activate the user (change status from 0 to 1)
+                        UserRepository userRepository = new UserRepository();
+                        Optional<UserEntity> userEntityOptional = userRepository.getUserById(tokenEntity.getUserId());
 
-                    if (userEntityOptional.isPresent()) {
-                        UserEntity userEntity = userEntityOptional.get();
-                        userEntity.setStatus(ActivationType.ACTIVE_REQUEST); // Assuming 1 represents active status
+                        if (userEntityOptional.isPresent()) {
+                            UserEntity userEntity = userEntityOptional.get();
 
-                        String id = request.getParameter("id");
-                        // Update user status
-                        UUID uid = UUID.fromString(id);
-                        userRepository.updateUserStatus(uid, (short) 1);
+                            // Update user status
+                            userRepository.updateUserStatus(userEntity.getId(), ActivationType.ACTIVE_REQUEST);
 
-                        // Mark the token as used
-                        tokenEntity.setUsed(true);
-                        tokenRepository.updateToken(tokenEntity);
+                            // Mark the token as used
+                            tokenEntity.setUsed(true);
+                            tokenRepository.updateToken(tokenEntity);
 
-                        // Redirect to a success page
-                        response.sendRedirect(request.getContextPath() + "/login.jsp");
-                        return;
+                            // Redirect to a success page
+                            response.sendRedirect(request.getContextPath() + "/login.jsp");
+                            return;
+                        }
                     }
                 }
+            } catch (Exception e) {
+                // Handle the exception more gracefully, log it, and redirect to an error page
+                e.printStackTrace();
             }
         }
-
         // Redirect to an error page if activation fails
         response.sendRedirect(request.getContextPath() + "/error.jsp");
     }
@@ -66,7 +67,4 @@ public class TokenController extends BaseController {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
     }
-
-
-
 }
