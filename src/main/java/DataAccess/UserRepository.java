@@ -115,9 +115,9 @@ public class UserRepository {
                 return;
             }
 
-            String hashedPassword = StringGenerator.hashingPassword(newPassword, salt);
 
-            user.setPassword(hashedPassword);
+
+            user.setPassword(newPassword);
             user.setSalt(salt);
             entityManager.merge(user);
 

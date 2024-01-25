@@ -5,8 +5,8 @@
   Time: 1:46 AM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="vi">
 <head>
     <jsp:include page="../common/common-css.jsp"/>
@@ -23,11 +23,11 @@
                 </div>
 
                 <div class="logo">
-                    <img src="${pageContext.request.contextPath}/img/logo.png" alt="Trade System Logo" class="img-fluid logo">
+                    <img src="<c:url value="/img/logo.png"/>" alt="Trade System Logo" class="img-fluid logo">
                 </div>
 
             </div>
-            <form action="forgot" method="post">
+            <form action="<c:url value="/forgot"/>" method="post">
 
                 <div class="form-group">
                     <label for="emailInput">Email</label>
@@ -41,6 +41,7 @@
                 <div class="form-group">
                     <div class="form-row">
                         <div class="col mt-4" id="captcha">
+                            <!-- Đây là nơi để hiển thị ảnh Captcha -->
                         </div>
                         <div class="col">
                             <label for="captchaInput">Mã captcha</label>
@@ -86,4 +87,5 @@
 </div>
 </body>
 <jsp:include page="../common/common-js.jsp"/>
+<script src="<c:url value="/js/captcha.js"/>"></script>
 </html>
