@@ -7,6 +7,7 @@ import Utils.Annotations.Authorization;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -53,22 +54,16 @@ public class TokenController extends BaseController {
         response.sendRedirect(request.getContextPath() + "/error.jsp");
     }
 
-    private void updateUserStatus(String token) {
-        TokenActivationEntity activationEntity = retrieveActivationEntity(token);
+    // Implement methods to get and update user details
+    private UserEntity getUserById(UUID userId) {
+        // Implementation depends on your data access logic
+        // You may use a UserRepository to retrieve the user by ID
+        return null;
+    }
 
-        if (activationEntity != null && !activationEntity.isUsed()) {
-            // Activate the user (set status to 1)
-            UserEntity user = retrieveUserById(activationEntity.getUserId());
-            if (user != null) {
-                user.setStatus(ActivationType.ACTIVE_REQUEST);
-                // Save the updated user entity
-                saveUser(user);
-
-                // Mark the activation token as used
-                activationEntity.setUsed(true);
-                saveActivationEntity(activationEntity);
-            }
-        }
+    private void updateUser(UserEntity userEntity) {
+        // Implementation depends on your data access logic
+        // You may use a UserRepository to update the user details
     }
 
     @Override
