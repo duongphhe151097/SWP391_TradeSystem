@@ -96,7 +96,7 @@ public class ForgotController extends BaseController {
                 tokenRepository.addToken(tokenEntity);
 
                 String resetLink = getBaseURL(req) + "/resetpassword?t=" + resetToken;
-                SendMailService.sendMail(email, "TradeSystem - Đặt lại mật khẩu", "Nhấn vào liên kết sau để đặt lại mật khẩu: " + resetLink);
+                SendMailService.sendMail(email, "TradeSystem - Request to reset password", "Nhấn vào liên kết sau để đặt lại mật khẩu: " + resetLink);
 
                 req.setAttribute("SUCCESS_MESSAGE", "Đã gửi hướng dẫn đặt lại mật khẩu vào email của bạn!");
                 dispatcher.forward(req, resp);

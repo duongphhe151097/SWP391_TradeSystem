@@ -2,6 +2,7 @@ package Controllers;
 
 import DataAccess.UserRepository;
 import Models.UserEntity;
+import Services.CaptchaService;
 import Utils.Annotations.Authorization;
 import Utils.Constants.UserConstant;
 import Utils.Generators.StringGenerator;
@@ -23,6 +24,11 @@ import java.util.UUID;
 @WebServlet(name = "ChangeController", urlPatterns = "/change")
 @Authorization(role = "", isPublic = false)
 public class ChangeController extends BaseController {
+    private CaptchaService captchaService;
+
+    public void init() throws ServletException {
+        this.captchaService = new CaptchaService();
+    }
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/pages/change.jsp").forward(req, resp);
     }
@@ -41,6 +47,9 @@ public class ChangeController extends BaseController {
         String oldPassword = req.getParameter("oldPassword");
         String newPassword = req.getParameter("newPassword");
         String reNewPassword = req.getParameter("reNewPassword");
+//        String captcha = req.getParameter("captcha");
+//        String hiddenCaptchaId = req.getParameter("hidden_id");
+//        RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/change.jsp");
 
         try {
             UserRepository userRepository = new UserRepository();
@@ -59,6 +68,8 @@ public class ChangeController extends BaseController {
                     // Kiểm tra tính hợp lệ của mật khẩu mới và xác nhận mật khẩu mới
                     boolean isValidPassword = StringValidator.isValidPassword(newPassword);
                     boolean isRePasswordMatch = newPassword.equals(reNewPassword);
+//                    boolean isValidCaptcha = captcha != null && !captcha.isBlank();
+//                    boolean isValidHiddenCaptcha = hiddenCaptchaId != null && !hiddenCaptchaId.isBlank();
 
                     if (isValidPassword && isRePasswordMatch) {
                         // Cập nhật mật khẩu mới
@@ -68,7 +79,15 @@ public class ChangeController extends BaseController {
                         userRepository.updateUserPassword(userId, hashedNewPassword, newSalt);
 
                         req.setAttribute("resultMessage", "Thay đổi mật khẩu thành công!");
-                    } else {
+                    }
+//                        if (captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
+//
+//                            req.setAttribute("CAPTCHA_ERROR", "Captcha bạn nhập không đúng!");
+//                            dispatcher.forward(req, resp);
+//                            return;
+
+//                    }
+                else {
                         req.setAttribute("resultMessage", "Mật khẩu mới không hợp lệ hoặc không khớp!");
                     }
                 } else {
@@ -77,7 +96,7 @@ public class ChangeController extends BaseController {
             } else {
                 req.setAttribute("resultMessage", "Người dùng không tồn tại!");
             }
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             req.setAttribute("resultMessage", "ID người dùng không hợp lệ!");
         }
 
