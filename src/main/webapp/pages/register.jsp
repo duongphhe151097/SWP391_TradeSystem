@@ -105,14 +105,6 @@
                         <button type="submit" class="btn btn-primary">Đăng kí</button>
                     </div>
 
-                    <div class="link mt-3">
-                        <div class="form-row">
-                            <div class="col d-flex justify-content-end">
-                                <a href="<c:url value="/login"/> ">Đã có tài khoản? Đăng nhập</a>
-                            </div>
-                            <div class="col d-flex justify-content-start ml-5">
-                                <a href="<c:url value="/forgot"/> ">Quên mật khẩu?</a>
-                            </div>
                         </div>
                     </div>
                 </div>

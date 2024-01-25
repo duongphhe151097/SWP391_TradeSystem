@@ -10,16 +10,16 @@
 <div class="vh-100 d-flex justify-content-center align-items-center">
     <div class="col-md-5 p-5 shadow rounded-3">
         <div class="reset-password">
-            <div class="mb-2 d-flex justify-content-between align-content-center">
-                <div class="title d-flex align-content-center">
+            <div class="mb-2 d-flex justify-content-between align-items-center">
+                <div class="title">
                     <h3>Đặt lại mật khẩu</h3>
                 </div>
 
                 <div class="logo">
                     <img src="${pageContext.request.contextPath}/img/logo.png" alt="Trade System Logo" class="img-fluid logo">
                 </div>
-
             </div>
+
             <form action="<c:url value='/resetpassword'/>" method="post">
                 <input type="hidden" name="resetToken" value="${requestScope.resetToken}">
                 <div class="form-group">
@@ -51,7 +51,7 @@
 
                 <div class="form-group mt-5">
                     <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-primary">Đặt lại mật khẩu</button>
+                        <input type="submit" class="btn btn-primary" value="Đặt lại mật khẩu">
                     </div>
 
                     <div class="link mt-3">
