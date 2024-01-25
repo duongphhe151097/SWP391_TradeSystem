@@ -70,11 +70,11 @@ public class RegisterController extends BaseController {
 
             //Nếu không thỏa mãn điều kiện thì set lỗi để gửi về frontend
             if (!isValidFullname) {
-                req.setAttribute("FULLNAME_ERROR", "Tên không hợp lệ");
+                req.setAttribute("FULLNAME_ERROR", "Tên không hợp lệ!");
             }
 
             if (!isValidUsername) {
-                req.setAttribute("USERNAME_ERROR", "Tên tài khoản không hợp lệ");
+                req.setAttribute("USERNAME_ERROR", "Tên tài khoản không hợp lệ!");
             }
 
             if (!isValidEmail) {
@@ -82,7 +82,7 @@ public class RegisterController extends BaseController {
             }
 
             if (!isValidPassword) {
-                req.setAttribute("PASSWORD_ERROR", "Password phải chứa ít nhất 8 kí tự!");
+                req.setAttribute("PASSWORD_ERROR", "Password phải chứa ít nhất 8 - 32 kí tự, bao gồm chữ hoa, chữ thường và kí tự đặc biệt!");
             }
 
             if (!isRePasswordMatch) {
@@ -132,7 +132,7 @@ public class RegisterController extends BaseController {
                 req.setAttribute("VAR_FULLNAME", fullname);
                 req.setAttribute("VAR_EMAIL", email);
                 req.setAttribute("VAR_USERNAME", username);
-                req.setAttribute("USERNAME_ERROR", "Tên tài khoản đã tồn tại");
+                req.setAttribute("USERNAME_ERROR", "Tên tài khoản đã tồn tại!");
                 dispatcher.forward(req, resp);
                 return;
             }
@@ -143,7 +143,7 @@ public class RegisterController extends BaseController {
                 req.setAttribute("VAR_FULLNAME", fullname);
                 req.setAttribute("VAR_EMAIL", email);
                 req.setAttribute("VAR_USERNAME", username);
-                req.setAttribute("EMAIL_ERROR", "Email đã tồn tại");
+                req.setAttribute("EMAIL_ERROR", "Email đã tồn tại!");
                 dispatcher.forward(req, resp);
                 return;
             }
@@ -181,7 +181,7 @@ public class RegisterController extends BaseController {
             //Kiểu optional là đối tượng trả ra có thể là null hoặc not null
             Optional<UserEntity> user = userRepository.addUser(userEntity);
             if(user.isEmpty()){
-                req.setAttribute("FAILED_MESSAGE", "Có lỗi xảy ra khi tạo tài khoản");
+                req.setAttribute("FAILED_MESSAGE", "Có lỗi xảy ra khi tạo tài khoản!");
                 dispatcher.forward(req, resp);
                 return;
             }
@@ -209,7 +209,7 @@ public class RegisterController extends BaseController {
             dispatcher.forward(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
-            req.setAttribute("FAILED_MESSAGE", "Có lỗi xảy ra khi tạo tài khoản");
+            req.setAttribute("FAILED_MESSAGE", "Có lỗi xảy ra khi tạo tài khoản!");
             dispatcher.forward(req, resp);
         }
     }
