@@ -3,6 +3,8 @@ package DataAccess;
 import Models.Common.Pagination;
 import Models.Common.ViewPaging;
 import Models.UserEntity;
+import Utils.Generators.StringGenerator;
+
 import Utils.Validation.StringValidator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -100,6 +102,34 @@ public class UserRepository {
         }
         return false;
     }
+    public void updateUserPassword(UUID userId, String newPassword, String salt) {
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+
+            UserEntity user = entityManager.find(UserEntity.class, userId);
+
+            if (user == null) {
+                System.out.println("User not found!");
+                return;
+            }
+
+            String hashedPassword = StringGenerator.hashingPassword(newPassword, salt);
+
+            user.setPassword(hashedPassword);
+            user.setSalt(salt);
+            entityManager.merge(user);
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+
 
     public long countAll(String search, String status, LocalDateTime startDate, LocalDateTime endDate) {
         StringBuilder hql = new StringBuilder();

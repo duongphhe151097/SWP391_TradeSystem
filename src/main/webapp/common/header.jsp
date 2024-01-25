@@ -66,6 +66,16 @@
                                         </span>
                                     </span>
                                 </a>
+                                <a href="<c:url value="/change"/>" class="dropdown-item">
+                    <span class="d-flex align-items-center">
+                        <span class="material-symbols-outlined">
+                            vpn_key
+                        </span>
+                        <span>
+                            Đổi mật khẩu
+                        </span>
+                    </span>
+                                </a>
                                 <a href="<c:url value="/logout"/> " class="dropdown-item">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-outlined">
