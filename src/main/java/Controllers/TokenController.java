@@ -59,12 +59,13 @@ public class TokenController extends BaseController {
                     }
                 }
             } catch (Exception e) {
-
+                request.setAttribute("errorMessage", "Active tai khoan that bai!");
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                dispatcher.forward(request, response);
                 e.printStackTrace();
             }
         }
-        // Redirect to an error page if activation fails
-        response.sendRedirect(request.getContextPath() + "/error.jsp");
+
     }
 
     @Override
