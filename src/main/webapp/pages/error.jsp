@@ -1,19 +1,13 @@
-<%-- 
-    Document   : error.jsp
-    Created on : Jan 23, 2024, 6:28:28 PM
-    Author     : toden
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Activation Error</title>
     </head>
     <body>
-        <h1>There was something wrong happened</h1>
-        <h3>Status: ${error.getStatus()}</h3>
-        <h3>Error: ${error.getMesg()==null?"unknow":error.getMesg()}</h3>>
+        <h1>Error Activating Account</h1>
+        <p>An error occurred while activating your account. Please try again later or contact support.</p>
+        <p>Error Message: ${requestScope.errorMessage}</p>
     </body>
 </html>
