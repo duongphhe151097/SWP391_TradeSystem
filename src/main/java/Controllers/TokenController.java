@@ -11,12 +11,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 import Utils.Constants.ActivationType;
+import Utils.Constants.UserConstant;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(name = "TokenController", urlPatterns = {"/TokenController"})
+@WebServlet(name = "TokenController", urlPatterns = {"/active"})
 @Authorization(role = "", isPublic = true)
 public class TokenController extends BaseController {
 
@@ -42,20 +44,22 @@ public class TokenController extends BaseController {
                             UserEntity userEntity = userEntityOptional.get();
 
                             // Update user status
-                            userRepository.updateUserStatus(userEntity.getId(), ActivationType.ACTIVE_REQUEST);
+                            userRepository.updateUserStatus(userEntity.getId(), UserConstant.ACTIVE);
 
                             // Mark the token as used
                             tokenEntity.setUsed(true);
                             tokenRepository.updateToken(tokenEntity);
 
+                            request.setAttribute("activationMessage", "Active tai khoan thanh cong!");
                             // Redirect to a success page
-                            response.sendRedirect(request.getContextPath() + "/login.jsp");
+                            RequestDispatcher dispatcher = request.getRequestDispatcher("/ActiveAccount.jsp");
+                            dispatcher.forward(request, response);
                             return;
                         }
                     }
                 }
             } catch (Exception e) {
-                // Handle the exception more gracefully, log it, and redirect to an error page
+
                 e.printStackTrace();
             }
         }
