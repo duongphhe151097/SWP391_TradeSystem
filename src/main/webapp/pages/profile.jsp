@@ -19,40 +19,36 @@
         <div class="profile">
             <div class="mb-2 d-flex justify-content-between align-content-center">
                 <div class="title d-flex align-content-center">
-                    <a href="home" class="btn btn-danger">Close</a>
                     <div class="container mt-5">
                         <h3>Thông tin người dùng</h3>
                 </div>
-                <div class="logo">
-                    <img src="<c:url value="/img/logo.png"/>" alt="Trade System Logo" class="img-fluid logo">
-                </div>
             </div>
             <form action="<c:url value="/profile"/>" method="post">
-                <div class="mb-3">
+                <div class="form-group">
                     <label for="id">Mã số tài khoản:</label>
                     <input type="text" class="form-control" id="id" name="id" value="${user.id}" readonly>
                 </div>
 
-                <div class="mb-3">
+                <div class="form-group">
                     <label for="username">Tên tài khoản:</label>
                     <input type="text" class="form-control" id="username" placeholder="Nhập tên tài khoản" name="username" value="${user.username}" autocomplete="off">
                 </div>
 
-                <div class="mb-3">
+                <div class="form-group">
                     <label for="fullname">Họ và tên:</label>
                     <input type="text" class="form-control" id="fullname" placeholder="Nhập họ và tên" name="fullname" value="${user.fullName}" autocomplete="off">
                 </div>
 
-                <div class="mb-3">
+                <div class="form-group">
                     <label for="email">Email:</label>
                     <input type="text" class="form-control" id="email" name="email" value="${user.email}" readonly>
                 </div>
-                <div class="mb-3">
+                <div class="form-group">
                     <label for="phone_number">Số điện thoại:</label>
                     <input type="text" class="form-control" id="phone_number" placeholder="Nhập số điện thoại" name="phone_number" value="${user.phoneNumber}" autocomplete="off">
                 </div>
 
-                <div class="mb-3">
+                <div class="form-group">
                     <label for="balance">Số dư tài khoản:</label>
                     <input type="text" class="form-control" id="balance" name="balance" value="${user.balance}" readonly>
                 </div>
@@ -68,9 +64,11 @@
                         </div>
                     </div>
                 </div>
-                    <button type="submit" class="btn btn-primary" onclick="updateProfile()">Update</button>
-                <button type="button" class="btn btn-secondary" onclick="window.location.href='change'">Change password</button>
-
+                <div class="form-group mt-5">
+                    <div class="d-flex justify-content-center">
+                <button type="submit" class="btn btn-primary" onclick="updateProfile()">Update</button>
+                    </div>
+                </div>
                 </form>
             </div>
         </div>
