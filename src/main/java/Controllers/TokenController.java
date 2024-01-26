@@ -5,6 +5,7 @@ import DataAccess.UserRepository;
 import Models.TokenActivationEntity;
 import Models.UserEntity;
 import Utils.Annotations.Authorization;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -25,47 +26,56 @@ public class TokenController extends BaseController {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String token = request.getParameter("token");
+        String token = request.getParameter("t");
 
-        if (token != null && !token.isEmpty()) {
-            try {
-                TokenActivationRepository tokenRepository = new TokenActivationRepository();
-                Optional<TokenActivationEntity> tokenEntityOptional = tokenRepository.getTokenByToken(token);
-
-                if (tokenEntityOptional.isPresent()) {
-                    TokenActivationEntity tokenEntity = tokenEntityOptional.get();
-
-                    if (!tokenEntity.isUsed() && tokenEntity.getExpriedAt().isAfter(LocalDateTime.now())) {
-                        // Activate the user (change status from 0 to 1)
-                        UserRepository userRepository = new UserRepository();
-                        Optional<UserEntity> userEntityOptional = userRepository.getUserById(tokenEntity.getUserId());
-
-                        if (userEntityOptional.isPresent()) {
-                            UserEntity userEntity = userEntityOptional.get();
-
-                            // Update user status
-                            userRepository.updateUserStatus(userEntity.getId(), UserConstant.ACTIVE);
-
-                            // Mark the token as used
-                            tokenEntity.setUsed(true);
-                            tokenRepository.updateToken(tokenEntity);
-
-                            request.setAttribute("activationMessage", "Active tai khoan thanh cong!");
-                            // Redirect to a success page
-                            RequestDispatcher dispatcher = request.getRequestDispatcher("/ActiveAccount.jsp");
-                            dispatcher.forward(request, response);
-                            return;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                request.setAttribute("errorMessage", "Active tai khoan that bai!");
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/active_account.jsp");
+        try {
+            if (token == null && token.isEmpty()) {
+                request.setAttribute("FAILED_MESSAGE", "Mã kích hoạt không hợp lệ!");
                 dispatcher.forward(request, response);
-                e.printStackTrace();
+                return;
             }
-        }
 
+            TokenActivationRepository tokenRepository = new TokenActivationRepository();
+            Optional<TokenActivationEntity> tokenEntityOptional = tokenRepository.getTokenByToken(token);
+
+            if (tokenEntityOptional.isEmpty()) {
+                request.setAttribute("FAILED_MESSAGE", "Mã kích hoạt không hợp lệ!");
+                dispatcher.forward(request, response);
+                return;
+            }
+            TokenActivationEntity tokenEntity = tokenEntityOptional.get();
+
+            if (!tokenEntity.isUsed() && tokenEntity.getExpriedAt().isAfter(LocalDateTime.now())) {
+                // Activate the user (change status from 0 to 1)
+                UserRepository userRepository = new UserRepository();
+                Optional<UserEntity> userEntityOptional = userRepository.getUserById(tokenEntity.getUserId());
+
+                if (userEntityOptional.isPresent()) {
+                    UserEntity userEntity = userEntityOptional.get();
+
+                    // Update user status
+                    userRepository.updateUserStatus(userEntity.getId(), UserConstant.ACTIVE);
+
+                    // Mark the token as used
+                    tokenEntity.setUsed(true);
+                    tokenRepository.updateToken(tokenEntity);
+
+                    request.setAttribute("SUCCESS_MESSAGE", "Kích hoạt tài khoản thành công!");
+                    // Redirect to a success page
+                    dispatcher.forward(request, response);
+                    return;
+                }
+            }
+
+            request.setAttribute("FAILED_MESSAGE", "Mã kích hoạt không hợp lệ!");
+            dispatcher.forward(request, response);
+
+        } catch (Exception e) {
+            request.setAttribute("FAILED_MESSAGE", "Active tai khoan that bai!");
+            dispatcher.forward(request, response);
+            e.printStackTrace();
+        }
     }
 
     @Override
