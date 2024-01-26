@@ -10,13 +10,13 @@
 <html lang="vi">
 <head>
     <jsp:include page="../common/common-css.jsp"/>
-    <link rel="stylesheet" href="<c:out value="${pageContext.request.contextPath}/css/register.css"/>">
+    <link rel="stylesheet" href="<c:url value="/css/register.css"/>">
     <title>Quên mật khẩu</title>
 </head>
 <body>
 <div class="vh-100 d-flex justify-content-center align-items-center">
     <div class="col-md-5 p-5 shadow rounded-3">
-        <div class="register">
+        <div class="form-bloat">
             <div class="mb-2 d-flex justify-content-between align-content-center">
                 <div class="title d-flex align-content-center">
                     <h3>Quên mật khẩu</h3>
