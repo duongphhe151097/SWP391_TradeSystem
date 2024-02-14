@@ -22,6 +22,7 @@ public class VnPayConstant {
     public static String vnp_ResponseCode = "vnp_ResponseCode";
     public static String vnp_TransactionStatus = "vnp_TransactionStatus";
     public static String vnp_SecureHashType = "vnp_SecureHashType";
+    public static String vnp_ExpireDate = "vnp_ExpireDate";
 
     public static String Success_Code = "00";
     public static String Payment_Status_Pending = "0";

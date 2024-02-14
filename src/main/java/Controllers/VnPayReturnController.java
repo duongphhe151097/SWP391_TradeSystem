@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @WebServlet(name = "VnPayReturnController", urlPatterns = "/payment/vnpay/return")
-@Authorization(role = "", isPublic = true)
+@Authorization(role = "", isPublic = false)
 public class VnPayReturnController extends BaseController {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -30,22 +30,23 @@ public class VnPayReturnController extends BaseController {
             }
         }
 
-        String vnp_SecureHash = req.getParameter("vnp_SecureHash");
-        fields.remove("vnp_SecureHashType");
-        fields.remove("vnp_SecureHash");
+        String vnp_SecureHash = req.getParameter(VnPayConstant.vnp_SecureHash);
+        fields.remove(VnPayConstant.vnp_SecureHashType);
+        fields.remove(VnPayConstant.vnp_SecureHash);
         String signValue = VnPayService.hashAllFields(fields);
 
-        String vnpTxnRef = req.getParameter("vnp_TxnRef");
-        String vnpAmount = req.getParameter("vnp_Amount");
-        String vnpOrderInfo = req.getParameter("vnp_OrderInfo");
-        String vnpResponseCode = req.getParameter("vnp_ResponseCode");
-        String vnpTransactionNo = req.getParameter("vnp_TransactionNo");
-        String vnpBankCode = req.getParameter("vnp_BankCode");
-        String vnpPayDate = req.getParameter("vnp_PayDate");
-        String vnpTransactionStatus = req.getParameter("vnp_TransactionStatus");
+        String vnpTxnRef = req.getParameter(VnPayConstant.vnp_TxnRef);
+        String vnpAmount = req.getParameter(VnPayConstant.vnp_Amount);
+        String vnpOrderInfo = req.getParameter(VnPayConstant.vnp_OrderInfo);
+        String vnpResponseCode = req.getParameter(VnPayConstant.vnp_ResponseCode);
+        String vnpTransactionNo = req.getParameter(VnPayConstant.vnp_TransactionNo);
+        String vnpBankCode = req.getParameter(VnPayConstant.vnp_BankCode);
+        String vnpPayDate = req.getParameter(VnPayConstant.vnp_PayDate);
+        String vnpTransactionStatus = req.getParameter(VnPayConstant.vnp_TransactionStatus);
 
         req.setAttribute("VAR_TxnRef", vnpTxnRef);
-        req.setAttribute("VAR_Amount", vnpAmount);
+        long amount = Long.parseLong(vnpAmount) / 100L;
+        req.setAttribute("VAR_Amount", amount);
         req.setAttribute("VAR_OrderInfo", vnpOrderInfo);
         req.setAttribute("VAR_RespCode", vnpResponseCode);
         req.setAttribute("VAR_TransNo", vnpTransactionNo);
@@ -60,7 +61,7 @@ public class VnPayReturnController extends BaseController {
             return;
         }
 
-        if (!VnPayConstant.Payment_Status_Success.equals(vnpTransactionStatus)) {
+        if (!VnPayConstant.Success_Code.equals(vnpTransactionStatus)) {
             req.setAttribute("MESSAGE_NOTI", "Không thành công!");
             dispatcher.forward(req, resp);
             return;
@@ -68,7 +69,6 @@ public class VnPayReturnController extends BaseController {
 
         req.setAttribute("MESSAGE_NOTI", "Thành công!");
         dispatcher.forward(req, resp);
-        return;
     }
 
     @Override

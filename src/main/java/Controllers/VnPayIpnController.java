@@ -3,6 +3,7 @@ package Controllers;
 import Services.VnPayService;
 import Utils.Annotations.Authorization;
 import Utils.Constants.VnPayConstant;
+import Utils.Convert.StringConvertor;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -15,25 +16,27 @@ import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @WebServlet(name = "VnPayIpnReturnController", urlPatterns = {"/payment/vnpay/ipn"})
 @Authorization(role = "", isPublic = true)
 public class VnPayIpnController extends BaseController {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        System.out.println("Gọi nè!");
+        String vnpRespCode = req.getParameter(VnPayConstant.vnp_ResponseCode);
+
         Map<String, String> fields = new HashMap<>();
         for (Enumeration<String> params = req.getParameterNames(); params.hasMoreElements(); ) {
-            String fieldName = URLEncoder.encode((String) params.nextElement(), StandardCharsets.US_ASCII);
+            String fieldName = URLEncoder.encode(params.nextElement(), StandardCharsets.US_ASCII);
             String fieldValue = URLEncoder.encode(req.getParameter(fieldName), StandardCharsets.US_ASCII);
             if ((fieldValue != null) && (!fieldValue.isEmpty())) {
                 fields.put(fieldName, fieldValue);
             }
         }
 
-        String vnp_SecureHash = req.getParameter("vnp_SecureHash");
-        fields.remove("vnp_SecureHashType");
-        fields.remove("vnp_SecureHash");
+        String vnp_SecureHash = req.getParameter(VnPayConstant.vnp_SecureHash);
+        fields.remove(VnPayConstant.vnp_SecureHashType);
+        fields.remove(VnPayConstant.vnp_SecureHash);
 
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/payment/ipn-return.jsp");
 
@@ -46,8 +49,18 @@ public class VnPayIpnController extends BaseController {
             return;
         }
 
+        String vnpTxnRef = fields.getOrDefault(VnPayConstant.vnp_TxnRef, "00000000-0000-0000-0000-000000000000");
+        if(vnpTxnRef.equals("00000000-0000-0000-0000-000000000000")) return;
+        UUID transactionId = StringConvertor.convertToUUID(vnpTxnRef);
+        //TODO: Check transactionId in db
         boolean checkOrderId = true; // Giá trị của vnp_TxnRef tồn tại trong CSDL của merchant
+
+        String vnpAmount = fields.getOrDefault(VnPayConstant.vnp_Amount, "0");
+        long amount = Long.parseLong(vnpAmount) / 100L;
+        //TODO: Check amount of transactionId
         boolean checkAmount = true; //Kiểm tra số tiền thanh toán do VNPAY phản hồi(vnp_Amount/100) với số tiền của đơn hàng merchant tạo thanh toán: giả sử số tiền kiểm tra là đúng.
+
+        //TODO: Check status of transactionId
         boolean checkOrderStatus = true;
 
 
@@ -75,7 +88,6 @@ public class VnPayIpnController extends BaseController {
             return;
         }
 
-        String vnpRespCode = req.getParameter("vnp_ResponseCode");
         if (!VnPayConstant.Success_Code.equals(vnpRespCode)) {
             //GD ko thành công
             System.out.println("Không thành công");
