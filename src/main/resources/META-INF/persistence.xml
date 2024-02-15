@@ -11,6 +11,7 @@
         <class>Models.CaptchaEntity</class>
         <class>Models.SessionManagerEntity</class>
 
+
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
             <property name="hibernate.connection.url" value="jdbc:postgresql://14.225.210.49:5435/tradesys"/>
