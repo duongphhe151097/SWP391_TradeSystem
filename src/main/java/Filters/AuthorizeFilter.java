@@ -5,10 +5,12 @@ import Dtos.SessionDto;
 import Models.RoleEntity;
 import Services.SessionService;
 import Utils.Annotations.Authorization;
+import Utils.Constants.UserConstant;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.javatuples.Pair;
 
 import java.io.IOException;
@@ -30,36 +32,47 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
         this.roleRepository = new RoleRepository();
         this.sessionService = new SessionService();
         System.out.println("Init Filter Check Authorization");
+
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+//        UsernameHolder.clearUserName();
     }
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) res;
+        try {
+            HttpServletRequest request = (HttpServletRequest) req;
+            HttpServletResponse response = (HttpServletResponse) res;
 
-        String fullRequestUrl = request.getRequestURI();
-        String requestPath = getRequestPath(fullRequestUrl, request.getContextPath());
-        Map<String, String> urlPatters = getMappingUrl(context);
+            String fullRequestUrl = request.getRequestURI();
+            String requestPath = getRequestPath(fullRequestUrl, request.getContextPath());
+            Map<String, String> urlPatters = getMappingUrl(context);
 
-        //Check url is exist or not
-        boolean pathFound = pathFound(requestPath, urlPatters);
-        if (!pathFound) {
-            request.setAttribute("STATUS_CODE", "404");
-            request.setAttribute("ERROR_MESSAGE", "Trang không tồn tại!");
-            request.getRequestDispatcher("/common/notfound.jsp")
-                    .forward(request, response);
-            return;
-        }
+            //Check url is exist or not
+            boolean pathFound = pathFound(requestPath, urlPatters);
+            if (!pathFound) {
+                request.setAttribute("STATUS_CODE", "404");
+                request.setAttribute("ERROR_MESSAGE", "Trang không tồn tại!");
+                request.getRequestDispatcher("/common/notfound.jsp")
+                        .forward(request, response);
+                return;
+            }
 
-        Pair<String, Boolean> authorization = getAuthorizationController(requestPath, urlPatters);
-        String[] roles = getAllRoleFromString(authorization.getValue0());
-        boolean isPublic = authorization.getValue1();
+            Pair<String, Boolean> authorization = getAuthorizationController(requestPath, urlPatters);
+            String[] roles = getAllRoleFromString(authorization.getValue0());
+            boolean isPublic = authorization.getValue1();
 
-        //If is public page => next
-        if (isPublic) {
-            publicPageProcess(chain, request, response, requestPath);
-        } else {
-            privatePageProcess(chain, request, response, requestPath, roles);
+            //If is public page => next
+            if (isPublic) {
+                publicPageProcess(chain, request, response, requestPath);
+            } else {
+                privatePageProcess(chain, request, response, requestPath, roles);
+            }
+        } finally {
+            UsernameHolder.clearUserName();
         }
     }
 
@@ -148,6 +161,10 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
             dispatcher.forward(request, response);
             return;
         }
+
+        HttpSession session = request.getSession(false);
+        String username = (String) session.getAttribute(UserConstant.SESSION_USERNAME);
+        if (username != null) UsernameHolder.setUserName(username);
 
         if (roles.length == 0) {
             chain.doFilter(request, response);

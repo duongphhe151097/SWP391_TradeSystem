@@ -9,4 +9,6 @@ public class TransactionConstant {
     public static short STATUS_SUCCESSED = 2;
     public static short STATUS_FAILED = 3;
 
+    public static String VNPAY = "VNPAY";
+
 }

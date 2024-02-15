@@ -75,4 +75,7 @@ public class VnPayTransactionEntity extends BaseEntity implements Serializable {
 
     @Column(name = "`secure_hash`", updatable = false, nullable = false, length = 256)
     private String secureHash;
+
+    @Column(name = "`transaction_no`", nullable = false, length = 15)
+    private String transactionNo;
 }

@@ -1,0 +1,49 @@
+package DataAccess;
+
+import Models.ExternalTransactionEntity;
+import Models.VnPayTransactionEntity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+
+import java.util.Optional;
+import java.util.UUID;
+
+public class VnPayTransactionRepository {
+    private final EntityManager entityManager;
+
+    public VnPayTransactionRepository() {
+        this.entityManager = DbFactory.getFactory().createEntityManager();
+    }
+
+    public Optional<VnPayTransactionEntity> getVnPayTransactionByTransactionId(UUID transactionId){
+        try {
+            VnPayTransactionEntity entity = entityManager
+                    .createQuery("select ext from vnPayTrans ext " +
+                            "where ext.transactionId = :txnId and ext.isDelete = false", VnPayTransactionEntity.class)
+                    .setParameter("txnId", transactionId)
+                    .getSingleResult();
+
+            return Optional.ofNullable(entity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+    public Optional<VnPayTransactionEntity> addVnPayTransactionEntity(VnPayTransactionEntity entity){
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            VnPayTransactionEntity externalTransactionEntity = entityManager.merge(entity);
+            entityManager.persist(externalTransactionEntity);
+            transaction.commit();
+
+            return Optional.of(externalTransactionEntity);
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+}
