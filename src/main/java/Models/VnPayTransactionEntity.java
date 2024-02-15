@@ -31,9 +31,6 @@ public class VnPayTransactionEntity extends BaseEntity implements Serializable {
     @Column(name = "`type`", updatable = false, nullable = false, length = 20)
     private String type;
 
-    @Column(name = "`txn_id`", updatable = false, nullable = false, length = 100)
-    private String txnId;
-
     @Column(name = "`version`", updatable = false, nullable = false, length = 8)
     private String version;
 
