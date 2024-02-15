@@ -3,6 +3,8 @@ package DataAccess;
 import Models.Common.Pagination;
 import Models.Common.ViewPaging;
 import Models.UserEntity;
+import Utils.Generators.StringGenerator;
+
 import Utils.Validation.StringValidator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
@@ -100,6 +102,52 @@ public class UserRepository {
         }
         return false;
     }
+    public void updateUserPassword(UUID userId, String newPassword, String salt) {
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+
+            UserEntity user = entityManager.find(UserEntity.class, userId);
+
+            if (user == null) {
+                System.out.println("User not found!");
+                return;
+            }
+
+
+
+            user.setPassword(newPassword);
+            user.setSalt(salt);
+            entityManager.merge(user);
+
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace();
+        }
+    }
+    public void updateUserProfile(UUID userId, String username, String fullname, String phone_number) {
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+
+            entityManager.createQuery("UPDATE user u SET u.username = :username, u.fullName = :fullname, u.phoneNumber = :phone_number WHERE u.id = :id")
+                    .setParameter("id", userId)
+                    .setParameter("username", username)
+                    .setParameter("fullname", fullname)
+                    .setParameter("phone_number", phone_number)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+                transaction.rollback();
+            e.printStackTrace();
+        }
+    }
+
 
     public long countAll(String search, String status, LocalDateTime startDate, LocalDateTime endDate) {
         StringBuilder hql = new StringBuilder();
@@ -183,3 +231,4 @@ public class UserRepository {
     }
 
 }
+

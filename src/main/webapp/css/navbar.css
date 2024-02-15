@@ -62,6 +62,9 @@
     line-height: 1;
 }
 
+.nav-form-search{
+    margin-bottom: 0 !important;
+}
 
 .dropdown:hover>.dropdown-menu {
     display: block;

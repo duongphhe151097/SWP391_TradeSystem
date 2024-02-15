@@ -11,6 +11,6 @@
     <title>Account Activation</title>
 </head>
 <body>
-<h2>${activationMessage}</h2>
+<h2>${requestScope.activationMessage}</h2>
 </body>
 </html>

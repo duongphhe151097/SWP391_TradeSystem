@@ -17,8 +17,9 @@
 
                 </a>
 
-                <form method="get" action="" class="search d-flex">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <form method="get" action="" class="search d-flex align-items-center nav-form-search">
+                    <input class="form-control me-2" type="search" placeholder="Search"
+                           aria-label="Search">
                     <button class="btn btn-primary ml-2">
                             <span class="d-flex align-items-center">
                                 <span class="material-symbols-outlined">
@@ -46,13 +47,15 @@
                         <div class="nav-item dropdown d-none d-lg-block user-dropdown">
                             <a class="nav-link" id="user-dropdown" href="#" data-bs-toggle="dropdown"
                                aria-expanded="false">
-                                <img class="img-xs rounded-circle" src="<c:url value="/img/default_male.jpg"/>" alt="Profile image" />
+                                <img class="img-xs rounded-circle" src="<c:url value="/img/default_male.jpg"/>"
+                                     alt="Profile image"/>
                                 <span class="user-name">${sessionScope.SESSION_USERFULLNAME}</span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                                  aria-labelledby="user-dropdown">
                                 <div class="dropdown-header text-center">
-                                    <img class="img-md rounded-circle" src="<c:url value="/img/default_male.jpg"/>" alt="Profile image" />
+                                    <img class="img-md rounded-circle" src="<c:url value="/img/default_male.jpg"/>"
+                                         alt="Profile image"/>
                                     <p class="mb-1 mt-3 font-weight-semibold">${sessionScope.SESSION_USERFULLNAME}</p>
                                     <p class="fw-light text-muted mb-0">${sessionScope.SESSION_USEREMAIL}</p>
                                 </div>
@@ -65,6 +68,16 @@
                                             Thông tin tài khoản
                                         </span>
                                     </span>
+                                </a>
+                                <a href="<c:url value="/change"/>" class="dropdown-item">
+                    <span class="d-flex align-items-center">
+                        <span class="material-symbols-outlined">
+                            vpn_key
+                        </span>
+                        <span>
+                            Đổi mật khẩu
+                        </span>
+                    </span>
                                 </a>
                                 <a href="<c:url value="/logout"/> " class="dropdown-item">
                                     <span class="d-flex align-items-center">

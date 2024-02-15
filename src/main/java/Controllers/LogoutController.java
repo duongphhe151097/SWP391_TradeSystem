@@ -1,6 +1,7 @@
 package Controllers;
 
 import DataAccess.SessionManagerRepository;
+import Utils.Annotations.Authorization;
 import Utils.Constants.UserConstant;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -13,9 +14,11 @@ import java.io.IOException;
 import java.util.UUID;
 
 @WebServlet(name = "LogoutController", urlPatterns = "/logout")
+@Authorization(role = "", isPublic = false)
 public class LogoutController extends HttpServlet{
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Invalidate the session (log out the user)
+
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        /// Invalidate the session (log out the user)
         HttpSession session = request.getSession(false);
         if (session != null) {
             UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
@@ -30,11 +33,6 @@ public class LogoutController extends HttpServlet{
 
         // Redirect to the login page or any other appropriate page after logout
         response.sendRedirect(request.getContextPath() + "/login");
-    }
-
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Handle GET request, e.g., show a confirmation page
-        request.getRequestDispatcher("/pages/login.jsp").forward(request, response);
     }
 
 }
