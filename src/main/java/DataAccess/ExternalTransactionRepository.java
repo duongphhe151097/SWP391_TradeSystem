@@ -1,11 +1,9 @@
 package DataAccess;
 
-import Models.CaptchaEntity;
 import Models.ExternalTransactionEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -32,7 +30,7 @@ public class ExternalTransactionRepository {
         return Optional.empty();
     }
 
-    public Optional<ExternalTransactionEntity> addExternalTransaction(ExternalTransactionEntity entity){
+    public Optional<ExternalTransactionEntity> add(ExternalTransactionEntity entity){
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
@@ -44,6 +42,21 @@ public class ExternalTransactionRepository {
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<ExternalTransactionEntity> update(ExternalTransactionEntity entity){
+        EntityTransaction transaction = entityManager.getTransaction();
+        try{
+            transaction.begin();
+            entityManager.merge(entity);
+            transaction.commit();
+
+            return Optional.of(entity);
+        }catch (Exception e) {
+            transaction.rollback();
         }
 
         return Optional.empty();

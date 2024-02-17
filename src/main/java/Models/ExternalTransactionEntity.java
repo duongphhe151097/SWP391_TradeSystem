@@ -5,6 +5,7 @@ import Models.EntityKey.ExternalTransactionKey;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
+import org.postgresql.util.PGmoney;
 
 import java.io.Serializable;
 import java.math.BigDecimal;

@@ -4,6 +4,7 @@ import Models.Common.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;

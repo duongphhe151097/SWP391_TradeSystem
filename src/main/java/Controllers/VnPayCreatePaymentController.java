@@ -6,7 +6,6 @@ import Models.ExternalTransactionEntity;
 import Models.VnPayTransactionEntity;
 import Services.VnPayService;
 import Utils.Annotations.Authorization;
-import Utils.Constants.CommonConstants;
 import Utils.Constants.TransactionConstant;
 import Utils.Constants.UserConstant;
 import Utils.Constants.VnPayConstant;
@@ -138,7 +137,7 @@ public class VnPayCreatePaymentController extends BaseController {
                     .status(TransactionConstant.STATUS_PROCESSING)
                     .userId(userId)
                     .build();
-            externalTransactionRepository.addExternalTransaction(insertEntity);
+            externalTransactionRepository.add(insertEntity);
 
             VnPayTransactionRepository vnPayTransactionRepository = new VnPayTransactionRepository();
 
@@ -161,7 +160,7 @@ public class VnPayCreatePaymentController extends BaseController {
                     .secureHash(vnp_SecureHash)
                     .transactionNo("")
                     .build();
-            vnPayTransactionRepository.addVnPayTransactionEntity(insertVnPayTransEntity);
+            vnPayTransactionRepository.add(insertVnPayTransEntity);
 
             resp.sendRedirect(paymentUrl);
         } catch (Exception e) {

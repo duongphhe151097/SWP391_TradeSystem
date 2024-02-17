@@ -9,7 +9,9 @@ import Utils.Validation.StringValidator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
+import org.postgresql.util.PGmoney;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -102,6 +104,7 @@ public class UserRepository {
         }
         return false;
     }
+
     public void updateUserPassword(UUID userId, String newPassword, String salt) {
         EntityTransaction transaction = entityManager.getTransaction();
 
@@ -115,8 +118,6 @@ public class UserRepository {
                 return;
             }
 
-
-
             user.setPassword(newPassword);
             user.setSalt(salt);
             entityManager.merge(user);
@@ -129,6 +130,7 @@ public class UserRepository {
             e.printStackTrace();
         }
     }
+
     public void updateUserProfile(UUID userId, String username, String fullname, String phone_number) {
         EntityTransaction transaction = entityManager.getTransaction();
 
@@ -143,11 +145,27 @@ public class UserRepository {
                     .executeUpdate();
             transaction.commit();
         } catch (Exception e) {
-                transaction.rollback();
+            transaction.rollback();
             e.printStackTrace();
         }
     }
 
+    public void updateUserBalance(UUID userId, BigDecimal balance) {
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+
+            entityManager.createQuery("UPDATE user u SET u.balance = :balance WHERE u.id = :id")
+                    .setParameter("id", userId)
+                    .setParameter("balance", balance)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        }
+    }
 
     public long countAll(String search, String status, LocalDateTime startDate, LocalDateTime endDate) {
         StringBuilder hql = new StringBuilder();
@@ -163,11 +181,11 @@ public class UserRepository {
             hql.append("AND u.status = :status ");
         }
 
-        if (startDate != null){
+        if (startDate != null) {
             hql.append("AND u.createAt >= :startDate ");
         }
 
-        if (endDate != null){
+        if (endDate != null) {
             hql.append("AND u.createAt <= :endDate");
         }
 
@@ -202,11 +220,11 @@ public class UserRepository {
             hql.append("AND u.status = :status ");
         }
 
-        if (startDate != null){
+        if (startDate != null) {
             hql.append("AND u.createAt >= :startDate ");
         }
 
-        if (endDate != null){
+        if (endDate != null) {
             hql.append("AND u.createAt <= :endDate");
         }
 

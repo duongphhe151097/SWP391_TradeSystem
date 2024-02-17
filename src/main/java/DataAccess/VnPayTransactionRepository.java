@@ -1,9 +1,9 @@
 package DataAccess;
 
-import Models.ExternalTransactionEntity;
 import Models.VnPayTransactionEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -15,7 +15,7 @@ public class VnPayTransactionRepository {
         this.entityManager = DbFactory.getFactory().createEntityManager();
     }
 
-    public Optional<VnPayTransactionEntity> getVnPayTransactionByTransactionId(UUID transactionId){
+    public Optional<VnPayTransactionEntity> getByTransactionId(UUID transactionId){
         try {
             VnPayTransactionEntity entity = entityManager
                     .createQuery("select ext from vnPayTrans ext " +
@@ -25,12 +25,14 @@ public class VnPayTransactionRepository {
 
             return Optional.ofNullable(entity);
         } catch (Exception e) {
-            e.printStackTrace();
+            if(!(e instanceof NoResultException)){
+                e.printStackTrace();
+            }
         }
         return Optional.empty();
     }
 
-    public Optional<VnPayTransactionEntity> addVnPayTransactionEntity(VnPayTransactionEntity entity){
+    public Optional<VnPayTransactionEntity> add(VnPayTransactionEntity entity){
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
@@ -42,6 +44,21 @@ public class VnPayTransactionRepository {
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    public Optional<VnPayTransactionEntity> update(VnPayTransactionEntity entity){
+        EntityTransaction transaction = entityManager.getTransaction();
+        try{
+            transaction.begin();
+            entityManager.merge(entity);
+            transaction.commit();
+
+            return Optional.of(entity);
+        }catch (Exception e) {
+            transaction.rollback();
         }
 
         return Optional.empty();
