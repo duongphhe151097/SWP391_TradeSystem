@@ -115,9 +115,9 @@ public class UserRepository {
                 return;
             }
 
-            String hashedPassword = StringGenerator.hashingPassword(newPassword, salt);
 
-            user.setPassword(hashedPassword);
+
+            user.setPassword(newPassword);
             user.setSalt(salt);
             entityManager.merge(user);
 
@@ -126,6 +126,24 @@ public class UserRepository {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
+            e.printStackTrace();
+        }
+    }
+    public void updateUserProfile(UUID userId, String username, String fullname, String phone_number) {
+        EntityTransaction transaction = entityManager.getTransaction();
+
+        try {
+            transaction.begin();
+
+            entityManager.createQuery("UPDATE user u SET u.username = :username, u.fullName = :fullname, u.phoneNumber = :phone_number WHERE u.id = :id")
+                    .setParameter("id", userId)
+                    .setParameter("username", username)
+                    .setParameter("fullname", fullname)
+                    .setParameter("phone_number", phone_number)
+                    .executeUpdate();
+            transaction.commit();
+        } catch (Exception e) {
+                transaction.rollback();
             e.printStackTrace();
         }
     }
@@ -213,3 +231,4 @@ public class UserRepository {
     }
 
 }
+

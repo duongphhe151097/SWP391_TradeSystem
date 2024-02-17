@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.*;
 import java.util.Base64;
+import java.util.UUID;
 
 public class StringConvertor {
 
@@ -42,5 +43,16 @@ public class StringConvertor {
         } catch (final IOException ioe) {
             throw new UncheckedIOException(ioe);
         }
+    }
+
+    public static UUID convertToUUID(String input) {
+        StringBuilder sb = new StringBuilder(input);
+        sb.insert(20, '-');
+        sb.insert(16, '-');
+        sb.insert(12, '-');
+        sb.insert(8, '-');
+
+        // Parsing the formatted string to a UUID
+        return UUID.fromString(sb.toString());
     }
 }

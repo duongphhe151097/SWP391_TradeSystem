@@ -37,7 +37,6 @@ public class ResetPasswordController extends BaseController{
             }
         }
     }
-    @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String resetToken = req.getParameter("resetToken");
 
@@ -60,32 +59,27 @@ public class ResetPasswordController extends BaseController{
 
                 if (!isValidPassword) {
                     req.setAttribute("NEWPASSWORD_ERROR", "Mật khẩu mới phải chứa ít nhất 8 kí tự!");
-                    req.getRequestDispatcher("/pages/resetpassword.jsp").forward(req, resp);
-                    return;
-                }
-
-                if (!isRePasswordMatch) {
+                } else if (!isRePasswordMatch) {
                     req.setAttribute("RENEWPASSWORD_ERROR", "Mật khẩu mới nhập lại không khớp!");
-                    req.getRequestDispatcher("/pages/resetpassword.jsp").forward(req, resp);
-                    return;
+                } else {
+                    // Cập nhật mật khẩu mới
+                    String salt = StringGenerator.generateRandomString(50);
+                    String hashedPassword = StringGenerator.hashingPassword(newPassword, salt);
+
+                    userRepository.updateUserPassword(userId, hashedPassword, salt);
+
+                    // Đánh dấu token đã sử dụng
+                    token.setUsed(true);
+                    new TokenActivationRepository().updateToken(token);
+
+                    req.setAttribute("SUCCESS_MESSAGE", "Mật khẩu đã được thay đổi thành công!");
                 }
 
-                // Cập nhật mật khẩu mới
-                String salt = StringGenerator.generateRandomString(50);
-                String hashedPassword = StringGenerator.hashingPassword(newPassword, salt);
-
-
-                userRepository.updateUserPassword(userId, hashedPassword, salt);
-
-                // Đánh dấu token đã sử dụng
-                token.setUsed(true);
-                new TokenActivationRepository().updateToken(token);
-
-                req.setAttribute("SUCCESS_MESSAGE", "Mật khẩu đã được thay đổi thành công!");
                 req.getRequestDispatcher("/pages/resetpassword.jsp").forward(req, resp);
             } else {
-                    // Token không hợp lệ, có thể chuyển hướng hoặc hiển thị thông báo lỗi
-                    resp.sendRedirect(req.getContextPath() + "/error.jsp");
+
+                req.setAttribute("FAILED_MESSAGE", "Mật khẩu mới không khớp nhập lại!");
+                req.getRequestDispatcher("/pages/resetpassword.jsp").forward(req, resp);
             }
         } catch (Exception e) {
             e.printStackTrace();
