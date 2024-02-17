@@ -27,6 +27,16 @@ import java.util.*;
 @WebServlet(name = "VnPayCreatePaymentController", urlPatterns = "/payment/vnpay/create")
 @Authorization(role = "", isPublic = false)
 public class VnPayCreatePaymentController extends BaseController {
+    private VnPayTransactionRepository vnPayTransactionRepository;
+    private ExternalTransactionRepository externalTransactionRepository;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        this.vnPayTransactionRepository = new VnPayTransactionRepository();
+        this.externalTransactionRepository = new ExternalTransactionRepository();
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/pages/payment/vnpay-createpayment.jsp").forward(req, resp);
@@ -41,12 +51,12 @@ public class VnPayCreatePaymentController extends BaseController {
             long amount = Long.parseLong(req.getParameter("amount")) * 100L;
             String bankCode = req.getParameter("bankCode");
 
-//            String vnp_TxnRef = StringGenerator.generateRandomString(10);
+            //String vnp_TxnRef = StringGenerator.generateRandomString(10);
             UUID transactionId = UUID.randomUUID();
-            String vnp_TxnRef = transactionId.toString().replace("-", "");
+            String vnp_TxnRef = transactionId.toString()
+                    .replace("-", "");
 
             // Check only one id unique in a day
-            ExternalTransactionRepository externalTransactionRepository = new ExternalTransactionRepository();
             Optional<ExternalTransactionEntity> externalTransactionEntity = externalTransactionRepository
                     .getExternalTransactionByIdType(transactionId, TransactionConstant.VNPAY);
 
@@ -60,7 +70,6 @@ public class VnPayCreatePaymentController extends BaseController {
             }
 
             String vnp_IpAddr = VnPayService.getIpAddress(req);
-
             String vnp_TmnCode = VnPayService.vnp_TmnCode;
 
             Map<String, String> vnp_Params = new HashMap<>();
@@ -138,8 +147,6 @@ public class VnPayCreatePaymentController extends BaseController {
                     .userId(userId)
                     .build();
             externalTransactionRepository.add(insertEntity);
-
-            VnPayTransactionRepository vnPayTransactionRepository = new VnPayTransactionRepository();
 
             VnPayTransactionEntity insertVnPayTransEntity = VnPayTransactionEntity
                     .builder()

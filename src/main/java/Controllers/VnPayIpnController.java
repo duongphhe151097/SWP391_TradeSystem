@@ -11,7 +11,6 @@ import Utils.Annotations.Authorization;
 import Utils.Constants.TransactionConstant;
 import Utils.Constants.VnPayConstant;
 import Utils.Convert.StringConvertor;
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,9 +25,22 @@ import java.util.*;
 @WebServlet(name = "VnPayIpnReturnController", urlPatterns = {"/payment/vnpay/ipn"})
 @Authorization(role = "", isPublic = true)
 public class VnPayIpnController extends BaseController {
+    private UserRepository userRepository;
+    private ExternalTransactionRepository transactionRepository;
+    private VnPayTransactionRepository vnPayTransactionRepository;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        this.userRepository = new UserRepository();
+        this.transactionRepository = new ExternalTransactionRepository();
+        this.vnPayTransactionRepository = new VnPayTransactionRepository();
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String vnpRespCode = req.getParameter(VnPayConstant.vnp_ResponseCode);
+        String vnp_SecureHash = req.getParameter(VnPayConstant.vnp_SecureHash);
 
         Map<String, String> fields = new HashMap<>();
         for (Enumeration<String> params = req.getParameterNames(); params.hasMoreElements(); ) {
@@ -39,28 +51,23 @@ public class VnPayIpnController extends BaseController {
             }
         }
 
-        String vnp_SecureHash = req.getParameter(VnPayConstant.vnp_SecureHash);
         fields.remove(VnPayConstant.vnp_SecureHashType);
         fields.remove(VnPayConstant.vnp_SecureHash);
-
-        RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/payment/ipn-return.jsp");
 
         String signValue = VnPayService.hashAllFields(fields);
         if (!signValue.equals(vnp_SecureHash)) {
             //Code: 97, Message: Invalid Checksum
             req.setAttribute("VAR_IpnCode", "97");
             req.setAttribute("VAR_IpnMessage", "Invalid Checksum");
-            dispatcher.forward(req, resp);
             return;
         }
 
         String vnpTxnRef = fields.getOrDefault(VnPayConstant.vnp_TxnRef, "00000000-0000-0000-0000-000000000000");
         if (vnpTxnRef.equals("00000000-0000-0000-0000-000000000000")) return;
         UUID transactionId = StringConvertor.convertToUUID(vnpTxnRef);
-        ExternalTransactionRepository transactionRepository = new ExternalTransactionRepository();
+
         Optional<ExternalTransactionEntity> optionalExternalTransactionEntity = transactionRepository
                 .getExternalTransactionByIdType(transactionId, TransactionConstant.VNPAY);
-
 
         //TODO: Check transactionId in db
         boolean checkOrderId = optionalExternalTransactionEntity.isPresent(); // Giá trị của vnp_TxnRef tồn tại trong CSDL của merchant
@@ -68,7 +75,6 @@ public class VnPayIpnController extends BaseController {
             //Code: 01, Message: Order not found
             req.setAttribute("VAR_IpnCode", "01");
             req.setAttribute("VAR_IpnMessage", "Order not found");
-            dispatcher.forward(req, resp);
             return;
         }
         ExternalTransactionEntity externalTransactionEntity = optionalExternalTransactionEntity.get();
@@ -84,7 +90,6 @@ public class VnPayIpnController extends BaseController {
             //Code: 04, Message: Invalid amount
             req.setAttribute("VAR_IpnCode", "04");
             req.setAttribute("VAR_IpnMessage", "Invalid amount");
-            dispatcher.forward(req, resp);
             return;
         }
 
@@ -94,11 +99,9 @@ public class VnPayIpnController extends BaseController {
             //Code: 02, Message: Order already confirmed
             req.setAttribute("VAR_IpnCode", "02");
             req.setAttribute("VAR_IpnMessage", "Order already confirmed");
-            dispatcher.forward(req, resp);
             return;
         }
 
-        VnPayTransactionRepository vnPayTransactionRepository = new VnPayTransactionRepository();
         Optional<VnPayTransactionEntity> optionalVnPayTransactionEntity = vnPayTransactionRepository
                 .getByTransactionId(optionalExternalTransactionEntity.get().getId());
 
@@ -116,19 +119,17 @@ public class VnPayIpnController extends BaseController {
         if (!VnPayConstant.Success_Code.equals(vnpRespCode)) {
             //GD ko thành công
             externalTransactionEntity.setStatus(TransactionConstant.STATUS_FAILED);
-            System.out.println("Không thành công");
             transactionRepository.update(externalTransactionEntity);
-            dispatcher.forward(req, resp);
+            System.out.println("Không thành công");
             return;
         }
 
-        UserRepository userRepository = new UserRepository();
         Optional<UserEntity> optionalUserEntity = userRepository
                 .getUserById(externalTransactionEntity.getUserId());
         if (optionalUserEntity.isEmpty()) {
-            System.out.println("Không thành công");
             externalTransactionEntity.setStatus(TransactionConstant.STATUS_FAILED);
             transactionRepository.update(externalTransactionEntity);
+            System.out.println("Không thành công");
             return;
         }
         UserEntity userEntity = optionalUserEntity.get();

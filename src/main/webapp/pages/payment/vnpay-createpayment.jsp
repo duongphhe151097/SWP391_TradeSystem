@@ -10,15 +10,16 @@
 <html>
     <head>
         <jsp:include page="../../common/common-css.jsp"/>
-        <title>Title</title>
+        <title>Nạp tiền</title>
     </head>
     <body>
+        <jsp:include page="../../common/header.jsp"/>
+
         <div class="container">
             <div class="header clearfix">
-
-                <h3 class="text-muted">VNPAY DEMO</h3>
+                <h3 class="text-muted">Tạo mới giao dịch</h3>
             </div>
-            <h3>Tạo mới đơn hàng</h3>
+
             <div class="table-responsive">
                 <form action="<c:url value="/payment/vnpay/create"/> " id="frmCreateOrder" method="post">
                     <div class="form-group">
@@ -30,7 +31,7 @@
                     <h4>Chọn phương thức thanh toán</h4>
                     <div class="form-group">
                         <h5>Cách 1: Chuyển hướng sang Cổng VNPAY chọn phương thức thanh toán</h5>
-                        <input type="radio" Checked="True" id="bankCode" name="bankCode" value="">
+                        <input type="radio" checked="True" id="bankCode" name="bankCode" value="">
                         <label for="bankCode">Cổng thanh toán VNPAYQR</label><br>
 
                         <h5>Cách 2: Tách phương thức tại site của đơn vị kết nối</h5>
@@ -46,7 +47,7 @@
                     </div>
                     <div class="form-group">
                         <h5>Chọn ngôn ngữ giao diện thanh toán:</h5>
-                        <input type="radio" id="language" Checked="True" name="language" value="vn">
+                        <input type="radio" id="language" checked="true" name="language" value="vn">
                         <label for="language">Tiếng việt</label><br>
                         <input type="radio" id="language" name="language" value="en">
                         <label for="language">Tiếng anh</label><br>
@@ -55,12 +56,7 @@
                     <button type="submit" class="btn btn-default" id="submitVnpOrder">Thanh toán</button>
                 </form>
             </div>
-            <p>
-                &nbsp;
-            </p>
-            <footer class="footer">
-                <p>&copy; VNPAY 2020</p>
-            </footer>
+
         </div>
     </body>
     <jsp:include page="../../common/common-js.jsp"/>

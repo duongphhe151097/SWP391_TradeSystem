@@ -1,15 +1,10 @@
 package DataAccess;
 
-import Models.Common.Pagination;
-import Models.Common.ViewPaging;
 import Models.UserEntity;
-import Utils.Generators.StringGenerator;
-
 import Utils.Validation.StringValidator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
-import org.postgresql.util.PGmoney;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

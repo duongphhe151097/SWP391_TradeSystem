@@ -8,9 +8,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
-        <title>Title</title>
+        <jsp:include page="../../common/common-css.jsp"/>
+        <title>Thông báo giao dịch</title>
     </head>
     <body>
+        <jsp:include page="../../common/header.jsp"/>
+
         <div class="container">
             <div class="header clearfix">
                 <h3 class="text-muted">KẾT QUẢ THANH TOÁN</h3>
