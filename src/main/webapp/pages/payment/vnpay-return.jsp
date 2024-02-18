@@ -5,68 +5,62 @@
   Time: 4:25 PM
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
         <jsp:include page="../../common/common-css.jsp"/>
+        <link rel="stylesheet" href="<c:url value="/css/payment.return.css" />">
         <title>Thông báo giao dịch</title>
     </head>
+
     <body>
         <jsp:include page="../../common/header.jsp"/>
 
         <div class="container">
-            <div class="header clearfix">
-                <h3 class="text-muted">KẾT QUẢ THANH TOÁN</h3>
-            </div>
-            <div class="table-responsive">
-                <div class="form-group">
-                    <label>Mã giao dịch thanh toán:</label>
-                    <label>${requestScope.VAR_TxnRef}
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Số tiền:</label>
-                    <label>${requestScope.VAR_Amount}
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Mô tả giao dịch:</label>
-                    <label>${requestScope.VAR_OrderInfo}
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Mã lỗi thanh toán:</label>
-                    <label>${requestScope.VAR_RespCode}
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Mã giao dịch tại CTT VNPAY-QR:</label>
-                    <label>${requestScope.VAR_TransNo}
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Mã ngân hàng thanh toán:</label>
-                    <label>${requestScope.VAR_BankCode}
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Thời gian thanh toán:</label>
-                    <label>${requestScope.VAR_PayDate}
-                    </label>
-                </div>
-                <div class="form-group">
-                    <label>Tình trạng giao dịch:</label>
-                    <label>
-                        ${requestScope.MESSAGE_NOTI}
-                    </label>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mt-5">
+                        <div class="card-header">
+                            <h4 class="text">Kết quả giao dịch</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex justify-content-center">
+                                <div>
+                                    <div class="d-flex justify-content-center">
+                                        <c:if test="${requestScope.IS_SUCCESS}">
+                                            <span class="material-symbols-outlined text-success noti-icon">
+                                                check_circle
+                                            </span>
+                                        </c:if>
+
+                                        <c:if test="${not requestScope.IS_SUCCESS}">
+                                            <span class="material-symbols-outlined text-danger noti-icon">
+                                                cancel
+                                            </span>
+                                        </c:if>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center mt-3">
+                                        <h5>Số tiền: ${requestScope.VAR_Amount}đ</h5>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <h4>${requestScope.MESSAGE_NOTI}</h4>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center mt-5">
+                                        <p>Mã giao dịch: ${requestScope.VAR_TxnRef}</p>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <p>Thời gian: ${requestScope.VAR_PayDate}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <p>
-                &nbsp;
-            </p>
-            <footer class="footer">
-                <p>&copy; VNPAY 2020</p>
-            </footer>
         </div>
     </body>
+    <jsp:include page="../../common/common-js.jsp"/>
 </html>

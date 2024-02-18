@@ -2,7 +2,9 @@ package Controllers;
 
 import Services.VnPayService;
 import Utils.Annotations.Authorization;
+import Utils.Constants.TransactionConstant;
 import Utils.Constants.VnPayConstant;
+import Utils.Convert.StringConvertor;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -51,7 +53,8 @@ public class VnPayReturnController extends BaseController {
         req.setAttribute("VAR_RespCode", vnpResponseCode);
         req.setAttribute("VAR_TransNo", vnpTransactionNo);
         req.setAttribute("VAR_BankCode", vnpBankCode);
-        req.setAttribute("VAR_PayDate", vnpPayDate);
+        req.setAttribute("VAR_PayDate", StringConvertor.convertTimestamp(vnpPayDate));
+        req.setAttribute("IS_SUCCESS", false);
 
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/payment/vnpay-return.jsp");
 
@@ -67,6 +70,7 @@ public class VnPayReturnController extends BaseController {
             return;
         }
 
+        req.setAttribute("IS_SUCCESS", true);
         req.setAttribute("MESSAGE_NOTI", "Thành công!");
         dispatcher.forward(req, resp);
     }

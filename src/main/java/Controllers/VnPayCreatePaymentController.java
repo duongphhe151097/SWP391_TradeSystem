@@ -52,7 +52,7 @@ public class VnPayCreatePaymentController extends BaseController {
             long amount = Long.parseLong(req.getParameter("amount")) * 100L;
 
             if(amount < TransactionConstant.MIN_AMOUNT || amount > TransactionConstant.MAX_AMOUNT){
-                req.setAttribute("ERROR_MESSAGE", "Số tiền phải lớn hơn 10,000đ và nhỏ hơn 10,000,000đ");
+                req.setAttribute("ERROR_AMOUNT", "Số tiền phải lớn hơn 10,000đ và nhỏ hơn 10,000,000đ");
                 req.getRequestDispatcher("/pages/payment/vnpay-createpayment.jsp").forward(req, resp);
                 return;
             }
@@ -98,8 +98,10 @@ public class VnPayCreatePaymentController extends BaseController {
             if (locate != null && !locate.isEmpty()) {
                 vnp_Params.put(VnPayConstant.vnp_Locale, locate);
             } else {
+                locate = "vn";
                 vnp_Params.put(VnPayConstant.vnp_Locale, "vn");
             }
+
             vnp_Params.put(VnPayConstant.vnp_ReturnUrl, getBaseURL(req) + VnPayService.vnp_ReturnUrl);
             vnp_Params.put(VnPayConstant.vnp_IpAddr, vnp_IpAddr);
 
@@ -178,7 +180,7 @@ public class VnPayCreatePaymentController extends BaseController {
 
             resp.sendRedirect(paymentUrl);
         } catch (Exception e) {
-            req.setAttribute("ERROR_MESSAGE", "Tạo giao dịch không thành công");
+            req.setAttribute("ERROR_MESSAGE", "Tạo giao dịch không thành công!");
             req.getRequestDispatcher("/pages/payment/vnpay-createpayment.jsp").forward(req, resp);
         }
     }
