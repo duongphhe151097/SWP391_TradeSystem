@@ -56,7 +56,7 @@ public class VnPayReturnController extends BaseController {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/payment/vnpay-return.jsp");
 
         if (!signValue.equals(vnp_SecureHash)) {
-            req.setAttribute("MESSAGE_NOTI", "Invalid signature!");
+            req.setAttribute("MESSAGE_NOTI", "Chữ kí không hợp lệ!");
             dispatcher.forward(req, resp);
             return;
         }

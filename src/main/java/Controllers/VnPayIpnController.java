@@ -70,8 +70,13 @@ public class VnPayIpnController extends BaseController {
             return;
         }
 
-        String vnpTxnRef = fields.getOrDefault(VnPayConstant.vnp_TxnRef, "00000000-0000-0000-0000-000000000000");
-        if (vnpTxnRef.equals("00000000-0000-0000-0000-000000000000")) return;
+        String vnpTxnRef = fields.getOrDefault(VnPayConstant.vnp_TxnRef, "");
+        if (vnpTxnRef.isBlank() || vnpTxnRef.length() > 32) {
+            jsonObject.addProperty("RspCode", "01");
+            jsonObject.addProperty("Message", "Order not found");
+            resp.getWriter().write(gson.toJson(jsonObject));
+            return;
+        };
         UUID transactionId = StringConvertor.convertToUUID(vnpTxnRef);
 
         Optional<ExternalTransactionEntity> optionalExternalTransactionEntity = transactionRepository
