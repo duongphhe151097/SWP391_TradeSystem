@@ -164,7 +164,7 @@ public class VnPayIpnController extends BaseController {
         vnPayTransactionRepository.update(vnPayTransactionEntity);
         userRepository.updateUserBalance(userEntity.getId(), newBalance);
 
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(false);
         session.setAttribute(UserConstant.SESSION_BALANCE, newBalance);
 
         jsonObject.addProperty("RspCode", "00");
