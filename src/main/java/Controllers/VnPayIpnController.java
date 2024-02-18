@@ -9,6 +9,7 @@ import Models.VnPayTransactionEntity;
 import Services.VnPayService;
 import Utils.Annotations.Authorization;
 import Utils.Constants.TransactionConstant;
+import Utils.Constants.UserConstant;
 import Utils.Constants.VnPayConstant;
 import Utils.Convert.StringConvertor;
 import com.google.gson.Gson;
@@ -17,6 +18,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -161,6 +163,9 @@ public class VnPayIpnController extends BaseController {
         transactionRepository.update(externalTransactionEntity);
         vnPayTransactionRepository.update(vnPayTransactionEntity);
         userRepository.updateUserBalance(userEntity.getId(), newBalance);
+
+        HttpSession session = req.getSession();
+        session.setAttribute(UserConstant.SESSION_BALANCE, newBalance);
 
         jsonObject.addProperty("RspCode", "00");
         jsonObject.addProperty("Message", "Confirm Success");

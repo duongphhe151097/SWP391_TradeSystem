@@ -112,6 +112,7 @@ public class LoginController extends BaseController {
             session.setAttribute(UserConstant.SESSION_USERNAME, existUser.get().getUsername());
             session.setAttribute(UserConstant.SESSION_USEREMAIL, existUser.get().getEmail());
             session.setAttribute(UserConstant.SESSION_USERFULLNAME, existUser.get().getFullName());
+            session.setAttribute(UserConstant.SESSION_BALANCE, existUser.get().getBalance());
             SessionManagerRepository sessionManagerRepository = new SessionManagerRepository();
 
             Optional<SessionManagerEntity> existSession = sessionManagerRepository.getSessionByUserId(existUser.get().getId());
