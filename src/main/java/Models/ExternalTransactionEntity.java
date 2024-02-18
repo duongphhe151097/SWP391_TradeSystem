@@ -8,6 +8,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 @Entity(name = "externalTrans")
@@ -34,7 +35,7 @@ public class ExternalTransactionEntity extends BaseEntity implements Serializabl
     private UUID userId;
 
     @Column(name = "`amount`", updatable = false, nullable = false)
-    private BigDecimal amount;
+    private BigInteger amount;
 
     @Column(name = "`status`", updatable = false, nullable = false)
     private short status;

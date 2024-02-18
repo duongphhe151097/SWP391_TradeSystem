@@ -7,6 +7,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Set;
 import java.util.UUID;
 
@@ -58,7 +59,7 @@ public class UserEntity extends BaseEntity implements Serializable {
     private float rating;
 
     @Column(name = "`balance`")
-    private BigDecimal balance;
+    private BigInteger balance;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role",

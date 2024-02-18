@@ -7,6 +7,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -145,12 +146,11 @@ public class UserRepository {
         }
     }
 
-    public void updateUserBalance(UUID userId, BigDecimal balance) {
+    public void updateUserBalance(UUID userId, BigInteger balance) {
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
             transaction.begin();
-
             entityManager.createQuery("UPDATE user u SET u.balance = :balance WHERE u.id = :id")
                     .setParameter("id", userId)
                     .setParameter("balance", balance)

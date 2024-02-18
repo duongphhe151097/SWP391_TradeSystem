@@ -10,6 +10,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 @Entity(name = "vnPayTrans")
@@ -37,7 +38,7 @@ public class VnPayTransactionEntity extends BaseEntity implements Serializable {
     private String command;
 
     @Column(name = "`amount`", updatable = false, nullable = false)
-    private BigDecimal amount;
+    private BigInteger amount;
 
     @Column(name = "`current_code`", updatable = false, nullable = false, length = 3)
     private String currentCode;

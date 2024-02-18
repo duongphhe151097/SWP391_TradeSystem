@@ -22,6 +22,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -100,7 +101,7 @@ public class VnPayIpnController extends BaseController {
         //TODO: Check amount of transactionI
 
         //Kiểm tra số tiền thanh toán do VNPAY phản hồi(vnp_Amount/100) với số tiền của đơn hàng merchant tạo thanh toán: giả sử số tiền kiểm tra là đúng.
-        boolean checkAmount = Objects.equals(externalTransactionEntity.getAmount(), BigDecimal.valueOf(amount));
+        boolean checkAmount = Objects.equals(externalTransactionEntity.getAmount(), BigInteger.valueOf(amount));
 
         if (!checkAmount) {
             //Code: 04, Message: Invalid amount
@@ -156,7 +157,7 @@ public class VnPayIpnController extends BaseController {
             return;
         }
         UserEntity userEntity = optionalUserEntity.get();
-        BigDecimal newBalance = userEntity.getBalance()
+        BigInteger newBalance = userEntity.getBalance()
                 .add(externalTransactionEntity.getAmount());
 
         externalTransactionEntity.setStatus(TransactionConstant.STATUS_SUCCESSED);

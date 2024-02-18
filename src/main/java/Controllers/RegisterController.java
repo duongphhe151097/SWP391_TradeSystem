@@ -24,6 +24,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -173,7 +174,7 @@ public class RegisterController extends BaseController {
                     .status(UserConstant.PENDING)
                     .attemp((short) 0)
                     .avatar("")
-                    .balance(BigDecimal.ZERO)
+                    .balance(BigInteger.ZERO)
                     .address("Không có")
                     .phoneNumber("Không có")
                     .rating(0)

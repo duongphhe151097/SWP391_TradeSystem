@@ -18,6 +18,7 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -49,6 +50,12 @@ public class VnPayCreatePaymentController extends BaseController {
             String vnp_Command = "pay";
             String orderType = "other";
             long amount = Long.parseLong(req.getParameter("amount")) * 100L;
+
+            if(amount < TransactionConstant.MIN_AMOUNT || amount > TransactionConstant.MAX_AMOUNT){
+                req.setAttribute("ERROR_MESSAGE", "Số tiền phải lớn hơn 10,000đ và nhỏ hơn 10,000,000đ");
+                req.getRequestDispatcher("/pages/payment/vnpay-createpayment.jsp").forward(req, resp);
+                return;
+            }
             String bankCode = req.getParameter("bankCode");
 
             //String vnp_TxnRef = StringGenerator.generateRandomString(10);
@@ -141,7 +148,7 @@ public class VnPayCreatePaymentController extends BaseController {
                     .builder()
                     .id(transactionId)
                     .type(TransactionConstant.VNPAY)
-                    .amount(BigDecimal.valueOf(amount / 100L))
+                    .amount(BigInteger.valueOf(amount / 100L))
                     .command(TransactionConstant.CASH_IN)
                     .status(TransactionConstant.STATUS_PROCESSING)
                     .userId(userId)
@@ -155,7 +162,7 @@ public class VnPayCreatePaymentController extends BaseController {
                     .type(TransactionConstant.VNPAY)
                     .version(vnp_Version)
                     .command(vnp_Command)
-                    .amount(BigDecimal.valueOf(amount / 100L))
+                    .amount(BigInteger.valueOf(amount / 100L))
                     .currentCode("VND")
                     .bankCode(bankCode)
                     .locale(locate)
