@@ -138,7 +138,7 @@ public class VnPayIpnController extends BaseController {
         if (!VnPayConstant.Success_Code.equals(vnpRespCode)) {
             //GD ko thành công
             externalTransactionEntity.setStatus(TransactionConstant.STATUS_FAILED);
-            transactionRepository.update(externalTransactionEntity);
+            transactionRepository.updateStatus(externalTransactionEntity);
             jsonObject.addProperty("RspCode", "00");
             jsonObject.addProperty("Message", "Confirm Success");
             resp.getWriter().write(gson.toJson(jsonObject));
@@ -149,7 +149,7 @@ public class VnPayIpnController extends BaseController {
                 .getUserById(externalTransactionEntity.getUserId());
         if (optionalUserEntity.isEmpty()) {
             externalTransactionEntity.setStatus(TransactionConstant.STATUS_FAILED);
-            transactionRepository.update(externalTransactionEntity);
+            transactionRepository.updateStatus(externalTransactionEntity);
             jsonObject.addProperty("RspCode", "00");
             jsonObject.addProperty("Message", "Confirm Success");
             resp.getWriter().write(gson.toJson(jsonObject));
@@ -160,7 +160,7 @@ public class VnPayIpnController extends BaseController {
                 .add(externalTransactionEntity.getAmount());
 
         externalTransactionEntity.setStatus(TransactionConstant.STATUS_SUCCESSED);
-        transactionRepository.update(externalTransactionEntity);
+        transactionRepository.updateStatus(externalTransactionEntity);
         vnPayTransactionRepository.update(vnPayTransactionEntity);
         userRepository.updateUserBalance(userEntity.getId(), newBalance);
 

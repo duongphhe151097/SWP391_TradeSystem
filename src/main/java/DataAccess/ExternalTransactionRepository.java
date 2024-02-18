@@ -14,7 +14,7 @@ public class ExternalTransactionRepository {
         this.entityManager = DbFactory.getFactory().createEntityManager();
     }
 
-    public Optional<ExternalTransactionEntity> getExternalTransactionByIdType(UUID txnId, String type){
+    public Optional<ExternalTransactionEntity> getExternalTransactionByIdType(UUID txnId, String type) {
         try {
             ExternalTransactionEntity entity = entityManager
                     .createQuery("select ext from externalTrans ext " +
@@ -30,7 +30,7 @@ public class ExternalTransactionRepository {
         return Optional.empty();
     }
 
-    public Optional<ExternalTransactionEntity> add(ExternalTransactionEntity entity){
+    public Optional<ExternalTransactionEntity> add(ExternalTransactionEntity entity) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
@@ -46,18 +46,21 @@ public class ExternalTransactionRepository {
         return Optional.empty();
     }
 
-    public Optional<ExternalTransactionEntity> update(ExternalTransactionEntity entity){
+    public void updateStatus(ExternalTransactionEntity entity) {
         EntityTransaction transaction = entityManager.getTransaction();
-        try{
+        try {
             transaction.begin();
+            entityManager.createQuery("update externalTrans ext set ext.status = :status")
+                    .setParameter("status", entity.getStatus())
+                    .executeUpdate();
             entityManager.merge(entity);
+
             transaction.commit();
 
-            return Optional.of(entity);
-        }catch (Exception e) {
+        } catch (Exception e) {
+            e.printStackTrace();
             transaction.rollback();
         }
 
-        return Optional.empty();
     }
 }
