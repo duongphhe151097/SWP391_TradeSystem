@@ -36,11 +36,10 @@ public class VnPayTransactionRepository {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            VnPayTransactionEntity externalTransactionEntity = entityManager.merge(entity);
-            entityManager.persist(externalTransactionEntity);
+            entityManager.persist(entity);
             transaction.commit();
 
-            return Optional.of(externalTransactionEntity);
+            return Optional.of(entity);
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();

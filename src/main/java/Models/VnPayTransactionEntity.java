@@ -21,7 +21,6 @@ import java.util.UUID;
 @Builder
 public class VnPayTransactionEntity extends BaseEntity implements Serializable {
     @Id
-    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     @Column(name = "`id`", columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 

@@ -34,11 +34,10 @@ public class ExternalTransactionRepository {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            ExternalTransactionEntity externalTransactionEntity = entityManager.merge(entity);
-            entityManager.persist(externalTransactionEntity);
+            entityManager.persist(entity);
             transaction.commit();
 
-            return Optional.of(externalTransactionEntity);
+            return Optional.of(entity);
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
