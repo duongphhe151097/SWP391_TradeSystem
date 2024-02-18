@@ -11,6 +11,8 @@ import Utils.Annotations.Authorization;
 import Utils.Constants.TransactionConstant;
 import Utils.Constants.VnPayConstant;
 import Utils.Convert.StringConvertor;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,8 +41,13 @@ public class VnPayIpnController extends BaseController {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+
         String vnpRespCode = req.getParameter(VnPayConstant.vnp_ResponseCode);
         String vnp_SecureHash = req.getParameter(VnPayConstant.vnp_SecureHash);
+        JsonObject jsonObject = new JsonObject();
+
+        Gson gson = new Gson();
 
         Map<String, String> fields = new HashMap<>();
         for (Enumeration<String> params = req.getParameterNames(); params.hasMoreElements(); ) {
@@ -57,8 +64,9 @@ public class VnPayIpnController extends BaseController {
         String signValue = VnPayService.hashAllFields(fields);
         if (!signValue.equals(vnp_SecureHash)) {
             //Code: 97, Message: Invalid Checksum
-            req.setAttribute("VAR_IpnCode", "97");
-            req.setAttribute("VAR_IpnMessage", "Invalid Checksum");
+            jsonObject.addProperty("RspCode", "97");
+            jsonObject.addProperty("Message", "Invalid Checksum");
+            resp.getWriter().write(gson.toJson(jsonObject));
             return;
         }
 
@@ -73,8 +81,9 @@ public class VnPayIpnController extends BaseController {
         boolean checkOrderId = optionalExternalTransactionEntity.isPresent(); // Giá trị của vnp_TxnRef tồn tại trong CSDL của merchant
         if (!checkOrderId) {
             //Code: 01, Message: Order not found
-            req.setAttribute("VAR_IpnCode", "01");
-            req.setAttribute("VAR_IpnMessage", "Order not found");
+            jsonObject.addProperty("RspCode", "01");
+            jsonObject.addProperty("Message", "Order not found");
+            resp.getWriter().write(gson.toJson(jsonObject));
             return;
         }
         ExternalTransactionEntity externalTransactionEntity = optionalExternalTransactionEntity.get();
@@ -88,8 +97,9 @@ public class VnPayIpnController extends BaseController {
 
         if (!checkAmount) {
             //Code: 04, Message: Invalid amount
-            req.setAttribute("VAR_IpnCode", "04");
-            req.setAttribute("VAR_IpnMessage", "Invalid amount");
+            jsonObject.addProperty("RspCode", "04");
+            jsonObject.addProperty("Message", "Invalid amount");
+            resp.getWriter().write(gson.toJson(jsonObject));
             return;
         }
 
@@ -97,8 +107,9 @@ public class VnPayIpnController extends BaseController {
         boolean checkOrderStatus = externalTransactionEntity.getStatus() == TransactionConstant.STATUS_PROCESSING;
         if (!checkOrderStatus) {
             //Code: 02, Message: Order already confirmed
-            req.setAttribute("VAR_IpnCode", "02");
-            req.setAttribute("VAR_IpnMessage", "Order already confirmed");
+            jsonObject.addProperty("RspCode", "02");
+            jsonObject.addProperty("Message", "Order already confirmed");
+            resp.getWriter().write(gson.toJson(jsonObject));
             return;
         }
 
@@ -106,7 +117,8 @@ public class VnPayIpnController extends BaseController {
                 .getByTransactionId(optionalExternalTransactionEntity.get().getId());
 
         if (optionalVnPayTransactionEntity.isEmpty()) {
-            System.out.println("Không thành công!");
+            jsonObject.addProperty("RspCode", "00");
+            jsonObject.addProperty("Message", "Confirm Success");
             return;
         }
 
@@ -120,7 +132,9 @@ public class VnPayIpnController extends BaseController {
             //GD ko thành công
             externalTransactionEntity.setStatus(TransactionConstant.STATUS_FAILED);
             transactionRepository.update(externalTransactionEntity);
-            System.out.println("Không thành công");
+            jsonObject.addProperty("RspCode", "00");
+            jsonObject.addProperty("Message", "Confirm Success");
+            resp.getWriter().write(gson.toJson(jsonObject));
             return;
         }
 
@@ -129,7 +143,9 @@ public class VnPayIpnController extends BaseController {
         if (optionalUserEntity.isEmpty()) {
             externalTransactionEntity.setStatus(TransactionConstant.STATUS_FAILED);
             transactionRepository.update(externalTransactionEntity);
-            System.out.println("Không thành công");
+            jsonObject.addProperty("RspCode", "00");
+            jsonObject.addProperty("Message", "Confirm Success");
+            resp.getWriter().write(gson.toJson(jsonObject));
             return;
         }
         UserEntity userEntity = optionalUserEntity.get();
@@ -140,7 +156,10 @@ public class VnPayIpnController extends BaseController {
         transactionRepository.update(externalTransactionEntity);
         vnPayTransactionRepository.update(vnPayTransactionEntity);
         userRepository.updateUserBalance(userEntity.getId(), newBalance);
-        System.out.println("Thành công");
+
+        jsonObject.addProperty("RspCode", "00");
+        jsonObject.addProperty("Message", "Confirm Success");
+        resp.getWriter().write(gson.toJson(jsonObject));
     }
 
     @Override
