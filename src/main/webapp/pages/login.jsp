@@ -93,5 +93,5 @@
 
     </body>
     <jsp:include page="../common/common-js.jsp"/>
-    <script src="<c:url value="/js/captcha.js"/>"></script>
+    <script type="module" src="<c:url value="/js/captcha.js"/>"></script>
 </html>

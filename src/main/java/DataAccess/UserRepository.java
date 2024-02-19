@@ -4,7 +4,9 @@ import Models.UserEntity;
 import Utils.Validation.StringValidator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.FlushModeType;
 import jakarta.persistence.TypedQuery;
+import org.hibernate.Session;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -93,6 +95,7 @@ public class UserRepository {
                     .setParameter("status", status)
                     .executeUpdate();
             transaction.commit();
+
             return true;
         } catch (Exception e) {
             transaction.rollback();
@@ -159,10 +162,15 @@ public class UserRepository {
         } catch (Exception e) {
             transaction.rollback();
             e.printStackTrace();
+        } finally {
+            if(transaction.isActive()){
+                entityManager.flush();
+            }
         }
     }
 
     public long countAll(String search, String status, LocalDateTime startDate, LocalDateTime endDate) {
+        entityManager.clear();
         StringBuilder hql = new StringBuilder();
         hql.append("SELECT COUNT(*) FROM user u ");
 
@@ -201,6 +209,7 @@ public class UserRepository {
     }
 
     public List<UserEntity> getAllWithPaging(int start, int end, String search, String status, LocalDateTime startDate, LocalDateTime endDate) {
+        entityManager.clear();
         StringBuilder hql = new StringBuilder();
         hql.append("SELECT u FROM user u ");
 
@@ -235,6 +244,7 @@ public class UserRepository {
 
             query.setFirstResult(start);
             query.setMaxResults(end);
+
             return query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();

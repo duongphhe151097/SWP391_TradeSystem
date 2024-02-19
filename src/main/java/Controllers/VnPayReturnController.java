@@ -65,13 +65,13 @@ public class VnPayReturnController extends BaseController {
         }
 
         if (!VnPayConstant.Success_Code.equals(vnpTransactionStatus)) {
-            req.setAttribute("MESSAGE_NOTI", "Không thành công!");
+            req.setAttribute("MESSAGE_NOTI", "Giao dịch không thành công!");
             dispatcher.forward(req, resp);
             return;
         }
 
         req.setAttribute("IS_SUCCESS", true);
-        req.setAttribute("MESSAGE_NOTI", "Thành công!");
+        req.setAttribute("MESSAGE_NOTI", "Giao dịch thành công!");
         dispatcher.forward(req, resp);
     }
 

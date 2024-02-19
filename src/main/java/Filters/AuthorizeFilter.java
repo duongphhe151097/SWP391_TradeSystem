@@ -5,6 +5,7 @@ import Dtos.SessionDto;
 import Models.RoleEntity;
 import Services.SessionService;
 import Utils.Annotations.Authorization;
+import Utils.Constants.CommonConstants;
 import Utils.Constants.UserConstant;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
@@ -38,7 +39,9 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
     @Override
     public void destroy() {
         Filter.super.destroy();
-//        UsernameHolder.clearUserName();
+        this.context = null;
+        this.roleRepository = null;
+        this.sessionService = null;
     }
 
     @Override
@@ -139,11 +142,24 @@ public class AuthorizeFilter extends BaseFilter implements Filter {
     }
 
     public void publicPageProcess(FilterChain chain, HttpServletRequest request, HttpServletResponse response, String requestPath) throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/pages/login.jsp");
-        SessionDto sessionInfo = sessionService.isValidSession(request);
+//        SessionDto sessionInfo = sessionService.isValidSession(request);
+        HttpSession session = request.getSession(false);
+        String JSESSIONID = getCookieValue(request, CommonConstants.SESSION_COOKIE_KEY);
+
         String[] exceptionPath = new String[]{"/login", "/register", "/forgot"};
 
-        if (sessionInfo.isValid() && Arrays.asList(exceptionPath).contains(requestPath)) {
+        if ((session != null && !JSESSIONID.isBlank()) && Arrays.asList(exceptionPath).contains(requestPath)) {
+            if(session.getAttribute(UserConstant.SESSION_USERID) == null){
+                session.invalidate();
+                chain.doFilter(request, response);
+                return;
+            }
+
+            if(request.getMethod().equalsIgnoreCase("post") && requestPath.equals("/login")){
+                session.invalidate();
+                chain.doFilter(request, response);
+                return;
+            }
             response.sendRedirect("home");
             return;
         }
