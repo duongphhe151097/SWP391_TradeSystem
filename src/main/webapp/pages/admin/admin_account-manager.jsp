@@ -218,12 +218,25 @@
                                                                 </span>
                                                             </a>
 
-                                                            <a href="">
-                                                                <span class="d-flex align-items-center">
-                                                                    <span class="material-symbols-outlined">do_not_disturb_on</span>
-                                                                    <span>Chặn tài khoản</span>
-                                                                </span>
-                                                            </a>
+                                                            <c:choose>
+                                                                <c:when test="${user.status == 3}">
+                                                                    <a href="<c:url value="/admin/account/status?id=${user.id}&type=active"/> " class="a-ban-click">
+                                                                        <span class="d-flex align-items-center">
+                                                                            <span class="material-symbols-outlined">check_circle</span>
+                                                                            <span>Kích hoạt tài khoản</span>
+                                                                        </span>
+                                                                    </a>
+                                                                </c:when>
+
+                                                                <c:otherwise>
+                                                                    <a href="<c:url value="/admin/account/status?id=${user.id}&type=banned"/> " class="a-ban-click">
+                                                                        <span class="d-flex align-items-center">
+                                                                            <span class="material-symbols-outlined">block</span>
+                                                                            <span>Chặn tài khoản</span>
+                                                                        </span>
+                                                                    </a>
+                                                                </c:otherwise>
+                                                            </c:choose>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -272,6 +285,10 @@
                 </div>
             </div>
         </div>
+
+        <jsp:include page="/common/modal.jsp" />
+        <jsp:include page="/common/toast.jsp" />
     </body>
-    <jsp:include page="../../common/common-js.jsp"/>
+    <jsp:include page="/common/common-js.jsp"/>
+    <script type="module" src="<c:url value="/js/admin.account.js"/>"></script>
 </html>

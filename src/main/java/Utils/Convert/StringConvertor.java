@@ -4,7 +4,10 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 import java.util.UUID;
 
 public class StringConvertor {
@@ -54,5 +57,19 @@ public class StringConvertor {
 
         // Parsing the formatted string to a UUID
         return UUID.fromString(sb.toString());
+    }
+
+    public static String convertTimestamp(String timestamp) {
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+            Date date = inputFormat.parse(timestamp);
+
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

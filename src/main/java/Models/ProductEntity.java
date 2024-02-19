@@ -31,6 +31,9 @@ public class ProductEntity extends BaseEntity implements Serializable {
     @Column(name = "`category_id`", nullable = false)
     private int categoryId;
 
+    @Column(name = "`user_id`", updatable = false)
+    private UUID userId;
+
     @Column(name = "`description`", nullable = false)
     private String description;
 

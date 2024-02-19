@@ -100,6 +100,11 @@ public class VnPayService {
             if (ipAdress == null) {
                 ipAdress = request.getRemoteAddr();
             }
+
+            if(ipAdress.length() > 45 && ipAdress.contains(",")){
+                String[] splitIpAddress = ipAdress.split(",");
+                ipAdress = splitIpAddress[0];
+            }
         } catch (Exception e) {
             ipAdress = "Invalid IP:" + e.getMessage();
         }

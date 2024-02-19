@@ -7,6 +7,7 @@ import com.mewebstudio.captcha.Captcha;
 import com.mewebstudio.captcha.Config;
 import com.mewebstudio.captcha.GeneratedCaptcha;
 import com.mewebstudio.captcha.exception.FontLoadException;
+import com.mewebstudio.captcha.util.RandomStringGenerator;
 import jakarta.servlet.ServletContext;
 import org.javatuples.Pair;
 
@@ -27,6 +28,7 @@ public class CaptchaService {
             });
 
             Captcha captcha = new Captcha(captchaConfig);
+            captcha.setRandomStringGenerator(new RandomStringGenerator(5, true));
 
             GeneratedCaptcha generatedCaptcha = captcha.generate();
             return Optional.of(new Pair<>(generatedCaptcha.getCode(), generatedCaptcha.getImage()));

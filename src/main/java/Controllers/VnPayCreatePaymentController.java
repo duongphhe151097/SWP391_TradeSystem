@@ -1,14 +1,24 @@
 package Controllers;
 
+import DataAccess.ExternalTransactionRepository;
+import DataAccess.VnPayTransactionRepository;
+import Models.ExternalTransactionEntity;
+import Models.VnPayTransactionEntity;
 import Services.VnPayService;
 import Utils.Annotations.Authorization;
+import Utils.Constants.TransactionConstant;
+import Utils.Constants.UserConstant;
 import Utils.Constants.VnPayConstant;
+import Utils.Validation.TimeValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -18,6 +28,16 @@ import java.util.*;
 @WebServlet(name = "VnPayCreatePaymentController", urlPatterns = "/payment/vnpay/create")
 @Authorization(role = "", isPublic = false)
 public class VnPayCreatePaymentController extends BaseController {
+    private VnPayTransactionRepository vnPayTransactionRepository;
+    private ExternalTransactionRepository externalTransactionRepository;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        this.vnPayTransactionRepository = new VnPayTransactionRepository();
+        this.externalTransactionRepository = new ExternalTransactionRepository();
+    }
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/pages/payment/vnpay-createpayment.jsp").forward(req, resp);
@@ -30,12 +50,33 @@ public class VnPayCreatePaymentController extends BaseController {
             String vnp_Command = "pay";
             String orderType = "other";
             long amount = Long.parseLong(req.getParameter("amount")) * 100L;
+
+            if(amount < TransactionConstant.MIN_AMOUNT || amount > TransactionConstant.MAX_AMOUNT){
+                req.setAttribute("ERROR_AMOUNT", "Số tiền phải lớn hơn 10,000đ và nhỏ hơn 10,000,000đ");
+                req.getRequestDispatcher("/pages/payment/vnpay-createpayment.jsp").forward(req, resp);
+                return;
+            }
             String bankCode = req.getParameter("bankCode");
 
-//            String vnp_TxnRef = StringGenerator.generateRandomString(10);
-            String vnp_TxnRef = UUID.randomUUID().toString().replace("-","");
-            String vnp_IpAddr = VnPayService.getIpAddress(req);
+            //String vnp_TxnRef = StringGenerator.generateRandomString(10);
+            UUID transactionId = UUID.randomUUID();
+            String vnp_TxnRef = transactionId.toString()
+                    .replace("-", "");
 
+            // Check only one id unique in a day
+            Optional<ExternalTransactionEntity> externalTransactionEntity = externalTransactionRepository
+                    .getExternalTransactionByIdType(transactionId, TransactionConstant.VNPAY);
+
+            if (externalTransactionEntity.isPresent()) {
+                ExternalTransactionEntity extTransEntity = externalTransactionEntity.get();
+                boolean isWithinDay = TimeValidator.isWithinDay(extTransEntity.getCreateAt());
+                if (isWithinDay) {
+                    transactionId = UUID.randomUUID();
+                    vnp_TxnRef = transactionId.toString().replace("-", "");
+                }
+            }
+
+            String vnp_IpAddr = VnPayService.getIpAddress(req);
             String vnp_TmnCode = VnPayService.vnp_TmnCode;
 
             Map<String, String> vnp_Params = new HashMap<>();
@@ -49,15 +90,18 @@ public class VnPayCreatePaymentController extends BaseController {
                 vnp_Params.put(VnPayConstant.vnp_BankCode, bankCode);
             }
             vnp_Params.put(VnPayConstant.vnp_TxnRef, vnp_TxnRef);
-            vnp_Params.put(VnPayConstant.vnp_OrderInfo, "Thanh toan don hang:" + vnp_TxnRef);
+            String orderInfo = "Xu ly yeu cau:" + vnp_TxnRef;
+            vnp_Params.put(VnPayConstant.vnp_OrderInfo, orderInfo);
             vnp_Params.put(VnPayConstant.vnp_OrderType, orderType);
 
             String locate = req.getParameter("language");
             if (locate != null && !locate.isEmpty()) {
                 vnp_Params.put(VnPayConstant.vnp_Locale, locate);
             } else {
+                locate = "vn";
                 vnp_Params.put(VnPayConstant.vnp_Locale, "vn");
             }
+
             vnp_Params.put(VnPayConstant.vnp_ReturnUrl, getBaseURL(req) + VnPayService.vnp_ReturnUrl);
             vnp_Params.put(VnPayConstant.vnp_IpAddr, vnp_IpAddr);
 
@@ -100,10 +144,43 @@ public class VnPayCreatePaymentController extends BaseController {
             String paymentUrl = VnPayService.vnp_PayUrl + "?" + queryUrl;
 
             // TODO: Add insert to db
+            HttpSession httpSession = req.getSession(false);
+            UUID userId = (UUID) httpSession.getAttribute(UserConstant.SESSION_USERID);
+            ExternalTransactionEntity insertEntity = ExternalTransactionEntity
+                    .builder()
+                    .id(transactionId)
+                    .type(TransactionConstant.VNPAY)
+                    .amount(BigInteger.valueOf(amount / 100L))
+                    .command(TransactionConstant.CASH_IN)
+                    .status(TransactionConstant.STATUS_PROCESSING)
+                    .userId(userId)
+                    .build();
+            externalTransactionRepository.add(insertEntity);
+
+            VnPayTransactionEntity insertVnPayTransEntity = VnPayTransactionEntity
+                    .builder()
+                    .id(UUID.randomUUID())
+                    .transactionId(transactionId)
+                    .type(TransactionConstant.VNPAY)
+                    .version(vnp_Version)
+                    .command(vnp_Command)
+                    .amount(BigInteger.valueOf(amount / 100L))
+                    .currentCode("VND")
+                    .bankCode(bankCode)
+                    .locale(locate)
+                    .ipAddr(vnp_IpAddr)
+                    .orderInfo(orderInfo)
+                    .orderType(orderType)
+                    .createDate(vnp_CreateDate)
+                    .expireDate(vnp_ExpireDate)
+                    .secureHash(vnp_SecureHash)
+                    .transactionNo("")
+                    .build();
+            vnPayTransactionRepository.add(insertVnPayTransEntity);
 
             resp.sendRedirect(paymentUrl);
         } catch (Exception e) {
-            req.setAttribute("ERROR_MESSAGE", "Tạo giao dịch không thành công");
+            req.setAttribute("ERROR_MESSAGE", "Tạo giao dịch không thành công!");
             req.getRequestDispatcher("/pages/payment/vnpay-createpayment.jsp").forward(req, resp);
         }
     }
