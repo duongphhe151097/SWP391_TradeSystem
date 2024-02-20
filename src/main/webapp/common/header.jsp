@@ -49,7 +49,7 @@
                                aria-expanded="false">
                                 <img class="img-xs rounded-circle" src="<c:url value="/img/default_male.jpg"/>"
                                      alt="Profile image"/>
-                                <span class="user-name">${sessionScope.SESSION_USERFULLNAME}</span>
+                                <span class="user-name">Số dư: ${sessionScope.SESSION_USERBALANCE}đ</span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                                  aria-labelledby="user-dropdown">
@@ -69,15 +69,25 @@
                                         </span>
                                     </span>
                                 </a>
+                                <a href="<c:url value="/payment/vnpay/create"/>" class="dropdown-item">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            person
+                                        </span>
+                                        <span>
+                                            Nạp tiền
+                                        </span>
+                                    </span>
+                                </a>
                                 <a href="<c:url value="/change"/>" class="dropdown-item">
-                    <span class="d-flex align-items-center">
-                        <span class="material-symbols-outlined">
-                            vpn_key
-                        </span>
-                        <span>
-                            Đổi mật khẩu
-                        </span>
-                    </span>
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            vpn_key
+                                        </span>
+                                        <span>
+                                            Đổi mật khẩu
+                                        </span>
+                                    </span>
                                 </a>
                                 <a href="<c:url value="/logout"/> " class="dropdown-item">
                                     <span class="d-flex align-items-center">

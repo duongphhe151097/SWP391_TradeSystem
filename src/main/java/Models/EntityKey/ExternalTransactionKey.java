@@ -15,14 +15,11 @@ public class ExternalTransactionKey implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ExternalTransactionKey that = (ExternalTransactionKey) o;
-        return Objects.equals(id, that.id) && Objects.equals(type, that.type);
+        return super.equals(o);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, type);
+        return super.hashCode();
     }
 }

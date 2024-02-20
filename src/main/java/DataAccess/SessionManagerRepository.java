@@ -4,6 +4,7 @@ import Models.SessionManagerEntity;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,13 +17,14 @@ public class SessionManagerRepository {
 
     public Optional<SessionManagerEntity> getSessionByUserId(UUID userId) {
         try {
-            SessionManagerEntity entity = entityManager
+            entityManager.clear();
+            List<SessionManagerEntity> entity = entityManager
                     .createQuery("SELECT s FROM session s " +
                             "WHERE s.userId = :userId", SessionManagerEntity.class)
                     .setParameter("userId", userId)
-                    .getSingleResult();
+                    .getResultList();
 
-            return Optional.ofNullable(entity);
+            return entity.isEmpty() ? Optional.empty() : Optional.ofNullable(entity.get(0));
         } catch (Exception e) {
             e.printStackTrace();
         }
