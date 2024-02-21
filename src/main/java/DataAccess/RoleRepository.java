@@ -7,6 +7,7 @@ import Models.UserRoleEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 
+import javax.swing.text.html.Option;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -17,6 +18,21 @@ public class RoleRepository {
 
     public RoleRepository() {
         entityManager = DbFactory.getFactory().createEntityManager();
+    }
+
+    public Optional<List<RoleEntity>> getAllRole(){
+        try {
+            entityManager.clear();
+            List<RoleEntity> roles = entityManager
+                    .createQuery("SELECT r FROM role r WHERE r.isDelete = false", RoleEntity.class)
+                    .getResultList();
+
+            return Optional.of(roles);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
     }
 
     public Optional<Set<RoleEntity>> getRoleByUserId(UUID userId) {
