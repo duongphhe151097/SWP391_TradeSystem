@@ -1,27 +1,40 @@
 package Controllers;
 
+import DataAccess.SessionManagerRepository;
 import DataAccess.TransactionManagerRepository;
 import Models.Common.Pagination;
 import Models.Common.ViewPaging;
 import Models.ExternalTransactionEntity;
 import Models.UserEntity;
 import Utils.Annotations.Authorization;
+import Utils.Constants.UserConstant;
 import Utils.Validation.StringValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-@WebServlet(name = "ExternalTransactionController", urlPatterns = {"/externalTransaction"})
+@WebServlet(name = "ExternalTransactionController", urlPatterns = {"/userExternalTransaction"})
 @Authorization(role = "", isPublic = false)
-public class ExternalTransactionController extends HttpServlet {
-    @Override
+public class UserExternalTransaction extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
+            String sessionId = session.getId();
+            // Perform any additional cleanup actions if needed
+            TransactionManagerRepository transactionManagerRepository = new TransactionManagerRepository()
+
+            transactionManagerRepository.getExternalTransactionByUser(userId);
+            session.invalidate();
+
         TransactionManagerRepository transactionManagerRepository = new TransactionManagerRepository();
 
         // Lấy thông tin từ yêu cầu
@@ -62,5 +75,5 @@ public class ExternalTransactionController extends HttpServlet {
         }
 
     }
-    }
 
+}

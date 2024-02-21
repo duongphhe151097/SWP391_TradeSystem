@@ -28,11 +28,10 @@ public class LogoutController extends HttpServlet{
 
             // Delete the session data from the database using the retrieved user ID
             sessionManagerRepository.removeSession(sessionId, userId);
-            session.invalidate();
         }
 
         // Redirect to the login page or any other appropriate page after logout
-        response.sendRedirect(request.getContextPath() + "/login");
+        response.sendRedirect(request.getContextPath() + "/");
     }
 
 }

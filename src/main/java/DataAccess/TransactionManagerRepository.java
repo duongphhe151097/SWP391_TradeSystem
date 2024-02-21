@@ -35,6 +35,22 @@ public class TransactionManagerRepository {
         return new ArrayList<>();
     }
 
+    public List<UserEntity> getExternalTransactionByUser(UUID UserId) {
+        try {
+
+            List<UserEntity> entity = entityManager
+                    .createQuery("from externalTrans et WHERE et.userId = :UserId", UserEntity.class)
+                    .setParameter("UserId", UserId)
+                    .getResultList();
+
+            return entity;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
+    }
+
     public List<ExternalTransactionEntity> getExternalTransactionsWithPaging(int start, int pageSize) {
         try {
             TypedQuery<ExternalTransactionEntity> query = entityManager.createQuery(
