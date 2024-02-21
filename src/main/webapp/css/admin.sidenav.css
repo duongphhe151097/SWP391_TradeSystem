@@ -41,23 +41,6 @@ body {
     transition: all 0.5s ease;
 }
 
-#sidebar header {
-    background-color: #263238;
-    font-size: 20px;
-    line-height: var(--nav-heigth);
-    text-align: center;
-}
-
-#sidebar header a {
-    color: #fff;
-    display: block;
-    text-decoration: none;
-}
-
-#sidebar header a:hover {
-    color: #fff;
-}
-
 .item-name {
     font-weight: 500;
 }
@@ -89,7 +72,33 @@ body {
 .navbar {
     height: var(--nav-heigth);
     background-color: #263238 !important;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
 }
+
+.main-content{
+    margin-top: var(--nav-heigth);
+}
+
+.navbar-logo{
+    background-color: #263238;
+    font-size: 20px;
+    line-height: var(--nav-heigth);
+    text-align: center;
+}
+
+.navbar-logo a {
+    color: #fff;
+    display: block;
+    text-decoration: none;
+}
+.navbar-logo a:hover {
+    color: #fff;
+}
+
 
 .navbar .nav-item {
     margin-left: 1.25rem;
@@ -110,15 +119,10 @@ body {
     border-radius: 100%;
 }
 
-.navbar .nav-item .custom-svg path {
-    /* fill: --dark; */
-}
-
 .navbar .nav-item .user-name {
     font-style: normal;
     font-weight: 600;
     font-size: 15px;
-    /* color: --light; */
     margin: 1rem;
 }
 
@@ -145,7 +149,6 @@ body {
     border-bottom: 1px solid #dee2e6;
     line-height: 1;
 }
-
 
 .dropdown:hover>.dropdown-menu {
     display: block;
