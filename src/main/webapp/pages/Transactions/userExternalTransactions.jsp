@@ -20,18 +20,7 @@
 <c:set value="${requestScope.VIEW_PAGING.paging}" var="paging"/>
 <c:set value="${requestScope.VIEW_PAGING.items}" var="externalTran"/>
 
-<form action="externalTransaction" method="post">
-    <input type="text" name="searchTransactionId" placeholder="Mã giao dịch">
-    <input type="text" name="searchPaymentMethod" placeholder="Thanh toán bằng">
-    <input type="text" name="searchNote" placeholder="Ghi chú">
-    <input type="text" name="searchAmount" placeholder="Số tiền">
-    <input type="text" name="searchStatus" placeholder="Trạng thái">
-    <input type="text" name="searchCreatedAt" placeholder="Thời gian tạo">
-    <input type="text" name="searchCreatedBy" placeholder="Người tạo">
-    <input type="text" name="searchUpdatedAt" placeholder="Thời gian sửa cuối">
-    <input type="text" name="searchUpdatedBy" placeholder="Người sửa">
-    <button type="submit">Tìm kiếm</button>
-</form>
+
 
 <table id="externalTransactions">
     <thead>
@@ -46,9 +35,12 @@
         <th>Thời gian sửa cuối</th>
         <th>Nguời sửa</th>
     </tr>
+
     </thead>
     <tbody>
+
     <c:forEach items="${externalTran}" var="transaction">
+
         <tr>
             <td>${transaction.id}</td>
             <td>${transaction.type}</td>
@@ -71,7 +63,7 @@
                     <c:set value="${f:pagingUrlGenerate(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                            var="previous"/>
                     <a class="page-link"
-                       href="<c:url value="/externalTransaction${previous}"/>">
+                       href="<c:url value="/userExternalTransaction${previous}"/>">
                         Về trang trước
                     </a>
                 </li>
@@ -81,7 +73,7 @@
                         <c:set value="${f:pagingUrlGenerate(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                var="current"/>
                         <a class="page-link"
-                           href="<c:url value="/externalTransaction${current}"/>">${loop.index}</a>
+                           href="<c:url value="/userExternalTransaction${current}"/>">${loop.index}</a>
                     </li>
                 </c:forEach>
 
@@ -89,7 +81,7 @@
                     <c:set value="${f:pagingUrlGenerate(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                            var="next"/>
                     <a class="page-link"
-                       href="<c:url value="/externalTransaction${next}"/>">
+                       href="<c:url value="/userExternalTransaction${next}"/>">
                         Đến trang tiếp
                     </a>
                 </li>
