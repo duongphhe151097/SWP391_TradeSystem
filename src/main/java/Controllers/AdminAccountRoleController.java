@@ -19,7 +19,7 @@ public class AdminAccountRoleController extends BaseController{
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doGet(req, resp);
+
     }
 
     @Override
