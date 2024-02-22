@@ -20,17 +20,27 @@
 <c:set value="${requestScope.VIEW_PAGING.paging}" var="paging"/>
 <c:set value="${requestScope.VIEW_PAGING.items}" var="externalTran"/>
 
-<form action="externalTransaction" method="post">
-    <input type="text" name="searchTransactionId" placeholder="Mã giao dịch">
-    <input type="text" name="searchPaymentMethod" placeholder="Thanh toán bằng">
-    <input type="text" name="searchNote" placeholder="Ghi chú">
-    <input type="text" name="searchAmount" placeholder="Số tiền">
-    <input type="text" name="searchStatus" placeholder="Trạng thái">
-    <input type="text" name="searchCreatedAt" placeholder="Thời gian tạo">
-    <input type="text" name="searchCreatedBy" placeholder="Người tạo">
-    <input type="text" name="searchUpdatedAt" placeholder="Thời gian sửa cuối">
-    <input type="text" name="searchUpdatedBy" placeholder="Người sửa">
-    <button type="submit">Tìm kiếm</button>
+<form method="get" action="<c:url value="/externalTransaction"/> ">
+    <div class="d-flex justify-content-end">
+        <input type="hidden" value="${paging.currentPage}" name="current">
+        <input type="hidden" value="${paging.pageSize}" name="size">
+        <input type="hidden" value="${paging.pageRangeOutput}" name="range">
+        <div class="input-group mb-3 d-flex flex-column">
+            <label for="start_date">Search theo ngày tạo Từ ngày</label>
+            <input type="date" class="form-control w-100"
+                   value="${requestScope.FILTER_STARTDATE}" id="start_date" name="f_start">
+        </div>
+        <div class="input-group mb-3 d-flex flex-column">
+            <label for="end_date">Search theo ngày tạo Đến ngày</label>
+            <input type="date" class="form-control w-100"
+                   value="${requestScope.FILTER_ENDDATE}" id="end_date" name="f_end">
+        </div>
+
+
+        <div class="ml-3 input-group mb-3 d-flex flex-column justify-content-end">
+            <button type="submit" class="btn btn-primary">Tìm</button>
+        </div>
+    </div>
 </form>
 
 <table id="externalTransactions">

@@ -6,6 +6,7 @@ import Models.Common.ViewPaging;
 import Models.ExternalTransactionEntity;
 import Models.UserEntity;
 import Utils.Annotations.Authorization;
+import Utils.Convert.DateTimeConvertor;
 import Utils.Validation.StringValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,8 @@ public class ExternalTransactionController extends HttpServlet {
         String currentPage = req.getParameter("current");
         String pageSize = req.getParameter("size");
         String pageRange = req.getParameter("range");
+        String startDate = req.getParameter("f_start");
+        String endDate = req.getParameter("f_end");
 
         try {
             if (StringValidator.isNullOrBlank(currentPage)
@@ -38,19 +42,28 @@ public class ExternalTransactionController extends HttpServlet {
                 pageRange = "5";
             }
 
+            LocalDateTime startDateConvert = null;
+            if (!StringValidator.isNullOrBlank(startDate)){
+                startDateConvert = DateTimeConvertor.toLocalDateTime(startDate);
+            }
+
+            LocalDateTime endDateConvert = null;
+            if (!StringValidator.isNullOrBlank(endDate)){
+                endDateConvert = DateTimeConvertor.toLocalDateTime(endDate);
+            }
 
 
-
-
-            long userCount = transactionManagerRepository.countAll();
+            long userCount = transactionManagerRepository.countAll( startDateConvert, endDateConvert);
             Pagination pagination
                     = new Pagination(userCount, Integer.parseInt(currentPage), Integer.parseInt(pageRange), Integer.parseInt(pageSize));
 
             int startPage = (pagination.getCurrentPage() - 1) * pagination.getPageSize();
             int endPage = pagination.getPageSize();
-            List<ExternalTransactionEntity> externalTransactions = transactionManagerRepository
-                    .getExternalTransactionsWithPaging(startPage, endPage);
+            List<UserEntity> externalTransactions = transactionManagerRepository
+                    .getExternalTransactionsWithPaging(startPage, endPage, startDateConvert, endDateConvert);
 
+            req.setAttribute("FILTER_STARTDATE", startDate);
+            req.setAttribute("FILTER_ENDDATE", endDate);
             req.setAttribute("VIEW_PAGING", new ViewPaging<>(externalTransactions, pagination));
 
             req.getRequestDispatcher("/pages/Transactions/ExternalTransactions.jsp").forward(req, resp);

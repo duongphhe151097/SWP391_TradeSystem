@@ -194,17 +194,48 @@ public class TransactionManagerRepository {
         return new ArrayList<>();
     }
 
-    public List<ExternalTransactionEntity> getExternalTransactionsWithPaging(int start, int pageSize) {
+//    public List<ExternalTransactionEntity> getExternalTransactionsWithPaging(int start, int pageSize) {
+//        try {
+//            TypedQuery<ExternalTransactionEntity> query = entityManager.createQuery(
+//                    "SELECT e FROM externalTrans e", ExternalTransactionEntity.class);
+//            query.setFirstResult(start);
+//            query.setMaxResults(pageSize);
+//            return query.getResultList();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
+
+    public List<UserEntity> getExternalTransactionsWithPaging(int start, int end, LocalDateTime startDate, LocalDateTime endDate) {
+        entityManager.clear();
+        StringBuilder hql = new StringBuilder();
+        hql.append("SELECT e FROM externalTrans e ");
+
+        if (startDate != null) {
+            hql.append("WHERE e.createAt >= :startDate ");
+        }
+
+        if (endDate != null) {
+            hql.append("AND e.createAt <= :endDate");
+        }
+
         try {
-            TypedQuery<ExternalTransactionEntity> query = entityManager.createQuery(
-                    "SELECT e FROM externalTrans e", ExternalTransactionEntity.class);
+            String queryString = hql.toString();
+
+            TypedQuery<UserEntity> query = entityManager.createQuery(queryString, UserEntity.class);
+            if (queryString.contains(":startDate")) query.setParameter("startDate", startDate);
+            if (queryString.contains(":endDate")) query.setParameter("endDate", endDate);
+
             query.setFirstResult(start);
-            query.setMaxResults(pageSize);
+            query.setMaxResults(end);
+
             return query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+
+        return new ArrayList<>();
     }
 
     public List<ExternalTransactionEntity> getUserExternalTransactionsWithPaging(int start, int pageSize, UUID userId) {
@@ -222,11 +253,37 @@ public class TransactionManagerRepository {
         return null;
     }
 
-    public long countAll() {
+//    public long countAll() {
+//        try {
+//            return entityManager.createQuery("SELECT COUNT(e) FROM externalTrans e", Long.class)
+//                    .getSingleResult();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return 0;
+//    }
+
+    public long countAll(LocalDateTime startDate, LocalDateTime endDate) {
+        entityManager.clear();
+        StringBuilder hql = new StringBuilder();
+        hql.append("SELECT COUNT(*) FROM externalTrans e ");
+
+        if(startDate != null){
+            hql.append("AND e.create_at >= :startDate");
+
+        }
+        if(endDate != null){
+            hql.append("AND e.create_at <= :endDate");
+
+        }
         try {
-            return entityManager.createQuery("SELECT COUNT(e) FROM externalTrans e", Long.class)
-                    .getSingleResult();
-        } catch (Exception e) {
+            String queryString = hql.toString();
+            TypedQuery<Long> query = entityManager.createQuery(queryString, Long.class);
+            if (queryString.contains(":startDate")) query.setParameter("startDate", startDate);
+            if (queryString.contains(":endDate")) query.setParameter("endDate", endDate);
+
+            return query.getSingleResult();
+        }catch (Exception e){
             e.printStackTrace();
         }
         return 0;
