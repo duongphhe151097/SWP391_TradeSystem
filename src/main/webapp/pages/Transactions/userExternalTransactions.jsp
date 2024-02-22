@@ -20,40 +20,7 @@
 <c:set value="${requestScope.VIEW_PAGING.paging}" var="paging"/>
 <c:set value="${requestScope.VIEW_PAGING.items}" var="externalTran"/>
 
-<form method="get" action="<c:url value="/externalTransaction"/> ">
-    <div class="d-flex justify-content-end">
-        <input type="hidden" value="${paging.currentPage}" name="current">
-        <input type="hidden" value="${paging.pageSize}" name="size">
-        <input type="hidden" value="${paging.pageRangeOutput}" name="range">
 
-        <div class="input-group mb-3 d-flex flex-column">
-            <label for="start_date">Search theo giá Từ </label>
-            <input type="number" class="form-control w-100"
-                   value="${requestScope.FILTER_AmountFrom}" id="amount_from" name="f_amountFrom">
-        </div>
-        <div class="input-group mb-3 d-flex flex-column">
-        <label for="start_date">Search theo giá đến </label>
-        <input type="number" class="form-control w-100"
-               value="${requestScope.FILTER_AmountTo}" id="amount_to" name="f_amountTo">
-    </div>
-
-        <div class="input-group mb-3 d-flex flex-column">
-            <label for="start_date">Search theo ngày tạo Từ ngày</label>
-            <input type="date" class="form-control w-100"
-                   value="${requestScope.FILTER_STARTDATE}" id="start_date" name="f_start">
-        </div>
-        <div class="input-group mb-3 d-flex flex-column">
-            <label for="end_date">Search theo ngày tạo Đến ngày</label>
-            <input type="date" class="form-control w-100"
-                   value="${requestScope.FILTER_ENDDATE}" id="end_date" name="f_end">
-        </div>
-
-
-        <div class="ml-3 input-group mb-3 d-flex flex-column justify-content-end">
-            <button type="submit" class="btn btn-primary">Tìm</button>
-        </div>
-    </div>
-</form>
 
 <table id="externalTransactions">
     <thead>
@@ -68,9 +35,12 @@
         <th>Thời gian sửa cuối</th>
         <th>Nguời sửa</th>
     </tr>
+
     </thead>
     <tbody>
+
     <c:forEach items="${externalTran}" var="transaction">
+
         <tr>
             <td>${transaction.id}</td>
             <td>${transaction.type}</td>
@@ -93,7 +63,7 @@
                     <c:set value="${f:pagingUrlGenerate(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                            var="previous"/>
                     <a class="page-link"
-                       href="<c:url value="/externalTransaction${previous}"/>">
+                       href="<c:url value="/userExternalTransaction${previous}"/>">
                         Về trang trước
                     </a>
                 </li>
@@ -103,7 +73,7 @@
                         <c:set value="${f:pagingUrlGenerate(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                var="current"/>
                         <a class="page-link"
-                           href="<c:url value="/externalTransaction${current}"/>">${loop.index}</a>
+                           href="<c:url value="/userExternalTransaction${current}"/>">${loop.index}</a>
                     </li>
                 </c:forEach>
 
@@ -111,7 +81,7 @@
                     <c:set value="${f:pagingUrlGenerate(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                            var="next"/>
                     <a class="page-link"
-                       href="<c:url value="/externalTransaction${next}"/>">
+                       href="<c:url value="/userExternalTransaction${next}"/>">
                         Đến trang tiếp
                     </a>
                 </li>
