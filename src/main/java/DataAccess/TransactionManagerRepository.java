@@ -4,6 +4,7 @@ import Models.ExternalTransactionEntity;
 import Models.UserEntity;
 import Utils.Validation.StringValidator;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.TypedQuery;
 
 import javax.xml.validation.Validator;
@@ -207,23 +208,35 @@ public class TransactionManagerRepository {
 //        return null;
 //    }
 
-    public List<UserEntity> getExternalTransactionsWithPaging(int start, int end, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<UserEntity> getExternalTransactionsWithPaging(int start, int end, BigInteger amountFrom, BigInteger amountTo, LocalDateTime startDate, LocalDateTime endDate) {
         entityManager.clear();
         StringBuilder hql = new StringBuilder();
-        hql.append("SELECT e FROM externalTrans e ");
+        hql.append("SELECT e FROM externalTrans e WHERE 1=1");
+
+
 
         if (startDate != null) {
-            hql.append("WHERE e.createAt >= :startDate ");
+            hql.append("AND e.createAt >= :startDate ");
         }
 
         if (endDate != null) {
-            hql.append("AND e.createAt <= :endDate");
+            hql.append("AND e.createAt <= :endDate ");
+        }
+
+        if(amountFrom != null){
+            hql.append("AND e.amount >= :amountFrom ");
+        }
+
+        if(amountTo != null){
+            hql.append("AND e.amount <= :amountTo ");
         }
 
         try {
             String queryString = hql.toString();
 
             TypedQuery<UserEntity> query = entityManager.createQuery(queryString, UserEntity.class);
+            if (queryString.contains(":amountFrom")) query.setParameter("amountFrom", amountFrom);
+            if (queryString.contains(":amountTo")) query.setParameter("amountTo", amountTo);
             if (queryString.contains(":startDate")) query.setParameter("startDate", startDate);
             if (queryString.contains(":endDate")) query.setParameter("endDate", endDate);
 
@@ -238,14 +251,14 @@ public class TransactionManagerRepository {
         return new ArrayList<>();
     }
 
-    public List<ExternalTransactionEntity> getUserExternalTransactionsWithPaging(int start, int pageSize, UUID userId) {
+    public List<ExternalTransactionEntity> getUserExternalTransactionsWithPaging(int start, int end, UUID userId) {
         try {
             TypedQuery<ExternalTransactionEntity> query = entityManager.createQuery(
                     "SELECT e FROM externalTrans e WHERE e.userId = :userId", ExternalTransactionEntity.class)
                     .setParameter("userId", userId);
 
             query.setFirstResult(start);
-            query.setMaxResults(pageSize);
+            query.setMaxResults(end);
             return query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
@@ -263,32 +276,52 @@ public class TransactionManagerRepository {
 //        return 0;
 //    }
 
-    public long countAll(LocalDateTime startDate, LocalDateTime endDate) {
-        entityManager.clear();
-        StringBuilder hql = new StringBuilder();
-        hql.append("SELECT COUNT(*) FROM externalTrans e ");
-
-        if(startDate != null){
-            hql.append("AND e.create_at >= :startDate");
-
-        }
-        if(endDate != null){
-            hql.append("AND e.create_at <= :endDate");
-
-        }
+    public long countAll(LocalDateTime startDate, LocalDateTime endDate, BigInteger amountFrom, BigInteger amountTo) {
         try {
+            entityManager.clear();
+            StringBuilder hql = new StringBuilder();
+            hql.append("SELECT COUNT(*) FROM externalTrans e WHERE 1=1 ");
+
+            if (startDate != null) {
+                hql.append("AND e.create_at >= :startDate ");
+            }
+            if (endDate != null) {
+                hql.append("AND e.create_at <= :endDate ");
+            }
+            if (amountFrom != null) {
+                hql.append("AND e.amount >= :amountFrom ");
+            }
+            if (amountTo != null) {
+                hql.append("AND e.amount <= :amountTo ");
+            }
+
             String queryString = hql.toString();
             TypedQuery<Long> query = entityManager.createQuery(queryString, Long.class);
-            if (queryString.contains(":startDate")) query.setParameter("startDate", startDate);
-            if (queryString.contains(":endDate")) query.setParameter("endDate", endDate);
+
+            if (startDate != null) {
+                query.setParameter("startDate", startDate);
+            }
+            if (endDate != null) {
+                query.setParameter("endDate", endDate);
+            }
+            if (amountFrom != null) {
+                query.setParameter("amountFrom", amountFrom);
+            }
+            if (amountTo != null) {
+                query.setParameter("amountTo", amountTo);
+            }
 
             return query.getSingleResult();
-        }catch (Exception e){
+        } catch (NonUniqueResultException e) {
+            // Log the exception for debugging purposes
             e.printStackTrace();
+            throw new NonUniqueResultException("Query returned multiple results.", e);
+        } catch (Exception e) {
+            // Log the exception for debugging purposes
+            e.printStackTrace();
+            throw e; // Rethrow the exception to indicate an error in the method
         }
-        return 0;
     }
-
         public long countAllByUser(UUID userId) {
         try {
             return entityManager.createQuery("SELECT COUNT(e) FROM externalTrans e WHERE e.userId = :userId", Long.class)

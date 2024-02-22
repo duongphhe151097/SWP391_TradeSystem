@@ -25,6 +25,18 @@
         <input type="hidden" value="${paging.currentPage}" name="current">
         <input type="hidden" value="${paging.pageSize}" name="size">
         <input type="hidden" value="${paging.pageRangeOutput}" name="range">
+
+        <div class="input-group mb-3 d-flex flex-column">
+            <label for="start_date">Search theo giá Từ </label>
+            <input type="number" class="form-control w-100"
+                   value="${requestScope.FILTER_AmountFrom}" id="amount_from" name="f_amountFrom">
+        </div>
+        <div class="input-group mb-3 d-flex flex-column">
+        <label for="start_date">Search theo giá đến </label>
+        <input type="number" class="form-control w-100"
+               value="${requestScope.FILTER_AmountTo}" id="amount_to" name="f_amountTo">
+    </div>
+
         <div class="input-group mb-3 d-flex flex-column">
             <label for="start_date">Search theo ngày tạo Từ ngày</label>
             <input type="date" class="form-control w-100"
