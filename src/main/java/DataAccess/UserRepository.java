@@ -25,6 +25,7 @@ public class UserRepository {
 
     public Optional<UserEntity> getUserById(UUID userId) {
         try {
+            entityManager.clear();
             UserEntity entity = entityManager
                     .createQuery("FROM user u where u.id = :userId", UserEntity.class)
                     .setParameter("userId", userId)

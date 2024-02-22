@@ -49,7 +49,9 @@
                                aria-expanded="false">
                                 <img class="img-xs rounded-circle" src="<c:url value="/img/default_male.jpg"/>"
                                      alt="Profile image"/>
-                                <span class="user-name">Số dư: ${sessionScope.SESSION_USERBALANCE}đ</span>
+                                <span class="user-name">
+                                        ${sessionScope.SESSION_USERFULLNAME}
+                                </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                                  aria-labelledby="user-dropdown">
@@ -58,6 +60,18 @@
                                          alt="Profile image"/>
                                     <p class="mb-1 mt-3 font-weight-semibold">${sessionScope.SESSION_USERFULLNAME}</p>
                                     <p class="fw-light text-muted mb-0">${sessionScope.SESSION_USEREMAIL}</p>
+                                    <div class="d-flex justify-content-center">
+                                        <div>
+                                            <a href="<c:url value="/user/balance"/> " id="refresh-balance">
+                                                <span class="material-symbols-outlined">
+                                                    refresh
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <p id="balance-amount">Số dư: ${sessionScope.SESSION_USERBALANCE}đ</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <a href="<c:url value="/profile"/>" class="dropdown-item">
                                     <span class="d-flex align-items-center">

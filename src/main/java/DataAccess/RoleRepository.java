@@ -20,7 +20,7 @@ public class RoleRepository {
         entityManager = DbFactory.getFactory().createEntityManager();
     }
 
-    public Optional<List<RoleEntity>> getAllRole(){
+    public Optional<List<RoleEntity>> getAllRole() {
         try {
             entityManager.clear();
             List<RoleEntity> roles = entityManager
@@ -50,7 +50,7 @@ public class RoleRepository {
         return Optional.empty();
     }
 
-    public Optional<RoleEntity> getRoleByName(String rolename){
+    public Optional<RoleEntity> getRoleByName(String rolename) {
         try {
             entityManager.clear();
             RoleEntity role = entityManager
@@ -66,9 +66,10 @@ public class RoleRepository {
         return Optional.empty();
     }
 
-    public boolean addUserRole(UUID userId, int roleId){
+    public boolean addUserRole(UUID userId, int roleId) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
+            entityManager.clear();
             transaction.begin();
             UserRoleEntity entity = UserRoleEntity.builder()
                     .roleId(roleId)
@@ -82,7 +83,31 @@ public class RoleRepository {
             transaction.rollback();
             e.printStackTrace();
         } finally {
-            if(transaction.isActive()){
+            if (transaction.isActive()) {
+                entityManager.flush();
+            }
+        }
+
+        return false;
+    }
+
+    public boolean removeUserRole(UUID userId, int roleId) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.createQuery("DELETE userRole ur WHERE ur.userId = :userId AND ur.roleId = :roleId")
+                    .setParameter("userId", userId)
+                    .setParameter("roleId", roleId)
+                    .executeUpdate();
+
+            transaction.commit();
+
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        } finally {
+            if (transaction.isActive()) {
                 entityManager.flush();
             }
         }
