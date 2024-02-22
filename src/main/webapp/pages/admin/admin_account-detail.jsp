@@ -258,20 +258,19 @@
                                                     <li class="list-group-item">
                                                         <div class="d-flex justify-content-between align-items-center">
                                                             <span class="mr-2">Session hiện tại:</span>
-                                                            <button type="button" class="btn btn-outline-danger">Hủy
-                                                                session
-                                                            </button>
+                                                            <a id="cp-bsession" class="btn btn-outline-danger" href="<c:url value="/admin/account/session?uid=${requestScope.VAR_USERID}&type=remove" />" role="button">Hủy
+                                                                session</a>
                                                         </div>
                                                     </li>
-                                                    <li class="list-group-item">
-                                                        <div class="d-flex justify-content-between align-items-center">
-                                                            <span class="mr-2">Mật khẩu:</span>
-                                                            <button type="button" class="btn btn-outline-danger">Đặt lại
-                                                                mật
-                                                                khẩu
-                                                            </button>
-                                                        </div>
-                                                    </li>
+<%--                                                    <li class="list-group-item">--%>
+<%--                                                        <div class="d-flex justify-content-between align-items-center">--%>
+<%--                                                            <span class="mr-2">Mật khẩu:</span>--%>
+<%--                                                            <button type="button" class="btn btn-outline-danger">Đặt lại--%>
+<%--                                                                mật--%>
+<%--                                                                khẩu--%>
+<%--                                                            </button>--%>
+<%--                                                        </div>--%>
+<%--                                                    </li>--%>
                                                 </ul>
                                             </div>
                                         </div>

@@ -25,7 +25,7 @@ public class UserBalanceController extends BaseController {
 
     @Override
     public void init() throws ServletException {
-        userRepository = new UserRepository();
+        this.userRepository = new UserRepository();
     }
 
     @Override
