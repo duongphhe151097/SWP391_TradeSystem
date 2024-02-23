@@ -21,6 +21,20 @@
         th {
             background-color: #f2f2f2;
         }
+
+        .button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -35,17 +49,22 @@
         <th>Tổng phí</th>
         <th>Thời gian tạo</th>
         <th>Cập nhật lần cuối</th>
+        <th>Thao tác</th>
     </tr>
-    <c:forEach var="order" items="${orders}">
+    <c:forEach var="product" items="${products}">
         <tr>
-            <td>${order.getId()}</td>
-            <td>${order.getStatus()}</td>
-            <td>${order.getTitle()}</td>
-            <td>${order.getContact()}</td>
-            <td>${order.getPrice()}</td>
-            <td>${order.getQuantity()}</td>
-            <td>${order.getCreateAt()}</td>
-            <td>${order.getUpdateAt()}</td>
+            <td>${product.id}</td>
+            <td>${product.status}</td>
+            <td>${product.title}</td>
+            <td>${product.contact}</td>
+            <td>${product.price}</td>
+            <td>${product.quantity}</td>
+            <td>${product.createAt}</td>
+            <td>${product.updateAt}</td>
+            <td>
+                <a href="updateProduct?id=${product.id}" class="button">Cập nhật</a>
+                <a href="addproduct" class="button">Thêm</a>
+            </td>
         </tr>
     </c:forEach>
 </table>

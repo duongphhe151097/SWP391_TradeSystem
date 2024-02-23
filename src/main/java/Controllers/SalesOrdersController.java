@@ -3,41 +3,26 @@ package Controllers;
 import DataAccess.ProductRepository;
 import Models.ProductEntity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet("/sales_orders")
-public class SalesOrdersController {
+@WebServlet(name = "SalesOrdersController", urlPatterns = "/sale")
+public class SalesOrdersController extends HttpServlet {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        EntityManager entityManager = Persistence.createEntityManagerFactory("tradesys").createEntityManager();
 
-        private EntityManager entityManager;
-        private ProductRepository productRepository;
+        ProductRepository productRepository = new ProductRepository();
+        List<ProductEntity> products = productRepository.getAllProducts();
 
-
-        public void init() throws ServletException {
-
-            EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("persistenceUnitName");
-            entityManager = entityManagerFactory.createEntityManager();
-            productRepository = new ProductRepository(entityManager);
-        }
-
-
-        protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            List<ProductEntity> productList = productRepository.getAllProducts();
-            request.setAttribute("orders", productList);
-            request.getRequestDispatcher("/sales_orders.jsp").forward(request, response);
-        }
-
-
-        public void destroy() {
-            entityManager.close();
-        }
+        req.setAttribute("products", products);
+        req.getRequestDispatcher("/pages/salesorders.jsp").forward(req, resp);
     }
-
+}

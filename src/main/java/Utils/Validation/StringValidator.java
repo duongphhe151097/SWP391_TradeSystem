@@ -1,5 +1,6 @@
 package Utils.Validation;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -100,4 +101,14 @@ public class StringValidator {
     public static boolean isNullOrBlank(String input){
         return input == null || input.isBlank();
     }
+    public static boolean isValidDecimal(String str) {
+        try {
+            new BigDecimal(str);
+            return true;
+        } catch (NumberFormatException e) {
+
+            return false;
+        }
+    }
 }
+

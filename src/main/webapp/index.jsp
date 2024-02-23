@@ -9,7 +9,7 @@
 <body>
 <jsp:include page="common/header.jsp"/>
 <h1>Home</h1>
-<a href="<c:url value="/sales_orders" />" >Trở về trang chủ</a>
+<a href="<c:url value="/sale" />" >Đơn bán của bạn</a>
 </body>
 <jsp:include page="common/common-js.jsp"/>
 </html>

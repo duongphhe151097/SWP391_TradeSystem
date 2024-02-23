@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "SearchController", urlPatterns = "/sales_orders")
+@WebServlet(name = "SearchController", urlPatterns = "/salesorders")
 public class SearchController {
     private EntityManager entityManager;
     private ProductRepository productRepository;
@@ -20,7 +20,7 @@ public class SearchController {
 
     public void init() throws ServletException {
         entityManager = Persistence.createEntityManagerFactory("PersistenceUnit").createEntityManager();
-        productRepository = new ProductRepository(entityManager);
+        productRepository = new ProductRepository();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -33,7 +33,7 @@ public class SearchController {
 
         request.setAttribute("products", productList);
 
-        request.getRequestDispatcher("/sales_orders.jsp").forward(request, response);
+        request.getRequestDispatcher("/salesorders.jsp").forward(request, response);
     }
 
 
