@@ -12,6 +12,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Trang đơn mua</title>
+    <link rel="stylesheet" href="<c:out value="${pageContext.request.contextPath}/css/purchase.css"/>">
 </head>
 <body>
 <h1>Đơn mua của tôi</h1>
