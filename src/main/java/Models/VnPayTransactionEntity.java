@@ -10,6 +10,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 @Entity(name = "vnPayTrans")
@@ -21,7 +22,6 @@ import java.util.UUID;
 @Builder
 public class VnPayTransactionEntity extends BaseEntity implements Serializable {
     @Id
-    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     @Column(name = "`id`", columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 
@@ -38,7 +38,7 @@ public class VnPayTransactionEntity extends BaseEntity implements Serializable {
     private String command;
 
     @Column(name = "`amount`", updatable = false, nullable = false)
-    private BigDecimal amount;
+    private BigInteger amount;
 
     @Column(name = "`current_code`", updatable = false, nullable = false, length = 3)
     private String currentCode;
@@ -75,4 +75,7 @@ public class VnPayTransactionEntity extends BaseEntity implements Serializable {
 
     @Column(name = "`secure_hash`", updatable = false, nullable = false, length = 256)
     private String secureHash;
+
+    @Column(name = "`transaction_no`", nullable = false, length = 15)
+    private String transactionNo;
 }

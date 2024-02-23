@@ -20,6 +20,11 @@
             <property name="hibernate.naming.physical-strategy" value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
 
             <property name="hbm2ddl.auto" value="validate"/>
+
+            <property name="hibernate.hikari.minimumIdle" value="5" />
+            <property name="hibernate.hikari.maximumPoolSize" value="20" />
+            <property name="hibernate.hikari.idleTimeout" value="30000" />
+            <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider" />
         </properties>
     </persistence-unit>
 </persistence>

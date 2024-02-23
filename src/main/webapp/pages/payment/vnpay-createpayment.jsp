@@ -10,58 +10,79 @@
 <html>
     <head>
         <jsp:include page="../../common/common-css.jsp"/>
-        <title>Title</title>
+        <title>Nạp tiền</title>
     </head>
     <body>
+        <jsp:include page="../../common/header.jsp"/>
+
         <div class="container">
-            <div class="header clearfix">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card mt-5">
+                        <div class="card-header">
+                            <h4 class="text">Tạo yêu cầu nạp tiền</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="<c:url value="/payment/vnpay/create"/> " method="post">
+                                <input type="hidden" name="language" value="vn">
 
-                <h3 class="text-muted">VNPAY DEMO</h3>
+                                <table class="table table-borderless">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">Chọn phương thức:</th>
+                                            <td>
+                                                <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+                                                    <label class="btn btn-primary active mr-2">
+                                                        <input type="radio" name="bankCode" value="" checked>
+                                                        Thanh toán bằng VNPAY
+                                                    </label>
+                                                    <label class="btn btn-primary">
+                                                        <input type="radio" name="bankCode" value="">
+                                                        Chuyển khoản ngân hàng
+                                                    </label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">Số tiền:</th>
+                                            <td>
+                                                <input class="form-control" data-val="true"
+                                                       data-val-number="Số tiền phải là số"
+                                                       data-val-required="Trường này là bắt buộc" id="amount"
+                                                       placeholder="Số tiền tối thiểu là 10,000đ"
+                                                       max="10000000" min="10000" name="amount" type="number"
+                                                       value="10000"/>
+                                                <c:if test="${requestScope.ERROR_AMOUNT != null}">
+                                                    <p class="error-message">${requestScope.ERROR_AMOUNT}</p>
+                                                </c:if>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="d-flex justify-content-center">
+                                    <c:if test="${requestScope.ERROR_MESSAGE != null}">
+                                        <p class="error-message">${requestScope.ERROR_MESSAGE}</p>
+                                    </c:if>
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" class="btn btn-success">Nạp tiền</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
             </div>
-            <h3>Tạo mới đơn hàng</h3>
-            <div class="table-responsive">
-                <form action="<c:url value="/payment/vnpay/create"/> " id="frmCreateOrder" method="post">
-                    <div class="form-group">
-                        <label for="amount">Số tiền</label>
-                        <input class="form-control" data-val="true" data-val-number="The field Amount must be a number."
-                               data-val-required="The Amount field is required." id="amount" max="100000000" min="1"
-                               name="amount" type="number" value="10000"/>
-                    </div>
-                    <h4>Chọn phương thức thanh toán</h4>
-                    <div class="form-group">
-                        <h5>Cách 1: Chuyển hướng sang Cổng VNPAY chọn phương thức thanh toán</h5>
-                        <input type="radio" Checked="True" id="bankCode" name="bankCode" value="">
-                        <label for="bankCode">Cổng thanh toán VNPAYQR</label><br>
-
-                        <h5>Cách 2: Tách phương thức tại site của đơn vị kết nối</h5>
-                        <input type="radio" id="bankCode" name="bankCode" value="VNPAYQR">
-                        <label for="bankCode">Thanh toán bằng ứng dụng hỗ trợ VNPAYQR</label><br>
-
-                        <input type="radio" id="bankCode" name="bankCode" value="VNBANK">
-                        <label for="bankCode">Thanh toán qua thẻ ATM/Tài khoản nội địa</label><br>
-
-                        <input type="radio" id="bankCode" name="bankCode" value="INTCARD">
-                        <label for="bankCode">Thanh toán qua thẻ quốc tế</label><br>
-
-                    </div>
-                    <div class="form-group">
-                        <h5>Chọn ngôn ngữ giao diện thanh toán:</h5>
-                        <input type="radio" id="language" Checked="True" name="language" value="vn">
-                        <label for="language">Tiếng việt</label><br>
-                        <input type="radio" id="language" name="language" value="en">
-                        <label for="language">Tiếng anh</label><br>
-
-                    </div>
-                    <button type="submit" class="btn btn-default" id="submitVnpOrder">Thanh toán</button>
-                </form>
-            </div>
-            <p>
-                &nbsp;
-            </p>
-            <footer class="footer">
-                <p>&copy; VNPAY 2020</p>
-            </footer>
         </div>
+
     </body>
     <jsp:include page="../../common/common-js.jsp"/>
 </html>
