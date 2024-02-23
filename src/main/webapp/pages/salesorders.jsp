@@ -40,6 +40,13 @@
 <body>
 <h1>Danh sách sản phẩm</h1>
 <table>
+    <div class="search-container">
+        <form id="searchForm">
+            <input type="text" placeholder="Giá từ..." id="minPrice">
+            <input type="text" placeholder="Giá đến..." id="maxPrice">
+            <button type="button" id="searchButton">Tìm kiếm</button>
+        </form>
+    </div>
     <tr>
         <th>Mã sản phẩm</th>
         <th>Trạng thái</th>

@@ -30,18 +30,20 @@ public class ProductRepository {
         return query.getResultList();
     }
     public void addProduct(ProductEntity product) {
-        EntityTransaction transaction = entityManager.getTransaction();
+        EntityTransaction transaction = null;
         try {
+            transaction = entityManager.getTransaction();
             transaction.begin();
             entityManager.persist(product);
             transaction.commit();
         } catch (Exception e) {
-            if (transaction.isActive()) {
+            if (transaction != null && transaction.isActive()) {
                 transaction.rollback();
             }
             e.printStackTrace();
         }
     }
+
 
     public void updateProduct(ProductEntity product) {
         EntityTransaction transaction = entityManager.getTransaction();

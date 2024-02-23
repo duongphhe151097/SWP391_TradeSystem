@@ -1,11 +1,11 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CKEditor Example</title>
-    <!-- Đối với CDN CKEditor -->
+    <title>Form thay đổi sản phẩm</title>
+    <!-- CKEditor CDN -->
     <script src="https://cdn.ckeditor.com/4.16.2/standard/ckeditor.js"></script>
     <style>
         /* CSS styles */
@@ -18,14 +18,17 @@
             margin: 0 auto;
             padding: 20px;
         }
+
         .form-group {
             margin-bottom: 20px;
         }
+
         .form-group label {
             display: block;
             font-weight: bold;
             margin-bottom: 5px;
         }
+
         .form-group input[type="text"],
         .form-group textarea,
         .form-group select {
@@ -35,9 +38,11 @@
             border-radius: 4px;
             box-sizing: border-box;
         }
+
         .form-group textarea {
             height: 150px;
         }
+
         .form-group .hidden-content {
             display: none;
         }
@@ -45,11 +50,10 @@
 </head>
 <body>
 <div class="container">
-    <h1>Trang mẫu</h1>
-    <form>
+    <form action="<c:url value="/addproduct"/>" method="post">
         <div class="form-group">
-            <label for="subject">Chủ đề trung gian (*)</label>
-            <input type="text" id="subject" name="subject" required>
+            <label for="title">Chủ đề trung gian (*)</label>
+            <input type="text" id="title" name="title" required>
         </div>
         <div class="form-group">
             <label for="price">Giá tiền (*)</label>
