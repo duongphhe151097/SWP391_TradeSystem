@@ -57,4 +57,8 @@ public class ProductEntity extends BaseEntity implements Serializable {
 
     @Column(name = "`status`", nullable = false)
     private short status;
+
+    public BigDecimal getPrice() {
+        return price;
+    }
 }
