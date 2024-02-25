@@ -11,7 +11,7 @@ import org.hibernate.annotations.UuidGenerator;
 import java.io.Serializable;
 import java.util.UUID;
 
-@Entity(name = "notifi")
+@Entity(name = "notification")
 @Table(name = "notification")
 @AllArgsConstructor
 @NoArgsConstructor
