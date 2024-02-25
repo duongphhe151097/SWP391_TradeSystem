@@ -24,14 +24,8 @@ public class NotificationEntity extends BaseEntity implements Serializable {
     @Column(name = "`id`", columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "`product_id`", updatable = false)
-    private int productId;
-
     @Column(name = "`user_id`", updatable = false)
-    private UUID userId;
-
-    @Column(name = "`role`", updatable = false, nullable = false)
-    private short role;
+    private String userId;
 
     @Column(name = "`title`", nullable = false)
     private String title;
