@@ -1,14 +1,13 @@
 package Models;
 
-import Models.Common.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
+import Models.Common.BaseEntity;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "notification")
@@ -24,26 +23,23 @@ public class NotificationEntity extends BaseEntity implements Serializable {
     @Column(name = "`id`", columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "`product_id`", updatable = false)
-    private int productId;
+    @Column(name = "`user_fired_notify`", nullable = false)
+    private UUID userFriedNotify;
 
-    @Column(name = "`user_id`", updatable = false)
-    private UUID userId;
+    @Column(name = "`user_to_notify`")
+    private UUID userToNotify;
 
-    @Column(name = "`role`", updatable = false, nullable = false)
-    private short role;
+    @Column(name = "`type`", nullable = false)
+    private short type;
 
-    @Column(name = "`title`", nullable = false)
-    private String title;
+    @Column(name = "`message`", nullable = false, length = 500)
+    private String message;
 
-    @Column(name = "`description`", nullable = false)
-    private String description;
-
-    @Column(name = "`status`", nullable = false)
-    private boolean status;
-
-    @Column(name = "`create_date`", updatable = false, nullable = false, length = 14)
-    private String createDate;
-
+    @Column(name = "`is_seen`", nullable = false)
+    private boolean isSeen;
+    @Basic
+    @Column(name = "`create_at`", updatable = false,nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createAt;
 }
 

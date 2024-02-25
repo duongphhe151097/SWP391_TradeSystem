@@ -1,43 +1,40 @@
 package DataAccess;
-import Models.NotificationEntity;
-import Models.ProductEntity;
-import Models.UserEntity;
+import Models.*;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
-import org.hibernate.Session;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+
+import java.util.*;
+
 public class NotificationRepository {
     private final EntityManager entityManager;
 
-    public NotificationEntity() {
+    public NotificationRepository() {
         this.entityManager = DbFactory.getFactory().createEntityManager();
     }
-    public Optional<NotificationEntity> getNotificationByUserId(UUID userId) {
-        try {
-            NotificationEntity entity = entityManager
-                    .createQuery("FROM notification n where n.id = :userId", NotificationEntity.class)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
 
-            return Optional.ofNullable(entity);
+    public List<NotificationEntity> getNotificationByUser(UUID userToNotify) {
+        try {
+            entityManager.clear();
+            List<NotificationEntity> entity = entityManager
+                    .createQuery("SELECT n FROM notification n " +
+                            "WHERE n.userToNotify = :userToNotify", NotificationEntity.class)
+                    .setParameter("userToNotify", userToNotify)
+                    .getResultList();
+
+            return entity;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return Optional.empty();
+        return Collections.emptyList();
     }
-    public Optional<NotificationEntity> addNotification(NotificationEntity notification) {
+
+    public Optional<NotificationEntity> add(NotificationEntity entity) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            NotificationEntity entity = (NotificationEntity) entityManager.merge(notification);
-            entityManager.persist(entity);
-
+            entityManager.merge(entity); // Sử dụng merge thay vì persist
             transaction.commit();
 
             return Optional.of(entity);
@@ -48,46 +45,4 @@ public class NotificationRepository {
 
         return Optional.empty();
     }
-    public void updateStatus(NotificationEntity entity) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            entityManager.createQuery("update notification n set n.status = :status")
-                    .setParameter("status", entity.getStatus())
-                    .executeUpdate();
-            entityManager.merge(entity);
-
-            transaction.commit();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            transaction.rollback();
-        }
-
-    }
-    public List<NotificationEntity> getUserNotificationWithPaging(int start, int end, UUID userId) {
-        try {
-            TypedQuery<NotificationEntity> query = entityManager.createQuery(
-                            "SELECT n FROM notification n WHERE n.userId = :userId", NotificationEntity.class)
-                    .setParameter("userId", userId);
-
-            query.setFirstResult(start);
-            query.setMaxResults(end);
-            return query.getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    public long countAllByUser(UUID userId) {
-        try {
-            return entityManager.createQuery("SELECT COUNT(n) FROM notification n WHERE n.userId = :userId", Long.class)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
 }
-
