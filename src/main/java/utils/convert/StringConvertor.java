@@ -4,10 +4,13 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.*;
+import java.math.BigInteger;
+import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 
 public class StringConvertor {
@@ -70,6 +73,16 @@ public class StringConvertor {
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static String currencyFormat(BigInteger input){
+        try {
+            Locale locale = new Locale("vi", "VN");
+            NumberFormat numberFormat = NumberFormat.getCurrencyInstance(locale);
+            return numberFormat.format(input);
+        }catch (Exception e) {
+            return "0 ₫";
         }
     }
 }

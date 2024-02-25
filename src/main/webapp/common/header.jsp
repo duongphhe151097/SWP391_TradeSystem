@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="f" uri="tradesys.functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <header>
     <div class="sticky-top">
@@ -69,7 +70,7 @@
                                             </a>
                                         </div>
                                         <div>
-                                            <p id="balance-amount">Số dư: ${sessionScope.SESSION_USERBALANCE}đ</p>
+                                            <p id="balance-amount">Số dư: ${f:formatCurrency(sessionScope.SESSION_USERBALANCE)}</p>
                                         </div>
                                     </div>
                                 </div>
