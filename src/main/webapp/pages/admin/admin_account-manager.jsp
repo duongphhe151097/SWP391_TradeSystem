@@ -18,70 +18,14 @@
     </head>
     <body>
         <div id="viewport">
-            <!-- Sidebar -->
-            <div id="sidebar">
-                <header>
-                    <a href="<c:url value="/admin"/>">TradeSystemAdmin</a>
-                </header>
-                <ul class="nav d-flex">
-                    <li class=" w-100">
-                        <a href="<c:url value="/admin/account"/>">
-                        <span class="d-flex align-items-center">
-                            <span class="material-symbols-outlined">
-                                person
-                            </span>
-                            <span class="item-name">
-                                Quản lý người dùng
-                            </span>
-                        </span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
+            <jsp:include page="admin_sidebar.jsp"/>
             <!-- Content -->
             <div id="content">
                 <c:set value="${requestScope.VIEW_PAGING.paging}" var="paging"/>
                 <c:set value="${requestScope.VIEW_PAGING.items}" var="users"/>
 
-                <nav class="navbar d-flex align-items-center justify-content-end">
-                    <div class="nav-item dropdown d-none d-lg-block user-dropdown">
-                        <a class="nav-link" id="user-dropdown" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img class="img-xs rounded-circle" src="<c:url value="/img/default_male.jpg"/>"
-                                 alt="Profile image"/>
-                            <span class="user-name">${sessionScope.SESSION_USERFULLNAME}</span>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="user-dropdown">
-                            <div class="dropdown-header text-center">
-                                <img class="img-md rounded-circle" src="<c:url value="/img/default_male.jpg"/>"
-                                     alt="Profile image"/>
-                                <p class="mb-1 mt-3 font-weight-semibold">${sessionScope.SESSION_USERFULLNAME}</p>
-                                <p class="fw-light text-muted mb-0">${sessionScope.SESSION_USEREMAIL}</p>
-                            </div>
-                            <a href="<c:url value="/profile"/>" class="dropdown-item">
-                            <span class="d-flex align-items-center">
-                                <span class="material-symbols-outlined">
-                                    person
-                                </span>
-                                <span>
-                                    Thông tin tài khoản
-                                </span>
-                            </span>
-                            </a>
-                            <a href="<c:url value="/logout"/>" class="dropdown-item">
-                            <span class="d-flex align-items-center">
-                                <span class="material-symbols-outlined">
-                                    logout
-                                </span>
-                                <span>
-                                    Đăng xuất
-                                </span>
-                            </span>
-                            </a>
-                        </div>
-                    </div>
-                </nav>
-
-                <div class="container-fluid p-3">
+                <jsp:include page="admin_navbar.jsp"/>
+                <div class="container-fluid p-3 main-content">
                     <div class="row">
                         <div class="col-md-12">
                             <h1>Quản lý tài khoản</h1>
@@ -211,7 +155,7 @@
                                                     <td> ${f:formatLocalDateTime(user.createAt, 'dd/MM/yyyy hh:mm:ss')}</td>
                                                     <td>
                                                         <div class="d-flex">
-                                                            <a href="">
+                                                            <a href="<c:url value="/admin/account/detail?id=${user.id}"/> ">
                                                                 <span class="d-flex align-items-center mr-2">
                                                                     <span class="material-symbols-outlined">info</span>
                                                                     <span>Chi tiết</span>

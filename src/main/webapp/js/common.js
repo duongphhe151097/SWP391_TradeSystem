@@ -4,4 +4,8 @@ const urlBuilder = (router) => {
     return BASE_URL + router
 }
 
-export {urlBuilder, BASE_URL}
+const formatCurrency = (value) => {
+    return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+}
+
+export {urlBuilder, formatCurrency, BASE_URL}

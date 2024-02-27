@@ -5,7 +5,7 @@ ENV TZ=Asia/Ho_Chi_Minh
 WORKDIR /app
 COPY . .
 COPY ./deploy_settings/persistence.xml ./src/main/resources/META-INF/persistence.xml
-COPY ./deploy_settings/captcha.js ./src/main/webapp/js
+COPY ./deploy_settings/common.js ./src/main/webapp/js
 RUN mvn clean package
 
 # Setup tomcat
