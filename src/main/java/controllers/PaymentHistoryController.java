@@ -1,14 +1,5 @@
 package controllers;
 
-<<<<<<<< HEAD:src/main/java/controllers/PaymentHistoryController.java
-import DataAccess.TransactionManagerRepository;
-import Models.Common.Pagination;
-import Models.Common.ViewPaging;
-import Models.UserEntity;
-import Utils.Annotations.Authorization;
-import Utils.Convert.DateTimeConvertor;
-import Utils.Validation.StringValidator;
-========
 import dataAccess.TransactionManagerRepository;
 import models.common.Pagination;
 import models.common.ViewPaging;
@@ -16,7 +7,6 @@ import models.UserEntity;
 import utils.annotations.Authorization;
 import utils.convert.DateTimeConvertor;
 import utils.validation.StringValidator;
->>>>>>>> main:src/main/java/controllers/ExternalTransactionController.java
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -30,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "PaymentHistoryController", urlPatterns = {"/admin/payment/history"})
-@Authorization(role = "", isPublic = false)
+@Authorization(role = "ADMIN", isPublic = false)
 public class PaymentHistoryController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -50,7 +40,7 @@ public class PaymentHistoryController extends HttpServlet {
                     || StringValidator.isNullOrBlank(pageSize)
                     || StringValidator.isNullOrBlank(pageRange)) {
                 currentPage = "1";
-                pageSize = "2";
+                pageSize = "10";
                 pageRange = "5";
             }
 
@@ -91,7 +81,7 @@ public class PaymentHistoryController extends HttpServlet {
             req.setAttribute("FILTER_ENDDATE", endDate);
             req.setAttribute("VIEW_PAGING", new ViewPaging<>(externalTransactions, pagination));
 
-            req.getRequestDispatcher("/pages/Transactions/ExternalTransactions.jsp").forward(req, resp);
+            req.getRequestDispatcher("/pages/admin/admin_payment_history.jsp").forward(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
             Pagination pagination
@@ -101,4 +91,8 @@ public class PaymentHistoryController extends HttpServlet {
 
     }
     }
+
+
+
+
 

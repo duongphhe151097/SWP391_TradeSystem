@@ -1,15 +1,5 @@
 package controllers;
 
-<<<<<<<< HEAD:src/main/java/controllers/UserPaymentHistoryController.java
-import DataAccess.TransactionManagerRepository;
-import Models.Common.Pagination;
-import Models.Common.ViewPaging;
-import Models.ExternalTransactionEntity;
-import Models.UserEntity;
-import Utils.Annotations.Authorization;
-import Utils.Constants.UserConstant;
-import Utils.Validation.StringValidator;
-========
 import dataAccess.TransactionManagerRepository;
 import models.common.Pagination;
 import models.common.ViewPaging;
@@ -18,7 +8,6 @@ import models.UserEntity;
 import utils.annotations.Authorization;
 import utils.constants.UserConstant;
 import utils.validation.StringValidator;
->>>>>>>> main:src/main/java/controllers/UserExternalTransaction.java
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -138,14 +127,14 @@ public class UserPaymentHistoryController extends HttpServlet {
 ////                req.setAttribute("FILTER_STARTDATE", startDate);
 ////                req.setAttribute("FILTER_ENDDATE", endDate);
 //                req.setAttribute("VIEW_PAGING", new ViewPaging<>(transactions, pagination));
-//                req.getRequestDispatcher("/pages/Transactions/userExternalTransactions.jsp").forward(req, resp);
+//                req.getRequestDispatcher("/pages/Transactions/user_payment_history.jsp").forward(req, resp);
 //
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //                // Xử lý ngoại lệ và trả về trang không có dữ liệu
 //                Pagination pagination = new Pagination(0, 1, 5, 10);
 //                req.setAttribute("VIEW_PAGING", new ViewPaging<>(new ArrayList<>(), pagination));
-//                req.getRequestDispatcher("/pages/Transactions/userExternalTransactions.jsp").forward(req, resp);
+//                req.getRequestDispatcher("/pages/Transactions/user_payment_history.jsp").forward(req, resp);
 //            }
 //        } else {
 //            // Xử lý khi session không tồn tại
@@ -188,7 +177,7 @@ public class UserPaymentHistoryController extends HttpServlet {
 
                 req.setAttribute("VIEW_PAGING", new ViewPaging<>(externalTransactions, pagination));
 
-                req.getRequestDispatcher("/pages/Transactions/userExternalTransactions.jsp").forward(req, resp);
+                req.getRequestDispatcher("/pages/transactions/user_payment_history.jsp").forward(req, resp);
             } catch (Exception e) {
                 e.printStackTrace();
                 Pagination pagination
