@@ -3,7 +3,6 @@ package Controllers;
 import DataAccess.TransactionManagerRepository;
 import Models.Common.Pagination;
 import Models.Common.ViewPaging;
-import Models.ExternalTransactionEntity;
 import Models.UserEntity;
 import Utils.Annotations.Authorization;
 import Utils.Convert.DateTimeConvertor;
@@ -20,9 +19,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "ExternalTransactionController", urlPatterns = {"/externalTransaction"})
+@WebServlet(name = "PaymentHistoryController", urlPatterns = {"/admin/payment/history"})
 @Authorization(role = "", isPublic = false)
-public class ExternalTransactionController extends HttpServlet {
+public class PaymentHistoryController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TransactionManagerRepository transactionManagerRepository = new TransactionManagerRepository();
@@ -41,7 +40,7 @@ public class ExternalTransactionController extends HttpServlet {
                     || StringValidator.isNullOrBlank(pageSize)
                     || StringValidator.isNullOrBlank(pageRange)) {
                 currentPage = "1";
-                pageSize = "15";
+                pageSize = "2";
                 pageRange = "5";
             }
 

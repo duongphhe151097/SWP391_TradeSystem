@@ -1,6 +1,5 @@
 package Controllers;
 
-import DataAccess.SessionManagerRepository;
 import DataAccess.TransactionManagerRepository;
 import Models.Common.Pagination;
 import Models.Common.ViewPaging;
@@ -8,7 +7,6 @@ import Models.ExternalTransactionEntity;
 import Models.UserEntity;
 import Utils.Annotations.Authorization;
 import Utils.Constants.UserConstant;
-import Utils.Convert.DateTimeConvertor;
 import Utils.Validation.StringValidator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,19 +14,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import org.checkerframework.checker.units.qual.t;
 
 import java.io.IOException;
-import java.math.BigInteger;
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@WebServlet(name = "UserExternalTransactionController", urlPatterns = {"/userExternalTransaction"})
-@Authorization(role = "", isPublic = true)
-public class UserExternalTransaction extends HttpServlet {
+@WebServlet(name = "UserPaymentHistoryController", urlPatterns = {"/payment/userhistory"})
+@Authorization(role = "", isPublic = false)
+public class UserPaymentHistoryController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //        HttpSession session = req.getSession(false);
 //        if (session != null) {
