@@ -19,7 +19,7 @@ public class SearchController {
 
 
     public void init() throws ServletException {
-        entityManager = Persistence.createEntityManagerFactory("PersistenceUnit").createEntityManager();
+        entityManager = Persistence.createEntityManagerFactory("tradesys").createEntityManager();
         productRepository = new ProductRepository();
     }
 

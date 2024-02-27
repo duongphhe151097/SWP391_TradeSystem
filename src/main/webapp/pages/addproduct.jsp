@@ -50,7 +50,7 @@
 </head>
 <body>
 <div class="container">
-    <form action="<c:url value="/addproduct"/>" method="post">
+    <form action="<c:url value='/addproduct'/>" method="post"> <!-- Bắt đầu biểu mẫu -->
         <div class="form-group">
             <label for="title">Chủ đề trung gian (*)</label>
             <input type="text" id="title" name="title" required>
@@ -58,14 +58,6 @@
         <div class="form-group">
             <label for="price">Giá tiền (*)</label>
             <input type="text" id="price" name="price" required>
-        </div>
-        <div class="form-group">
-            <label for="payer">Bên chịu phí trung gian (*)</label>
-            <select id="payer" name="payer" required>
-                <option value="">Chọn bên chịu phí</option>
-                <option value="seller">Bên bán</option>
-                <option value="buyer">Bên mua</option>
-            </select>
         </div>
         <div class="form-group">
             <label for="description">Mô tả (*)</label>
@@ -87,8 +79,10 @@
                 Hiện công khai (*)
             </label>
         </div>
+        <!-- Thêm một trường ẩn để lưu ID của người dùng -->
+        <input type="hidden" name="userId" value="<%= session.getAttribute("userId") %>">
         <button type="submit">Gửi</button>
-    </form>
+    </form> <!-- Kết thúc biểu mẫu -->
 </div>
 
 <script>

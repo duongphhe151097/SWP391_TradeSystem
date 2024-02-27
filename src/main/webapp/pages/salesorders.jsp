@@ -70,10 +70,18 @@
             <td>${product.updateAt}</td>
             <td>
                 <a href="updateProduct?id=${product.id}" class="button">Cập nhật</a>
-                <a href="addproduct" class="button">Thêm</a>
+                <a href="javascript:void(0)" onclick="openAddProductPage()" class="button">Thêm</a>
             </td>
         </tr>
     </c:forEach>
 </table>
+
+<script>
+    function openAddProductPage() {
+        window.location.href = "addproduct";
+    }
+</script>
+
+
 </body>
 </html>

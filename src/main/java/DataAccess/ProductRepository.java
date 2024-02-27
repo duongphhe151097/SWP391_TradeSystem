@@ -3,10 +3,13 @@ package DataAccess;
 import Models.ProductEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class ProductRepository {
     private final EntityManager entityManager;
@@ -29,21 +32,29 @@ public class ProductRepository {
         query.setParameter("maxPrice", maxPrice);
         return query.getResultList();
     }
-    public void addProduct(ProductEntity product) {
-        EntityTransaction transaction = null;
+    public Optional<ProductEntity> addProduct(ProductEntity product) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            transaction = entityManager.getTransaction();
             transaction.begin();
+
+            product.setId(UUID.randomUUID());
+
             entityManager.persist(product);
             transaction.commit();
+
+            return Optional.of(product); // Trả về Optional chứa đối tượng đã thêm
         } catch (Exception e) {
-            if (transaction != null && transaction.isActive()) {
+            if (transaction.isActive()) {
                 transaction.rollback();
             }
             e.printStackTrace();
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
         }
+        return Optional.empty();
     }
-
 
     public void updateProduct(ProductEntity product) {
         EntityTransaction transaction = entityManager.getTransaction();
