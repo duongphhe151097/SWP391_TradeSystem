@@ -14,7 +14,7 @@
     <jsp:include page="../../common/common-css.jsp"/>
     <link rel="stylesheet" href="<c:url value="/css/admin.sidenav.css"/> ">
     <link rel="stylesheet" href="<c:url value="/css/admin.manager.css"/> ">
-    <title>External Transactions</title>
+    <title>AdminPaymentHistory</title>
 </head>
 <body>
 <div id="viewport">
@@ -27,7 +27,7 @@
         <div class="container-fluid p-3 main-content">
             <div class="row">
                 <div class="col-md-12">
-                    <h1>External Transactions</h1>
+                    <h1>Payment History</h1>
                 </div>
             </div>
 
@@ -75,7 +75,12 @@
                         <tr>
                             <td>${transaction.id}</td>
                             <td>${transaction.type}</td>
-                            <td>${transaction.command}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${transaction.command eq 1}">Nạp tiền</c:when>
+                                    <c:otherwise>rút tiền</c:otherwise>
+                                </c:choose>
+                            </td>
                             <td>${transaction.amount}</td>
                             <td>
                                 <c:choose>
