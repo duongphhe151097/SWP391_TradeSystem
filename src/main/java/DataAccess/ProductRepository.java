@@ -2,7 +2,7 @@ package DataAccess;
 
 import Models.ProductEntity;
 import Models.UserEntity;
-import Utils.Settings.HibernateUtil;
+import org.hibernate.Cache;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class ProductRepository {
 
-    public void purchaseOrder(UUID orderId, UUID userId) {
+    public void purchaseOrder(UUID orderId, UUID userId, Cache HibernateUtil) {
         Session session = HibernateUtil.getSessionFactory().openSession();
         Transaction transaction = null;
 
