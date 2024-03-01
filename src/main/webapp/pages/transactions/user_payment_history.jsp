@@ -20,7 +20,22 @@
 <c:set value="${requestScope.VIEW_PAGING.paging}" var="paging"/>
 <c:set value="${requestScope.VIEW_PAGING.items}" var="externalTran"/>
 
+<form method="get" action="<c:url value="/payment/history"/> ">
+    <div class="d-flex justify-content-end">
+        <input type="hidden" value="${paging.currentPage}" name="current">
+        <input type="hidden" value="${paging.pageSize}" name="size">
+        <input type="hidden" value="${paging.pageRangeOutput}" name="range">
 
+        <div class="input-group mb-3 d-flex flex-column">
+            <label for="amount_from">Search theo giá Từ </label>
+            <input type="number" class="form-control w-100"
+                   value="${requestScope.FILTER_AmountFrom}" id="amount_from" name="f_amountFrom">
+        </div>
+        <div class="input-group mb-3 d-flex flex-column">
+            <label for="amount_to">Search theo giá đến </label>
+            <input type="number" class="form-control w-100"
+                   value="${requestScope.FILTER_AmountTo}" id="amount_to" name="f_amountTo">
+        </div>
 
 <table id="externalTransactions">
     <thead>
@@ -63,7 +78,7 @@
                     <c:set value="${f:pagingUrlGenerate(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                            var="previous"/>
                     <a class="page-link"
-                       href="<c:url value="/userExternalTransaction${previous}"/>">
+                       href="<c:url value="/payment/userhistory${previous}"/>">
                         Về trang trước
                     </a>
                 </li>
@@ -73,7 +88,7 @@
                         <c:set value="${f:pagingUrlGenerate(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                var="current"/>
                         <a class="page-link"
-                           href="<c:url value="/userExternalTransaction${current}"/>">${loop.index}</a>
+                           href="<c:url value="/payment/userhistory${current}"/>">${loop.index}</a>
                     </li>
                 </c:forEach>
 
@@ -81,7 +96,7 @@
                     <c:set value="${f:pagingUrlGenerate(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                            var="next"/>
                     <a class="page-link"
-                       href="<c:url value="/userExternalTransaction${next}"/>">
+                       href="<c:url value="/payment/userhistory${next}"/>">
                         Đến trang tiếp
                     </a>
                 </li>

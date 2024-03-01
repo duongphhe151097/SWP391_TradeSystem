@@ -19,9 +19,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-@WebServlet(name = "ExternalTransactionController", urlPatterns = {"/externalTransaction"})
-@Authorization(role = "", isPublic = false)
-public class ExternalTransactionController extends HttpServlet {
+@WebServlet(name = "PaymentHistoryController", urlPatterns = {"/admin/payment/history"})
+@Authorization(role = "ADMIN", isPublic = false)
+public class PaymentHistoryController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TransactionManagerRepository transactionManagerRepository = new TransactionManagerRepository();
@@ -40,7 +40,7 @@ public class ExternalTransactionController extends HttpServlet {
                     || StringValidator.isNullOrBlank(pageSize)
                     || StringValidator.isNullOrBlank(pageRange)) {
                 currentPage = "1";
-                pageSize = "15";
+                pageSize = "10";
                 pageRange = "5";
             }
 
@@ -81,7 +81,7 @@ public class ExternalTransactionController extends HttpServlet {
             req.setAttribute("FILTER_ENDDATE", endDate);
             req.setAttribute("VIEW_PAGING", new ViewPaging<>(externalTransactions, pagination));
 
-            req.getRequestDispatcher("/pages/Transactions/ExternalTransactions.jsp").forward(req, resp);
+            req.getRequestDispatcher("/pages/admin/admin_payment_history.jsp").forward(req, resp);
         } catch (Exception e) {
             e.printStackTrace();
             Pagination pagination
@@ -91,4 +91,8 @@ public class ExternalTransactionController extends HttpServlet {
 
     }
     }
+
+
+
+
 
