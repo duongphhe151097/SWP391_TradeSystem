@@ -280,10 +280,10 @@ public class TransactionManagerRepository {
             hql.append("SELECT COUNT(*) FROM externalTrans e WHERE 1=1 ");
 
             if (startDate != null) {
-                hql.append("AND e.create_at >= :startDate ");
+                hql.append("AND e.createAt >= :startDate ");
             }
             if (endDate != null) {
-                hql.append("AND e.create_at <= :endDate ");
+                hql.append("AND e.createAt <= :endDate ");
             }
             if (amountFrom != null) {
                 hql.append("AND e.amount >= :amountFrom ");
