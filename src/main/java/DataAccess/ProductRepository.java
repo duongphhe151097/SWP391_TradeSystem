@@ -41,7 +41,7 @@ public class ProductRepository {
         try {
             transaction.begin();
             ProductEntity entity = (ProductEntity) entityManager.merge(product) ;
-            entityManager.persist(product);
+            entityManager.persist(entity);
             transaction.commit();
 
             return Optional.of(entity);
