@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="f" uri="tradesys.functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <header>
     <div class="sticky-top">
@@ -67,7 +68,9 @@
                                aria-expanded="false">
                                 <img class="img-xs rounded-circle" src="<c:url value="/img/default_male.jpg"/>"
                                      alt="Profile image"/>
-                                <span class="user-name">${sessionScope.SESSION_USERFULLNAME}</span>
+                                <span class="user-name">
+                                        ${sessionScope.SESSION_USERFULLNAME}
+                                </span>
                             </a>
                             <div class="dropdown-menu dropdown-menu-right navbar-dropdown"
                                  aria-labelledby="user-dropdown">
@@ -76,6 +79,18 @@
                                          alt="Profile image"/>
                                     <p class="mb-1 mt-3 font-weight-semibold">${sessionScope.SESSION_USERFULLNAME}</p>
                                     <p class="fw-light text-muted mb-0">${sessionScope.SESSION_USEREMAIL}</p>
+                                    <div class="d-flex justify-content-center">
+                                        <div>
+                                            <a href="<c:url value="/user/balance"/> " id="refresh-balance">
+                                                <span class="material-symbols-outlined">
+                                                    refresh
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div>
+                                            <p id="balance-amount">Số dư: ${f:formatCurrency(sessionScope.SESSION_USERBALANCE)}</p>
+                                        </div>
+                                    </div>
                                 </div>
                                 <a href="<c:url value="/profile"/>" class="dropdown-item">
                                     <span class="d-flex align-items-center">
@@ -87,15 +102,25 @@
                                         </span>
                                     </span>
                                 </a>
+                                <a href="<c:url value="/payment/vnpay/create"/>" class="dropdown-item">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            person
+                                        </span>
+                                        <span>
+                                            Nạp tiền
+                                        </span>
+                                    </span>
+                                </a>
                                 <a href="<c:url value="/change"/>" class="dropdown-item">
-                    <span class="d-flex align-items-center">
-                        <span class="material-symbols-outlined">
-                            vpn_key
-                        </span>
-                        <span>
-                            Đổi mật khẩu
-                        </span>
-                    </span>
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            vpn_key
+                                        </span>
+                                        <span>
+                                            Đổi mật khẩu
+                                        </span>
+                                    </span>
                                 </a>
                                 <a href="<c:url value="/logout"/> " class="dropdown-item">
                                     <span class="d-flex align-items-center">

@@ -4,12 +4,13 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
     <persistence-unit name="tradesys">
-        <class>Models.UserEntity</class>
-        <class>Models.UserRoleEntity</class>
-        <class>Models.RoleEntity</class>
-        <class>Models.TokenActivationEntity</class>
-        <class>Models.CaptchaEntity</class>
-        <class>Models.SessionManagerEntity</class>
+        <class>models.UserEntity</class>
+        <class>models.UserRoleEntity</class>
+        <class>models.RoleEntity</class>
+        <class>models.TokenActivationEntity</class>
+        <class>models.CaptchaEntity</class>
+        <class>models.SessionManagerEntity</class>
+
 
         <properties>
             <property name="hibernate.connection.driver_class" value="org.postgresql.Driver"/>
@@ -19,6 +20,11 @@
             <property name="hibernate.naming.physical-strategy" value="org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl"/>
 
             <property name="hbm2ddl.auto" value="validate"/>
+
+            <property name="hibernate.hikari.minimumIdle" value="5" />
+            <property name="hibernate.hikari.maximumPoolSize" value="20" />
+            <property name="hibernate.hikari.idleTimeout" value="30000" />
+            <property name="hibernate.connection.provider_class" value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider" />
         </properties>
     </persistence-unit>
 </persistence>
