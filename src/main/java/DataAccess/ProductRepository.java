@@ -1,6 +1,8 @@
 package DataAccess;
 
+import Models.CategoryEntity;
 import Models.ProductEntity;
+import Models.UserEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
@@ -23,6 +25,7 @@ public class ProductRepository {
                 "SELECT p FROM product p", ProductEntity.class);
         return query.getResultList();
     }
+
     public List<ProductEntity> searchProducts(String keyword, double minPrice, double maxPrice) {
         String queryString = "SELECT p FROM product p WHERE p.title LIKE :keyword " +
                 "AND p.price BETWEEN :minPrice AND :maxPrice";
@@ -32,29 +35,24 @@ public class ProductRepository {
         query.setParameter("maxPrice", maxPrice);
         return query.getResultList();
     }
+
     public Optional<ProductEntity> addProduct(ProductEntity product) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-
-            product.setId(UUID.randomUUID());
-
+            ProductEntity entity = (ProductEntity) entityManager.merge(product) ;
             entityManager.persist(product);
             transaction.commit();
 
-            return Optional.of(product); // Trả về Optional chứa đối tượng đã thêm
+            return Optional.of(entity);
         } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
+            transaction.rollback();
             e.printStackTrace();
-        } finally {
-            if (entityManager != null && entityManager.isOpen()) {
-                entityManager.close();
             }
+
+            return Optional.empty();
         }
-        return Optional.empty();
-    }
+
 
     public void updateProduct(ProductEntity product) {
         EntityTransaction transaction = entityManager.getTransaction();
@@ -67,6 +65,17 @@ public class ProductRepository {
                 transaction.rollback();
             }
             e.printStackTrace();
+        }
+    }
+
+    public int getCategoryId() {
+        TypedQuery<Integer> query = entityManager.createQuery(
+                "SELECT c.id FROM category c", Integer.class);
+        List<Integer> categoryIds = query.getResultList();
+        if (!categoryIds.isEmpty()) {
+            return categoryIds.get(0);
+        } else {
+            return 0;
         }
     }
 }

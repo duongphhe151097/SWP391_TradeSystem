@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -46,10 +47,30 @@
         .form-group .hidden-content {
             display: none;
         }
+
+        .success-message {
+            color: green;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
+    <%-- Hiển thị thông báo nếu có --%>
+    <c:if test="${not empty successMessage}">
+        <div class="success-message">${successMessage}</div>
+    </c:if>
+    <c:if test="${not empty errorMessage}">
+        <div class="error-message">${errorMessage}</div>
+    </c:if>
+
     <form action="<c:url value='/addproduct'/>" method="post"> <!-- Bắt đầu biểu mẫu -->
         <div class="form-group">
             <label for="title">Chủ đề trung gian (*)</label>
@@ -61,7 +82,7 @@
         </div>
         <div class="form-group">
             <label for="description">Mô tả (*)</label>
-            <textarea id="editor" name="description" required></textarea>
+            <textarea id="description" name="description" required></textarea>
             <small>Càng chi tiết về sản phẩm càng tốt vì đây sẽ là cơ sở pháp lý giải quyết khiếu nại nếu có sau này</small>
         </div>
         <div class="form-group">
@@ -69,8 +90,8 @@
             <input type="text" id="contact" name="contact">
         </div>
         <div class="form-group">
-            <label for="hidden-content">Nội dung ẩn (*)</label>
-            <textarea id="hidden-editor" name="hidden-content" class="hidden-content" required></textarea>
+            <label for="secret">Nội dung ẩn (*)</label>
+            <textarea id="secret" name="secret" class="secret" required></textarea>
             <small>Các chi tiết nội dung ẩn mà bạn muốn bổ sung</small>
         </div>
         <div class="form-group">

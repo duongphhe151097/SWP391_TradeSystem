@@ -58,8 +58,4 @@ public class ProductEntity extends BaseEntity implements Serializable {
 
     @Column(name = "`status`", nullable = false)
     private short status;
-    @Id
-    @UuidGenerator(style = UuidGenerator.Style.RANDOM)
-    @Column(name = "`user_id`", columnDefinition = "uuid", updatable = false, nullable = false)
-    private UUID user_id;
 }
