@@ -14,10 +14,22 @@
             <a href="<c:url value="/admin/account"/>">
                 <span class="d-flex align-items-center">
                     <span class="material-symbols-outlined">
-                                person
+                        person
                     </span>
                     <span class="item-name">
-                                Quản lý người dùng
+                        Quản lý người dùng
+                    </span>
+                </span>
+            </a>
+        </li>
+        <li class=" w-100">
+            <a href="<c:url value="/admin/payment/history"/>">
+                <span class="d-flex align-items-center">
+                    <span class="material-symbols-outlined">
+                        receipt_long
+                    </span>
+                    <span class="item-name">
+                        Quản lý giao dịch
                     </span>
                 </span>
             </a>

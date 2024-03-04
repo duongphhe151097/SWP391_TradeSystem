@@ -1,5 +1,7 @@
 package utils.convert;
 
+import com.google.gson.JsonObject;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -8,10 +10,7 @@ import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Locale;
-import java.util.UUID;
+import java.util.*;
 
 public class StringConvertor {
 
@@ -84,5 +83,11 @@ public class StringConvertor {
         }catch (Exception e) {
             return "0 ₫";
         }
+    }
+
+    public static String getStringOrNull(JsonObject jsonObject, String key) {
+        return Optional.ofNullable(jsonObject.get(key))
+                .map(com.google.gson.JsonElement::getAsString)
+                .orElse(null);
     }
 }
