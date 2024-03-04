@@ -27,7 +27,7 @@
         <div class="container-fluid p-3 main-content">
             <div class="row">
                 <div class="col-md-12">
-                    <h1>Payment History</h1>
+                    <h1>Lịch sử giao dịch</h1>
                 </div>
             </div>
 
@@ -84,9 +84,9 @@
                             <td>${transaction.amount}</td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${transaction.status eq 1}">Được tạo</c:when>
+                                    <c:when test="${transaction.status eq 1}">Đang xử lý</c:when>
                                     <c:when test="${transaction.status eq 2}">Thành công</c:when>
-                                    <c:otherwise>Đã hủy</c:otherwise>
+                                    <c:otherwise>Không Thành công</c:otherwise>
                                 </c:choose>
                             </td>
                             <td>${transaction.createAt}</td>
@@ -102,21 +102,21 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item <c:if test="${paging.currentPage == paging.startPage}">disabled</c:if>">
-                        <c:set value="${f:pagingUrlGenerate(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                        <c:set value="${f:pagingUrlGenerate(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                var="previous"/>
                         <a class="page-link"
                            href="<c:url value="/admin/payment/history${previous}"/>">Previous</a>
                     </li>
                     <c:forEach begin="1" end="${paging.totalPage}" varStatus="loop">
                         <li class="page-item <c:if test="${loop.index == paging.currentPage}">active</c:if>">
-                            <c:set value="${f:pagingUrlGenerate(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                            <c:set value="${f:pagingUrlGenerate(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                    var="current"/>
                             <a class="page-link"
                                href="<c:url value="/admin/payment/history${current}"/>">${loop.index}</a>
                         </li>
                     </c:forEach>
                     <li class="page-item <c:if test="${paging.currentPage == paging.endPage}">disabled</c:if>">
-                        <c:set value="${f:pagingUrlGenerate(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SAEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                        <c:set value="${f:pagingUrlGenerate(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                var="next"/>
                         <a class="page-link"
                            href="<c:url value="/admin/payment/history${next}"/>">Next</a>
