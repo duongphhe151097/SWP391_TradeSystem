@@ -9,7 +9,7 @@ import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.UUID;
 
 @Entity(name = "product")
@@ -40,8 +40,8 @@ public class ProductEntity extends BaseEntity implements Serializable {
     @Column(name = "`secret`", nullable = false, length = 500)
     private String secret;
 
-    @Column(name = "`price`", columnDefinition = "money", nullable = false)
-    private BigDecimal price;
+    @Column(name = "`price`", nullable = false)
+    private BigInteger price;
 
     @Column(name = "`contact`", length = 500)
     private String contact;
