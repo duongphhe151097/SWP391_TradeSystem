@@ -32,6 +32,7 @@ public class NotificationEntity extends BaseEntity implements Serializable {
     @Column(name = "`type`", nullable = false)
     private short type;
 
+
     @Column(name = "`message`", nullable = false, length = 500)
     private String message;
 
