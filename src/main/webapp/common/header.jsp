@@ -10,7 +10,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <header>
     <div class="sticky-top">
-        <nav class="navbar navbar-light bg-light">
+        <div class="navbar navbar-light bg-light">
             <div class="container">
                 <a class="navbar-brand" href="<c:url value="/"/>">
                     <img src="<c:url value="/img/logo.png"/>" alt="Tradesystem logo" width="80" height="40"
@@ -44,24 +44,7 @@
 
                 <!-- Post Login -->
                 <c:if test="${sessionScope.SESSION_USERID != null}">
-                    <div class="dropdown">
-                        <a class="me-3 dropdown-toggle hidden-arrow" href="#" id="navbarDropdownMenuLink"
-                           role="button" data-mdb-toggle="dropdown" aria-expanded="false">
-                            <i class="fas fa-bell"></i>
-                            <span class="badge rounded-pill badge-notification bg-danger">1</span>
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <c:forEach items="${notificationList}" var="notification">
-                                <li>
-                                    <a href="#" class="dropdown-item">
-                                        <div class="d-flex w-100 justify-content-between">
-                                            <h5 class="mb-1">${notification.message}</h5>
-                                        </div>
-                                    </a>
-                                </li>
-                            </c:forEach>
-                        </ul>
-                    </div>
+
                     <div class="d-flex align-items-center">
                         <div class="nav-item dropdown d-none d-lg-block user-dropdown">
                             <a class="nav-link" id="user-dropdown" href="#" data-bs-toggle="dropdown"
@@ -133,13 +116,34 @@
                                     </span>
                                 </a>
                             </div>
-                        </div>
+
                     </div>
+                            <div class="nav-item dropdown d-none d-lg-block notification-dropdown">
+                                <a class="nav-link" id="notification-dropdown" href="#" data-bs-toggle="dropdown"
+                                   aria-expanded="false">
+                                    <span class="material-symbols-outlined">notifications</span>
+                                    <!-- Badge for notification count -->
+                                    <span id="notificationBadge" class="badge badge-pill badge-primary"></span>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-left navbar-dropdown"
+                                     aria-labelledby="notification-dropdown" id="notificationDropdown">
+                                    <ul class="dropdown-menu">
+                                        <li><h6 class="dropdown-header">Dropdown header</h6></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End Notification dropdown -->
+
+
                 </c:if>
 
                 <!-- End Post Login -->
             </div>
+            </div>
         </nav>
     </div>
+    <script type="module" src="<c:url value="/js/notification.js"/>"></script>
 </header>
 

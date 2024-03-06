@@ -128,15 +128,14 @@ public class UserRepository {
         }
     }
 
-    public void updateUserProfile(UUID userId, String username, String fullname, String phone_number) {
+    public void updateUserProfile(UUID userId, String fullname, String phone_number) {
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
             transaction.begin();
 
-            entityManager.createQuery("UPDATE user u SET u.username = :username, u.fullName = :fullname, u.phoneNumber = :phone_number WHERE u.id = :id")
+            entityManager.createQuery("UPDATE user u SET  u.fullName = :fullname, u.phoneNumber = :phone_number WHERE u.id = :id")
                     .setParameter("id", userId)
-                    .setParameter("username", username)
                     .setParameter("fullname", fullname)
                     .setParameter("phone_number", phone_number)
                     .executeUpdate();

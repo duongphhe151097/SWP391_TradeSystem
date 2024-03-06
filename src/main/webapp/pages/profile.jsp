@@ -32,8 +32,8 @@
 
                             <div class="form-group">
                                 <label for="username">Tên tài khoản:</label>
-                                <input type="text" class="form-control" id="username" placeholder="Nhập tên tài khoản"
-                                       name="username" value="${user.username}" autocomplete="off">
+                                <input type="text" class="form-control" id="username" name="username" value="${user.username}"
+                                       readonly>
                             </div>
 
                             <div class="form-group">

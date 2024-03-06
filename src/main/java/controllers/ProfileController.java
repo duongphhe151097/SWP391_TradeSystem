@@ -1,6 +1,8 @@
 package controllers;
 
+import dataAccess.NotificationRepository;
 import dataAccess.UserRepository;
+import models.NotificationEntity;
 import models.UserEntity;
 import utils.annotations.Authorization;
 import utils.constants.UserConstant;
@@ -11,12 +13,21 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
 @WebServlet(name = "ProfileController", urlPatterns = "/profile")
 @Authorization(role = "", isPublic = false)
 public class ProfileController extends BaseController {
+    private NotificationRepository notificationRepository;
+    private UserRepository userRepository;
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        this.notificationRepository = new NotificationRepository();
+        this.userRepository = new UserRepository();
+    }
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
@@ -46,16 +57,24 @@ public class ProfileController extends BaseController {
 
             if (userOptional.isPresent()) {
                 UserEntity user = userOptional.get();
-
-                String username = req.getParameter("username");
                 String fullname = req.getParameter("fullname");
                 String phone_number = req.getParameter("phone_number");
-
-                user.setUsername(username);
                 user.setFullName(fullname);
                 user.setPhoneNumber(phone_number);
 
-                userRepository.updateUserProfile(userId, username, fullname, phone_number);
+                userRepository.updateUserProfile(userId, fullname, phone_number);
+                String message = "Bạn đã cập nhật đơn hàng mới thành công.";
+                NotificationEntity notificationEntity = NotificationEntity
+                        .builder()
+                        .id(UUID.randomUUID())
+                        .userFriedNotify(userId)
+                        .type((short)1)
+                        .message(message)
+                        .isSeen(false)
+                        .createAt(LocalDateTime.now())
+                        .build();
+                notificationRepository.add(notificationEntity);
+
                 resp.sendRedirect("profile");
             }
         } catch (Exception e) {
