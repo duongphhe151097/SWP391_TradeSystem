@@ -1,0 +1,30 @@
+@import url("base.css");
+
+.form-bloat{
+    background-color: #ffffff;
+    border: 1px solid #d8d8d8;
+    padding: 2rem;
+    border-radius: 5px;
+}
+
+label{
+    font-size: 13px;
+}
+
+small{
+    font-size: 12px;
+}
+
+.logo{
+    width: 150px;
+    height: 85px;
+}
+
+.title{
+    text-align:center
+}
+
+.title h3{
+    line-height:51px;
+    vertical-align:middle;
+}

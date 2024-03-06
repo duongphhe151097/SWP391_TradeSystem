@@ -3,13 +3,12 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JSP - Hello World</title>
+    <jsp:include page="common/common-css.jsp"/>
+    <title>Trang chủ</title>
 </head>
 <body>
-<h1><%= "Hello World!" %>
-</h1>
-<br/>
-<a href="hello-servlet">Hello Servlet</a>
-<h1><c:out value="Hello"/></h1>
+<jsp:include page="common/header.jsp"/>
+<h1>Home</h1>
 </body>
+<jsp:include page="common/common-js.jsp"/>
 </html>

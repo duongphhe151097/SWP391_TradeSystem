@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+        integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    
+    <title>Document</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mt-5">
+                    <div class="card-header">
+                        <h4 class="text">Tạo yêu cầu nạp tiền</h4>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <table class="table table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th scope="row">Chọn phương thức:</th>
+                                        <td>
+                                            <div class="btn-group btn-group-toggle d-flex" data-toggle="buttons">
+                                                <label class="btn btn-primary active mr-2">
+                                                    <input type="radio" name="bankCode" value="" checked>
+                                                    Thanh toán bằng VNPAY
+                                                </label>
+                                                <label class="btn btn-primary">
+                                                    <input type="radio" name="bankCode" value="">
+                                                    Chuyển khoản ngân hàng
+                                                </label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th scope="row">Số tiền:</th>
+                                        <td>
+                                            <input class="form-control" data-val="true"
+                                                data-val-number="The field Amount must be a number."
+                                                data-val-required="The Amount field is required." id="amount"
+                                                placeholder="Số tiền tối thiểu là 10,000đ" max="10000000" min="10000"
+                                                name="amount" type="number" value="10000" />
+
+                                            <p class="error-message">Số tiền tối thiểu là 10,000đ và tối đa 10,000,000đ</p>
+                                        </td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                            <div class="d-flex justify-content-center">
+                                <p class="error-message">Tạo giao dịch không thành công!</p>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <button type="button" class="btn btn-success">Nạp tiền</button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+    crossorigin="anonymous"></script>
+
+</html>
