@@ -100,5 +100,18 @@ public class ProductRepository {
         }
         return null;
     }
+    public boolean isUserSeller(UUID userId) {
+        try {
+            Boolean isSeller = entityManager.createQuery("SELECT p.isSeller FROM product p WHERE p.userId = :userId", Boolean.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+
+
+            return isSeller != null && isSeller;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 }

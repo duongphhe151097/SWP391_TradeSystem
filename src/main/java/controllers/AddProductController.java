@@ -63,6 +63,7 @@ public class AddProductController extends BaseController {
                     .updatable(false)
                     .quantity(0)
                     .status((short) 6)
+                    .isSeller(true)
                     .build();
 
 

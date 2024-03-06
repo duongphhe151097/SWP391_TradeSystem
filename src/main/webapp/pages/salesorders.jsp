@@ -123,9 +123,8 @@
         </div>
     </div>
 
-    <jsp:include page="/common/modal.jsp" />
-    <jsp:include page="/common/toast.jsp" />
-    <jsp:include page="/common/common-js.jsp"/>
-    <script type="module" src="<c:url value='/js/admin.account.js'/>"></script>
+    <jsp:include page="../common/modal.jsp" />
+    <jsp:include page="../common/toast.jsp" />
+    <jsp:include page="../common/common-js.jsp"/>
     </body>
     </html>
