@@ -50,6 +50,9 @@ public class ProductEntity extends BaseEntity implements Serializable {
     @Column(name = "`is_public`", nullable = false)
     private boolean isPublic;
 
+    @Column(name = "`is_seller`", nullable = false)
+    private boolean isSeller;
+
     @Column(name = "`updatable`", nullable = false)
     private boolean updatable;
 
