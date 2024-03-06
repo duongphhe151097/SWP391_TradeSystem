@@ -1,6 +1,6 @@
-package Utils.Utils.Settings;
+package utils.Utils.Settings;
 
-import Utils.Settings.AppSettingCore;
+import utils.settings.AppSettingCore;
 
 public class AppSettings {
     private static final AppSettingCore setting = AppSettingCore.getInstance();

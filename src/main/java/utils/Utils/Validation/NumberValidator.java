@@ -1,4 +1,4 @@
-package Utils.Utils.Validation;
+package utils.Utils.Validation;
 
 public class NumberValidator {
 

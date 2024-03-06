@@ -1,4 +1,4 @@
-package Utils.Utils.Constants;
+package utils.Utils.Constants;
 
 public class UserConstant {
     public static short PENDING = 0;

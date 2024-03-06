@@ -1,6 +1,6 @@
-package Utils.Utils.Generators;
+package utils.Utils.Generators;
 
-import Utils.Validation.StringValidator;
+import utils.validation.StringValidator;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

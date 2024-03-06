@@ -1,6 +1,6 @@
-package Utils.Utils.Convert;
+package utils.Utils.Convert;
 
-import Utils.Validation.StringValidator;
+import utils.validation.StringValidator;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

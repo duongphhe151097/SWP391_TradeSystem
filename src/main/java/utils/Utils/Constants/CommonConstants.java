@@ -1,4 +1,4 @@
-package Utils.Utils.Constants;
+package utils.Utils.Constants;
 
 public class CommonConstants {
     public static String DEFAULT = "DEFAULT";

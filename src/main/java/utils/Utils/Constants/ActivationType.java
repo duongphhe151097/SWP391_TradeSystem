@@ -1,4 +1,4 @@
-package Utils.Utils.Constants;
+package utils.Utils.Constants;
 
 public class ActivationType {
     public static short ACTIVE_REQUEST = 1;

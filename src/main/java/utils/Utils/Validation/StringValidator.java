@@ -1,4 +1,4 @@
-package Utils.Utils.Validation;
+package utils.Utils.Validation;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

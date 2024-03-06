@@ -1,4 +1,4 @@
-package Utils.Utils.Settings;
+package utils.Utils.Settings;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
