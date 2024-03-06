@@ -37,7 +37,7 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.PORT }}
         script: |
-          docker stop ${{ secrets.IMG_NAME }}:latest || true && docker rm ${{ secrets.IMG_NAME }}:latest || true  && docker rmi ${{ secrets.IMG_NAME }}:latest || true
+          docker stop trade_sys || true && docker rm trade_sys || true  && docker rmi ${{ secrets.IMG_NAME }}:latest || true
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ghcr.io -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
           docker pull ${{ secrets.IMG_NAME }}:latest
           docker run -d --name trade_sys --network main-proxy_default --restart on-failure:5 ${{ secrets.IMG_NAME }}:latest
