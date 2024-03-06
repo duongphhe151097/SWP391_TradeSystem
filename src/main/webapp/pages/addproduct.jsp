@@ -78,8 +78,9 @@
         </div>
         <div class="form-group">
             <label for="price">Giá tiền (*)</label>
-            <input type="text" id="price" name="price" required>
+            <input type="text" id="price" name="price" required pattern="[0-9]*" inputmode="numeric">
         </div>
+
         <div class="form-group">
             <label for="description">Mô tả (*)</label>
             <textarea id="description" name="description" required></textarea>
@@ -100,16 +101,18 @@
                 Hiện công khai (*)
             </label>
         </div>
-        <!-- Thêm một trường ẩn để lưu ID của người dùng -->
+
         <input type="hidden" name="userId" value="<%= session.getAttribute("userId") %>">
         <button type="submit">Gửi</button>
     </form> <!-- Kết thúc biểu mẫu -->
 </div>
 
+
+
 <script>
-    // Gọi CKEditor trên textarea với ID là 'editor' và 'hidden-editor'
-    CKEDITOR.replace('editor');
-    CKEDITOR.replace('hidden-editor');
+
+    CKEDITOR.replace('description');
+    CKEDITOR.replace('secret');
 </script>
 </body>
 </html>

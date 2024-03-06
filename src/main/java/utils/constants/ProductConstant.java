@@ -1,4 +1,4 @@
-package Utils.Constants;
+package utils.constants;
 
 public class ProductConstant {
     public static final short PRODUCT_STATUS_PENDING = 0;

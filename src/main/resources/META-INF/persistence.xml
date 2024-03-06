@@ -4,14 +4,14 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_0.xsd"
              version="3.0">
     <persistence-unit name="tradesys">
-        <class>Models.UserEntity</class>
-        <class>Models.UserRoleEntity</class>
-        <class>Models.RoleEntity</class>
-        <class>Models.TokenActivationEntity</class>
-        <class>Models.CaptchaEntity</class>
-        <class>Models.SessionManagerEntity</class>
-        <class>Models.CategoryEntity</class>
-        <class>Models.ProductEntity</class>
+        <class>models.UserEntity</class>
+        <class>models.UserRoleEntity</class>
+        <class>models.RoleEntity</class>
+        <class>models.TokenActivationEntity</class>
+        <class>models.CaptchaEntity</class>
+        <class>models.SessionManagerEntity</class>
+        <class>models.CategoryEntity</class>
+        <class>models.ProductEntity</class>
 
 
 

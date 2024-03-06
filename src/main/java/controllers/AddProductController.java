@@ -1,24 +1,23 @@
-package Controllers;
+package controllers;
 
-import DataAccess.ProductRepository;
-import Models.ProductEntity;
-import Utils.Annotations.Authorization;
-import Utils.Constants.UserConstant;
-import Utils.Validation.StringValidator;
+import dataAccess.ProductRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import models.ProductEntity;
+import utils.annotations.Authorization;
+import utils.constants.UserConstant;
+import utils.validation.StringValidator;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.math.BigInteger;
 import java.util.Optional;
 import java.util.UUID;
 
 @WebServlet(name = "AddProductController", urlPatterns = "/addproduct")
-@Authorization(role = "", isPublic = true)
+@Authorization(role = "", isPublic = false  )
 public class AddProductController extends BaseController {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -40,7 +39,7 @@ public class AddProductController extends BaseController {
                 return;
             }
 
-            BigDecimal price = new BigDecimal(priceString);
+            BigInteger price = new BigInteger(priceString);
             HttpSession session = req.getSession();
             UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
 

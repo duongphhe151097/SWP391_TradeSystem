@@ -1,14 +1,16 @@
-package DataAccess;
+package dataAccess;
 
-import Models.CategoryEntity;
-import Models.ProductEntity;
-import Models.UserEntity;
+import dataAccess.DbFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.Persistence;
+import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.TypedQuery;
+import models.ExternalTransactionEntity;
+import models.ProductEntity;
 
 
+import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -20,12 +22,17 @@ public class ProductRepository {
         this.entityManager = DbFactory.getFactory().createEntityManager();
     }
 
-    public List<ProductEntity> getAllProducts() {
-        TypedQuery<ProductEntity> query = entityManager.createQuery(
-                "SELECT p FROM product p", ProductEntity.class);
-        return query.getResultList();
-    }
 
+    public long countAllByUser(UUID userId) {
+        try {
+            return entityManager.createQuery("SELECT COUNT(e) FROM product e WHERE e.userId = :userId", Long.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
     public List<ProductEntity> searchProducts(String keyword, double minPrice, double maxPrice) {
         String queryString = "SELECT p FROM product p WHERE p.title LIKE :keyword " +
                 "AND p.price BETWEEN :minPrice AND :maxPrice";
@@ -77,5 +84,21 @@ public class ProductRepository {
         } else {
             return 0;
         }
+
     }
+    public List<ProductEntity> getUserProductWithPaging(int start, int end, UUID userId) {
+        try {
+            TypedQuery<ProductEntity> query = entityManager.createQuery(
+                            "SELECT e FROM product e WHERE e.userId = :userId", ProductEntity.class)
+                    .setParameter("userId", userId);
+
+            query.setFirstResult(start);
+            query.setMaxResults(end);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
