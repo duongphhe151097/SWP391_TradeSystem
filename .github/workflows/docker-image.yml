@@ -1,9 +1,6 @@
 name: Docker Image CI
 
 on:
-#  push:
-#    branches: [ "build" ]
-
   pull_request:
     branches: [ "build" ]
     types: [closed]
@@ -14,16 +11,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - name: Set outputs
+    - name: Set tag hash
       id: vars
       run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
-    - name: Check outputs
+
+    - name: Check tag hash
       run: echo ${{ steps.vars.outputs.sha_short }}
 
     - name: Build the Docker image
       run: docker build . --file Dockerfile -t ${{ vars.IMG_NAME }}:${{ steps.vars.outputs.sha_short }} -t ${{ vars.IMG_NAME }}:latest
 
-    - name: Log in to Docker Hub
+    - name: Log in to github registry
       run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login ghcr.io -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
     - name: Push version image
@@ -37,7 +35,7 @@ jobs:
     needs: build
 
     steps:
-    - name: SSH to VPS and Run Docker Container
+    - name: SSH to VPS and run docker container
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.HOST }}
