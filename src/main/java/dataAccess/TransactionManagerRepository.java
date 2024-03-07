@@ -205,7 +205,7 @@ public class TransactionManagerRepository {
 //        return null;
 //    }
 
-    public List<UserEntity> getExternalTransactionsWithPaging(int start, int end, BigInteger amountFrom, BigInteger amountTo, LocalDateTime startDate, LocalDateTime endDate) {
+    public List<UserEntity> getExternalTransactionsWithPaging(int start, int end, BigInteger amountFrom, BigInteger amountTo, UUID id, String user, LocalDateTime startDate, LocalDateTime endDate) {
         entityManager.clear();
         StringBuilder hql = new StringBuilder();
         hql.append("SELECT e FROM externalTrans e WHERE 1=1");
@@ -228,6 +228,14 @@ public class TransactionManagerRepository {
             hql.append("AND e.amount <= :amountTo ");
         }
 
+        if (id != null) {
+            hql.append("AND e.id = :id ");
+        }
+
+        if (user != null) {
+            hql.append("AND e.createBy LIKE :user ");
+        }
+
         try {
             String queryString = hql.toString();
 
@@ -236,6 +244,9 @@ public class TransactionManagerRepository {
             if (queryString.contains(":amountTo")) query.setParameter("amountTo", amountTo);
             if (queryString.contains(":startDate")) query.setParameter("startDate", startDate);
             if (queryString.contains(":endDate")) query.setParameter("endDate", endDate);
+            if (queryString.contains(":id")) query.setParameter("id", id);
+            if (queryString.contains(":user")) query.setParameter("user", "%" + user + "%");
+
 
             query.setFirstResult(start);
             query.setMaxResults(end);
@@ -273,7 +284,7 @@ public class TransactionManagerRepository {
 //        return 0;
 //    }
 
-    public long countAll(LocalDateTime startDate, LocalDateTime endDate, BigInteger amountFrom, BigInteger amountTo) {
+    public long countAll(LocalDateTime startDate, LocalDateTime endDate, BigInteger amountFrom, BigInteger amountTo, String user, UUID id) {
         try {
             entityManager.clear();
             StringBuilder hql = new StringBuilder();
@@ -291,6 +302,13 @@ public class TransactionManagerRepository {
             if (amountTo != null) {
                 hql.append("AND e.amount <= :amountTo ");
             }
+            if (id != null) {
+                hql.append("AND e.id = :id ");
+            }
+            if (user != null) {
+                hql.append("AND e.createBy LIKE :user ");
+            }
+
 
             String queryString = hql.toString();
             TypedQuery<Long> query = entityManager.createQuery(queryString, Long.class);
@@ -306,6 +324,12 @@ public class TransactionManagerRepository {
             }
             if (amountTo != null) {
                 query.setParameter("amountTo", amountTo);
+            }
+            if (id != null) {
+                query.setParameter("id", id);
+            }
+            if (user != null) {
+                query.setParameter("user", user);
             }
 
             return query.getSingleResult();

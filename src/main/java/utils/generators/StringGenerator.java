@@ -73,4 +73,31 @@ public class StringGenerator {
 
         return result.toString();
     }
+
+    public static String pagingUrlGenerateTransactionHistory(String currentPage, String pageSize, String pageRange, String f_amountFrom, String f_amountTo, String id, String user, String start, String end) {
+        StringBuilder result = new StringBuilder();
+        if (StringValidator.isNullOrBlank(currentPage)) {
+            currentPage = "";
+        }
+        result.append("?current=").append(currentPage);
+
+        if (StringValidator.isNullOrBlank(pageSize)) {
+            pageSize = "";
+        }
+        result.append("&size=").append(pageSize);
+
+        if (StringValidator.isNullOrBlank(pageRange)) {
+            pageRange = "";
+        }
+
+        result.append("&range=").append(pageRange);
+        if (!StringValidator.isNullOrBlank(f_amountFrom)) result.append("&f_amountFrom=").append(f_amountFrom);
+        if (!StringValidator.isNullOrBlank(f_amountTo)) result.append("&f_amountTo=").append(f_amountTo);
+        if (!StringValidator.isNullOrBlank(id)) result.append("&id=").append(id);
+        if (!StringValidator.isNullOrBlank(user)) result.append("&user=").append(user);
+        if (StringValidator.isNullOrBlank(start)) result.append("&f_start=").append(start);
+        if (StringValidator.isNullOrBlank(end)) result.append("&f_end=").append(end);
+
+        return result.toString();
+    }
 }
