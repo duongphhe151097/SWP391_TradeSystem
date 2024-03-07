@@ -52,6 +52,7 @@
                                 <input type="text" class="form-control" value="${requestScope.FILTER_ID}" id="id" name="id">
                             </div>
                         </div>
+
                 </div> <!-- Close col-md-6 here to split into next column -->
 
                 <div class="col-md-6"> <!-- Open new column here -->
@@ -131,32 +132,29 @@
     <c:if test="${paging.totalPage > 0}">
         <div class="col-md-12">
             <nav aria-label="Page navigation example">
-                <ul class="pagination">
+                <ul class="pagination justify-content-center">
                     <li class="page-item <c:if test="${paging.currentPage == paging.startPage}">disabled</c:if>">
-                        <c:set value="${f:pagingUrlGenerateTransactionHistory(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
-                               var="previous"/>
-                        <a class="page-link"
-                           href="<c:url value="/admin/account${previous}"/>">
-                            Về trang trước
-                        </a>
+                            <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage - 1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                                   var="previous"/>
+                            <a class="page-link" href="<c:url value='/admin/payment/history${previous}'/>">
+                                Về trang trước
+                            </a>
                     </li>
 
                     <c:forEach begin="1" end="${paging.totalPage}" varStatus="loop">
                         <li class="page-item <c:if test="${loop.index == paging.currentPage}">active</c:if>">
                             <c:set value="${f:pagingUrlGenerateTransactionHistory(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                    var="current"/>
-                            <a class="page-link"
-                               href="<c:url value="/admin/account${current}"/>">${loop.index}</a>
+                            <a class="page-link" href="<c:url value='/admin/payment/history${current}'/>">${loop.index}</a>
                         </li>
                     </c:forEach>
 
                     <li class="page-item <c:if test="${paging.currentPage == paging.endPage}">disabled</c:if>">
-                        <c:set value="${f:pagingUrlGenerateTransactionHistory(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
-                               var="next"/>
-                        <a class="page-link"
-                           href="<c:url value="/admin/account${next}"/>">
-                            Đến trang tiếp
-                        </a>
+                            <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage + 1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                                   var="next"/>
+                            <a class="page-link" href="<c:url value='/admin/payment/history${next}'/>">
+                                Đến trang tiếp
+                            </a>
                     </li>
                 </ul>
             </nav>
