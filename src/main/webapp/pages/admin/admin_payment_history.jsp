@@ -14,7 +14,7 @@
     <jsp:include page="../../common/common-css.jsp"/>
     <link rel="stylesheet" href="<c:url value="/css/admin.sidenav.css"/> ">
     <link rel="stylesheet" href="<c:url value="/css/admin.manager.css"/> ">
-    <title>AdminPaymentHistory</title>
+    <title>Lịch sử giao dịch</title>
 </head>
 <body>
 <div id="viewport">
@@ -33,7 +33,7 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <form method="get" action="<c:url value="/admin/payment/history"/>">
+                    <form method="get" action="<c:url value='/admin/payment/history'/>">
                         <div class="form-group row">
                             <label for="amount_from" class="col-sm-4 col-form-label">Tìm theo giá từ</label>
                             <div class="col-sm-8">
@@ -52,115 +52,122 @@
                                 <input type="text" class="form-control" value="${requestScope.FILTER_ID}" id="id" name="id">
                             </div>
                         </div>
-                    </form>
-                </div>
-                <div class="col-md-6">
-                    <form method="get" action="<c:url value="/admin/payment/history"/>">
-                        <div class="form-group row">
-                            <label for="user" class="col-sm-4 col-form-label">Tìm theo người tạo</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" value="${requestScope.FILTER_USER}" id="user" name="user">
-                            </div>
+                </div> <!-- Close col-md-6 here to split into next column -->
+
+                <div class="col-md-6"> <!-- Open new column here -->
+                    <div class="form-group row">
+                        <label for="user" class="col-sm-4 col-form-label">Tìm theo người tạo</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" value="${requestScope.FILTER_USER}" id="user" name="user">
                         </div>
-                        <div class="form-group row">
-                            <label for="start_date" class="col-sm-4 col-form-label">Từ ngày</label>
-                            <div class="col-sm-8">
-                                <input type="date" class="form-control" value="${requestScope.FILTER_STARTDATE}" id="start_date" name="f_start">
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="start_date" class="col-sm-4 col-form-label">Từ ngày</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" value="${requestScope.FILTER_STARTDATE}" id="start_date" name="f_start">
                         </div>
-                        <div class="form-group row">
-                            <label for="end_date" class="col-sm-4 col-form-label">Đến ngày</label>
-                            <div class="col-sm-8">
-                                <input type="date" class="form-control" value="${requestScope.FILTER_ENDDATE}" id="end_date" name="f_end">
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="end_date" class="col-sm-4 col-form-label">Đến ngày</label>
+                        <div class="col-sm-8">
+                            <input type="date" class="form-control" value="${requestScope.FILTER_ENDDATE}" id="end_date" name="f_end">
                         </div>
-                        <div class="form-group row">
-                            <div class="col-sm-12">
-                                <button type="submit" class="btn btn-primary">Tìm</button>
-                            </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-sm-12">
+                            <button type="submit" class="btn btn-primary">Tìm</button>
                         </div>
+                    </div>
                     </form>
                 </div>
             </div>
         </div>
+    </div>
 
-            <div class="col-md-12 mt-4">
-                <table class="table">
-                    <thead class="thead-dark">
-                    <tr>
-                        <th>Mã giao dịch</th>
-                        <th>Thanh toán bằng</th>
-                        <th>Lệnh</th>
-                        <th>Số tiền</th>
-                        <th>Trạng thái</th>
-                        <th>Thời gian tạo</th>
-                        <th>Người tạo</th>
+    <div class="col-md-12 mt-4">
+        <table class="table">
+            <thead class="thead-dark">
+            <tr>
+                <th>Mã giao dịch</th>
+                <th>Thanh toán bằng</th>
+                <th>Lệnh</th>
+                <th>Số tiền</th>
+                <th>Trạng thái</th>
+                <th>Thời gian tạo</th>
+                <th>Người tạo</th>
+                <th>Hành động</th>
 
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <c:forEach items="${transaction}" var="transaction">
-                        <tr>
-                            <td>${transaction.id}</td>
-                            <td>${transaction.type}</td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${transaction.command eq 1}">Nạp tiền</c:when>
-                                    <c:otherwise>rút tiền</c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>${transaction.amount}</td>
-                            <td>
-                                <c:choose>
-                                    <c:when test="${transaction.status eq 1}">Đang xử lý</c:when>
-                                    <c:when test="${transaction.status eq 2}">Thành công</c:when>
-                                    <c:otherwise>Không Thành công</c:otherwise>
-                                </c:choose>
-                            </td>
-                            <td>${transaction.createAt}</td>
-                            <td>${transaction.createBy}</td>
-                        </tr>
-                    </c:forEach>
-                    </tbody>
-                </table>
-            </div>
+            </tr>
+            </thead>
+            <tbody>
+            <c:forEach items="${transaction}" var="transaction">
+                <tr>
+                    <td>${transaction.id}</td>
+                    <td>${transaction.type}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${transaction.command eq 1}">Nạp tiền</c:when>
+                            <c:otherwise>rút tiền</c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>${transaction.amount}</td>
+                    <td>
+                        <c:choose>
+                            <c:when test="${transaction.status eq 1}">Đang xử lý</c:when>
+                            <c:when test="${transaction.status eq 2}">Thành công</c:when>
+                            <c:otherwise>Không Thành công</c:otherwise>
+                        </c:choose>
+                    </td>
+                    <td>${transaction.createAt}</td>
+                    <td>${transaction.createBy}</td>
+                    <td><a href="">Chi tiết</a></td>
 
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
+                </tr>
+            </c:forEach>
+            </tbody>
+        </table>
+    </div>
+
+    <c:if test="${paging.totalPage > 0}">
+        <div class="col-md-12">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
                     <li class="page-item <c:if test="${paging.currentPage == paging.startPage}">disabled</c:if>">
-                        <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                        <c:set value="${f:pagingUrlGenerateTransactionHistory(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                var="previous"/>
                         <a class="page-link"
-                           href="<c:url value="/admin/payment/history${previous}"/>">Previous</a>
+                           href="<c:url value="/admin/account${previous}"/>">
+                            Về trang trước
+                        </a>
                     </li>
+
                     <c:forEach begin="1" end="${paging.totalPage}" varStatus="loop">
                         <li class="page-item <c:if test="${loop.index == paging.currentPage}">active</c:if>">
                             <c:set value="${f:pagingUrlGenerateTransactionHistory(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                    var="current"/>
                             <a class="page-link"
-                               href="<c:url value="/admin/payment/history${current}"/>">${loop.index}</a>
+                               href="<c:url value="/admin/account${current}"/>">${loop.index}</a>
                         </li>
                     </c:forEach>
+
                     <li class="page-item <c:if test="${paging.currentPage == paging.endPage}">disabled</c:if>">
-                        <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                        <c:set value="${f:pagingUrlGenerateTransactionHistory(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                var="next"/>
                         <a class="page-link"
-                           href="<c:url value="/admin/payment/history${next}"/>">Next</a>
+                           href="<c:url value="/admin/account${next}"/>">
+                            Đến trang tiếp
+                        </a>
                     </li>
                 </ul>
             </nav>
         </div>
-    </div>
+    </c:if>
 </div>
 
-<jsp:include page="/common/modal.jsp" />
-<jsp:include page="/common/toast.jsp" />
+
+<jsp:include page="/common/modal.jsp"/>
+<jsp:include page="/common/toast.jsp"/>
 <jsp:include page="/common/common-js.jsp"/>
 <script type="module" src="<c:url value="/js/admin.account.js"/>"></script>
 </body>
 </html>
-
-
-
-
-
