@@ -20,7 +20,13 @@
         <function-class>utils.generators.StringGenerator</function-class>
         <function-signature>java.lang.String pagingUrlGenerate(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
     </function>
-    
+
+    <function>
+        <name>pagingUrlGenerateTransactionHistory</name>
+        <function-class>utils.generators.StringGenerator</function-class>
+        <function-signature>java.lang.String pagingUrlGenerateTransactionHistory(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
+    </function>
+
     <function>
         <name>formatCurrency</name>
         <function-class>utils.convert.StringConvertor</function-class>

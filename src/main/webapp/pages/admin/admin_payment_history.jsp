@@ -27,33 +27,62 @@
         <div class="container-fluid p-3 main-content">
             <div class="row">
                 <div class="col-md-12">
-                    <h1>Payment History</h1>
+                    <h1>Lịch sử giao dịch</h1>
                 </div>
             </div>
 
-            <form method="get" action="<c:url value="/admin/payment/history"/>">
-                <div class="form-row">
-                    <div class="col-md-3 mb-3">
-                        <label for="amount_from">Tìm theo giá từ</label>
-                        <input type="number" class="form-control" value="${requestScope.FILTER_AmountFrom}" id="amount_from" name="f_amountFrom">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="amount_to">Tìm theo giá đến</label>
-                        <input type="number" class="form-control" value="${requestScope.FILTER_AmountTo}" id="amount_to" name="f_amountTo">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="start_date">Từ ngày</label>
-                        <input type="date" class="form-control" value="${requestScope.FILTER_STARTDATE}" id="start_date" name="f_start">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="end_date">Đến ngày</label>
-                        <input type="date" class="form-control" value="${requestScope.FILTER_ENDDATE}" id="end_date" name="f_end">
-                    </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <form method="get" action="<c:url value="/admin/payment/history"/>">
+                        <div class="form-group row">
+                            <label for="amount_from" class="col-sm-4 col-form-label">Tìm theo giá từ</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" value="${requestScope.FILTER_AmountFrom}" id="amount_from" name="f_amountFrom">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="amount_to" class="col-sm-4 col-form-label">Tìm theo giá đến</label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control" value="${requestScope.FILTER_AmountTo}" id="amount_to" name="f_amountTo">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="id" class="col-sm-4 col-form-label">Tìm theo Mã giao dịch</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" value="${requestScope.FILTER_ID}" id="id" name="id">
+                            </div>
+                        </div>
+                    </form>
                 </div>
-                <div class="ml-3 input-group mb-3 d-flex flex-column justify-content-end">
-                    <button type="submit" class="btn btn-primary">Tìm</button>
+                <div class="col-md-6">
+                    <form method="get" action="<c:url value="/admin/payment/history"/>">
+                        <div class="form-group row">
+                            <label for="user" class="col-sm-4 col-form-label">Tìm theo người tạo</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" value="${requestScope.FILTER_USER}" id="user" name="user">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="start_date" class="col-sm-4 col-form-label">Từ ngày</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control" value="${requestScope.FILTER_STARTDATE}" id="start_date" name="f_start">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="end_date" class="col-sm-4 col-form-label">Đến ngày</label>
+                            <div class="col-sm-8">
+                                <input type="date" class="form-control" value="${requestScope.FILTER_ENDDATE}" id="end_date" name="f_end">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm-12">
+                                <button type="submit" class="btn btn-primary">Tìm</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
+        </div>
 
             <div class="col-md-12 mt-4">
                 <table class="table">
@@ -66,8 +95,7 @@
                         <th>Trạng thái</th>
                         <th>Thời gian tạo</th>
                         <th>Người tạo</th>
-                        <th>Thời gian sửa cuối</th>
-                        <th>Nguời sửa</th>
+
                     </tr>
                     </thead>
                     <tbody>
@@ -84,15 +112,13 @@
                             <td>${transaction.amount}</td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${transaction.status eq 1}">Được tạo</c:when>
+                                    <c:when test="${transaction.status eq 1}">Đang xử lý</c:when>
                                     <c:when test="${transaction.status eq 2}">Thành công</c:when>
-                                    <c:otherwise>Đã hủy</c:otherwise>
+                                    <c:otherwise>Không Thành công</c:otherwise>
                                 </c:choose>
                             </td>
                             <td>${transaction.createAt}</td>
                             <td>${transaction.createBy}</td>
-                            <td>${transaction.updateAt}</td>
-                            <td>${transaction.updateBy}</td>
                         </tr>
                     </c:forEach>
                     </tbody>
@@ -102,21 +128,21 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">
                     <li class="page-item <c:if test="${paging.currentPage == paging.startPage}">disabled</c:if>">
-                        <c:set value="${f:pagingUrlGenerate(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                        <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                var="previous"/>
                         <a class="page-link"
                            href="<c:url value="/admin/payment/history${previous}"/>">Previous</a>
                     </li>
                     <c:forEach begin="1" end="${paging.totalPage}" varStatus="loop">
                         <li class="page-item <c:if test="${loop.index == paging.currentPage}">active</c:if>">
-                            <c:set value="${f:pagingUrlGenerate(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                            <c:set value="${f:pagingUrlGenerateTransactionHistory(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                    var="current"/>
                             <a class="page-link"
                                href="<c:url value="/admin/payment/history${current}"/>">${loop.index}</a>
                         </li>
                     </c:forEach>
                     <li class="page-item <c:if test="${paging.currentPage == paging.endPage}">disabled</c:if>">
-                        <c:set value="${f:pagingUrlGenerate(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SAEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                        <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                var="next"/>
                         <a class="page-link"
                            href="<c:url value="/admin/payment/history${next}"/>">Next</a>
