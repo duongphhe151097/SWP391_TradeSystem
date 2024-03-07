@@ -1,17 +1,16 @@
 import { urlBuilder } from "./common.js";
 $(document).ready(() => {
-    // Load notifications when the document is ready
-    loadNotifications();
+
+    loadNotificationList();
 });
 
-function loadNotifications() {
-    // Send GET request to fetch notifications
+function loadNotificationList() {
     $.ajax({
-        url: "/notification",
+        url: urlBuilder("/notification"),
         type: 'get',
         success: (response) => {
             console.log(response);
-            displayNotifications(response);
+            displayNotificationList(response);
         },
         error: (xhr, status, error) => {
             console.error(error);
@@ -21,11 +20,10 @@ function loadNotifications() {
     });
 }
 
-function displayNotifications(notifications) {
+function displayNotificationList(notificationList) {
     let notificationDropdown = $("#notificationDropdown");
-    notificationDropdown.empty(); // Clear old notifications before adding new ones
-
-    notifications.forEach(notification => {
+    notificationDropdown.empty();
+    notificationList.forEach(notification => {
         let formattedCreateAt = moment(notification.createAt).format("YYYY-MM-DD HH:mm:ss");
         // Create a new element to display the notification and add it to the dropdown
         let listItem = $("<a>")
@@ -40,7 +38,6 @@ function displayNotifications(notifications) {
         listItem.append(notification.message + " - " + formattedCreateAt);
         notificationDropdown.append(listItem);
     });
-    // Attach click event handler for notifications
     notificationDropdown.on("click", "a.notification", function() {
         let notificationId = $(this).data("notification-id");
         let isSeen = $(this).data("is-seen");
@@ -59,12 +56,12 @@ function updateNotificationStatus(notificationId, isSeen) {
 
     // Send POST request to update notification status
     $.ajax({
-        url: "/notification",
+        url: urlBuilder("/notification"),
         type: "post",
         contentType: "application/json",
         data: JSON.stringify(data),
         success: function(response) {
-            loadNotifications();
+            loadNotificationList();
         },
         error: function(xhr, status, error) {
             alert("Đã có lỗi xảy ra!");
