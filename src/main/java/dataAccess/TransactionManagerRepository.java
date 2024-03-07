@@ -329,7 +329,7 @@ public class TransactionManagerRepository {
                 query.setParameter("id", id);
             }
             if (user != null) {
-                query.setParameter("user", user);
+                query.setParameter("user", "%" + user + "%");
             }
 
             return query.getSingleResult();
