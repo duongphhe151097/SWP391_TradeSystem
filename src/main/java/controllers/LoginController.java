@@ -1,11 +1,14 @@
 package controllers;
 
+import dataAccess.RoleRepository;
 import dataAccess.SessionManagerRepository;
 import dataAccess.UserRepository;
+import models.RoleEntity;
 import models.SessionManagerEntity;
 import models.UserEntity;
 import services.CaptchaService;
 import utils.annotations.Authorization;
+import utils.constants.RoleConstant;
 import utils.constants.UserConstant;
 import utils.generators.StringGenerator;
 import utils.validation.StringValidator;
@@ -16,12 +19,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
+import javax.management.relation.Role;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 
 @WebServlet(name = "LoginController", urlPatterns = "/login")
-@Authorization(role = "",isPublic = true)
+@Authorization(role = "", isPublic = true)
 public class LoginController extends BaseController {
     private CaptchaService captchaService;
 
@@ -87,6 +92,7 @@ public class LoginController extends BaseController {
 
             //User logic
             UserRepository repository = new UserRepository();
+            RoleRepository roleRepository = new RoleRepository();
 
             Optional<UserEntity> existUser = repository.getUserByUsername(username);
             if (existUser.isEmpty() || !StringGenerator.verifyPassword(password, existUser.get().getPassword(), existUser.get().getSalt())) {
@@ -119,12 +125,18 @@ public class LoginController extends BaseController {
             session.setAttribute(UserConstant.SESSION_USEREMAIL, existUser.get().getEmail());
             session.setAttribute(UserConstant.SESSION_USERFULLNAME, existUser.get().getFullName());
             session.setAttribute(UserConstant.SESSION_BALANCE, existUser.get().getBalance());
+
+            Optional<Set<RoleEntity>> optionalRoleEntities = roleRepository
+                    .getRoleByUserId(existUser.get().getId());
+            boolean isAdmin = false;
+            if (optionalRoleEntities.isPresent()) {
+                isAdmin = optionalRoleEntities.get().stream().anyMatch(x -> x.getRoleName().equals(RoleConstant.ADMIN));
+            }
+            session.setAttribute(UserConstant.SESSION_ISADMIN, isAdmin);
             SessionManagerRepository sessionManagerRepository = new SessionManagerRepository();
 
             Optional<SessionManagerEntity> existSession = sessionManagerRepository.getSessionByUserId(existUser.get().getId());
-            if(existSession.isPresent()){
-                sessionManagerRepository.removeSession(existSession.get().getSessionId(), existUser.get().getId());
-            }
+            existSession.ifPresent(sessionManagerEntity -> sessionManagerRepository.removeSession(sessionManagerEntity.getSessionId(), existUser.get().getId()));
             SessionManagerEntity sessionManagerEntity = SessionManagerEntity.builder()
                     .sessionId(session.getId())
                     .userId(existUser.get().getId())
