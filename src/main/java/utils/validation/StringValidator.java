@@ -98,10 +98,17 @@ public class StringValidator {
         }
     }
 
-
-
-
-    public static boolean isNullOrBlank(String input){
+    public static boolean isNullOrBlank(String input) {
         return input == null || input.isBlank();
+    }
+
+    public static boolean isUUID(String input) {
+        try {
+            UUID uuid = UUID.fromString(input);
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

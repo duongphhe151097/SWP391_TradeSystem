@@ -105,6 +105,11 @@ public class VnPayService {
                 String[] splitIpAddress = ipAdress.split(",");
                 ipAdress = splitIpAddress[0];
             }
+
+            if(ipAdress.contains(",")){
+                String[] splitIpAddress = ipAdress.split(",");
+                ipAdress = splitIpAddress[0];
+            }
         } catch (Exception e) {
             ipAdress = "Invalid IP:" + e.getMessage();
         }

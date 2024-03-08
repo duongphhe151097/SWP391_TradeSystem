@@ -11,4 +11,5 @@ public class UserConstant {
     public static String SESSION_USEREMAIL = "SESSION_USEREMAIL";
     public static String SESSION_USERFULLNAME = "SESSION_USERFULLNAME";
     public static String SESSION_BALANCE = "SESSION_USERBALANCE";
+    public static String SESSION_ISADMIN = "SESSION_ISADMIN";
 }
