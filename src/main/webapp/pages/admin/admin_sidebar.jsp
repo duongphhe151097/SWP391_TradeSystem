@@ -34,5 +34,17 @@
                 </span>
             </a>
         </li>
+        <li class=" w-100">
+            <a href="<c:url value="/admin/report"/>">
+                <span class="d-flex align-items-center">
+                    <span class="material-symbols-outlined">
+                        report
+                    </span>
+                    <span class="item-name">
+                        Quản lý báo cáo
+                    </span>
+                </span>
+            </a>
+        </li>
     </ul>
 </div>
