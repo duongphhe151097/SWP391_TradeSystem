@@ -121,7 +121,7 @@
                     </td>
                     <td>${transaction.createAt}</td>
                     <td>${transaction.createBy}</td>
-                    <td><a href="">Chi tiết</a></td>
+                    <td><a href="<c:url value="/admin/payment/history/detail?id=${transaction.id}&type=${transaction.type   }"/> ">Chi tiết</a></td>
 
                 </tr>
             </c:forEach>

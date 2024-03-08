@@ -21,6 +21,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.UUID;
 
 @WebServlet(name = "VnPayQueryController", urlPatterns = {"/payment/vnpay/query"})
 @Authorization(role = "", isPublic = true)
@@ -37,7 +38,10 @@ public class VnPayQueryController extends BaseController {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String vnp_RequestId = VnPayService.getRandomNumber(8);
+        UUID transactionId = UUID.randomUUID();
+        String vnp_RequestId = transactionId.toString()
+                .replace("-", "");
+//        String vnp_RequestId = VnPayService.getRandomNumber(8);
         String vnp_Version = "2.1.0";
         String vnp_Command = "querydr";
         String vnp_TmnCode = VnPayService.vnp_TmnCode;
