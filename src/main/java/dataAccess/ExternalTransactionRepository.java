@@ -34,7 +34,7 @@ public class ExternalTransactionRepository {
         try {
             ExternalTransactionEntity entity = entityManager
                     .createQuery("select ext from externalTrans ext " +
-                            "where ext.userId = :uid and ext.status = :status and ext.isDelete = false", ExternalTransactionEntity.class)
+                            "where ext.userId = :uid and ext.isDelete = false", ExternalTransactionEntity.class)
                     .setParameter("uid", uId)
                     .getSingleResult();
 

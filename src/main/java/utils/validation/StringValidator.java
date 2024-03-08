@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -97,7 +98,17 @@ public class StringValidator {
         }
     }
 
-    public static boolean isNullOrBlank(String input){
+    public static boolean isNullOrBlank(String input) {
         return input == null || input.isBlank();
+    }
+
+    public static boolean isUUID(String input) {
+        try {
+            UUID uuid = UUID.fromString(input);
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
