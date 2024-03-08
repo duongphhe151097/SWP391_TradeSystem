@@ -34,6 +34,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <form method="get" action="<c:url value='/admin/payment/history'/>">
+
                         <div class="form-group row">
                             <label for="amount_from" class="col-sm-4 col-form-label">Tìm theo giá từ</label>
                             <div class="col-sm-8">
@@ -80,6 +81,13 @@
                                    name="f_end">
                         </div>
                     </div>
+                    <c:if test="${requestScope.ERROR_VALIDATE_ID}">
+
+                            <p style="color:red">Mã giao dịch không hợp lệ</p>
+
+
+
+                    </c:if>
                     <div class="form-group row">
                         <div class="col-sm-12">
                             <button type="submit" class="btn btn-primary">Tìm</button>
@@ -89,6 +97,7 @@
                 </div>
             </div>
         </div>
+
     </div>
 
     <div class="col-md-12 mt-4">
@@ -109,15 +118,9 @@
             <c:choose>
                 <c:when test="${paging.totalItem <= 0}">
                     <tbody>
-                    <c:when test="${requestScope.errorMessage == true}">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h1>id không hợp lệ</h1>
-                            </div>
-                        </div>
-                    </c:when>
+
                     <tr>
-                        <td colspan="7">
+                        <td colspan="8">
                             <div class="d-flex justify-content-center">
                                 <h2>Không có kết quả!</h2>
                             </div>
@@ -157,6 +160,7 @@
                 </c:otherwise>
             </c:choose>
         </table>
+
     </div>
 
     <c:if test="${paging.totalPage > 0}">
@@ -191,6 +195,9 @@
             </nav>
         </div>
     </c:if>
+
+
+
 </div>
 
 

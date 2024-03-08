@@ -61,8 +61,16 @@ public class PaymentHistoryController extends HttpServlet {
             }
 
             UUID f_id = null;
-            if (!StringValidator.isNullOrBlank(id)  ) {
-                f_id = UUID.fromString(id);
+
+            if (!StringValidator.isNullOrBlank(id)) {
+                if (StringValidator.isUUID(id)) {
+                    f_id = UUID.fromString(id);
+                }else{
+                    req.setAttribute("ERROR_VALIDATE_ID", true);
+                    dispatcher.forward(req, resp);
+                    return;
+                }
+
             }
 
 
