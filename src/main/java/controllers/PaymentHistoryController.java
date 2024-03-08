@@ -1,6 +1,7 @@
 package controllers;
 
 import dataAccess.TransactionManagerRepository;
+import jakarta.servlet.RequestDispatcher;
 import models.common.Pagination;
 import models.common.ViewPaging;
 import models.UserEntity;
@@ -26,7 +27,7 @@ public class PaymentHistoryController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TransactionManagerRepository transactionManagerRepository = new TransactionManagerRepository();
-
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/admin/admin_payment_history.jsp");
         // Lấy thông tin từ yêu cầu
         String currentPage = req.getParameter("current");
         String pageSize = req.getParameter("size");
@@ -60,9 +61,10 @@ public class PaymentHistoryController extends HttpServlet {
             }
 
             UUID f_id = null;
-            if (!StringValidator.isNullOrBlank(id)) {
+            if (!StringValidator.isNullOrBlank(id)  ) {
                 f_id = UUID.fromString(id);
             }
+
 
             if (StringValidator.isNullOrBlank(createBy)) {
                 createBy = "";

@@ -37,19 +37,22 @@
                         <div class="form-group row">
                             <label for="amount_from" class="col-sm-4 col-form-label">Tìm theo giá từ</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" value="${requestScope.FILTER_AmountFrom}" id="amount_from" name="f_amountFrom">
+                                <input type="number" class="form-control" value="${requestScope.FILTER_AmountFrom}"
+                                       id="amount_from" name="f_amountFrom">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="amount_to" class="col-sm-4 col-form-label">Tìm theo giá đến</label>
                             <div class="col-sm-8">
-                                <input type="number" class="form-control" value="${requestScope.FILTER_AmountTo}" id="amount_to" name="f_amountTo">
+                                <input type="number" class="form-control" value="${requestScope.FILTER_AmountTo}"
+                                       id="amount_to" name="f_amountTo">
                             </div>
                         </div>
                         <div class="form-group row">
                             <label for="id" class="col-sm-4 col-form-label">Tìm theo Mã giao dịch</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" value="${requestScope.FILTER_ID}" id="id" name="id">
+                                <input type="text" class="form-control" value="${requestScope.FILTER_ID}" id="id"
+                                       name="id">
                             </div>
                         </div>
 
@@ -59,19 +62,22 @@
                     <div class="form-group row">
                         <label for="user" class="col-sm-4 col-form-label">Tìm theo người tạo</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" value="${requestScope.FILTER_USER}" id="user" name="user">
+                            <input type="text" class="form-control" value="${requestScope.FILTER_USER}" id="user"
+                                   name="user">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="start_date" class="col-sm-4 col-form-label">Từ ngày</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control" value="${requestScope.FILTER_STARTDATE}" id="start_date" name="f_start">
+                            <input type="date" class="form-control" value="${requestScope.FILTER_STARTDATE}"
+                                   id="start_date" name="f_start">
                         </div>
                     </div>
                     <div class="form-group row">
                         <label for="end_date" class="col-sm-4 col-form-label">Đến ngày</label>
                         <div class="col-sm-8">
-                            <input type="date" class="form-control" value="${requestScope.FILTER_ENDDATE}" id="end_date" name="f_end">
+                            <input type="date" class="form-control" value="${requestScope.FILTER_ENDDATE}" id="end_date"
+                                   name="f_end">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -100,32 +106,56 @@
 
             </tr>
             </thead>
-            <tbody>
-            <c:forEach items="${transaction}" var="transaction">
-                <tr>
-                    <td>${transaction.id}</td>
-                    <td>${transaction.type}</td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${transaction.command eq 1}">Nạp tiền</c:when>
-                            <c:otherwise>rút tiền</c:otherwise>
-                        </c:choose>
-                    </td>
-                    <td>${transaction.amount}</td>
-                    <td>
-                        <c:choose>
-                            <c:when test="${transaction.status eq 1}">Đang xử lý</c:when>
-                            <c:when test="${transaction.status eq 2}">Thành công</c:when>
-                            <c:otherwise>Không Thành công</c:otherwise>
-                        </c:choose>
-                    </td>
-                    <td>${transaction.createAt}</td>
-                    <td>${transaction.createBy}</td>
-                    <td><a href="">Chi tiết</a></td>
+            <c:choose>
+                <c:when test="${paging.totalItem <= 0}">
+                    <tbody>
+                    <c:when test="${requestScope.errorMessage == true}">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1>id không hợp lệ</h1>
+                            </div>
+                        </div>
+                    </c:when>
+                    <tr>
+                        <td colspan="7">
+                            <div class="d-flex justify-content-center">
+                                <h2>Không có kết quả!</h2>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </c:when>
+                <c:otherwise>
+                    <tbody>
 
-                </tr>
-            </c:forEach>
-            </tbody>
+                    <c:forEach items="${transaction}" var="transaction">
+                        <tr>
+                            <td>${transaction.id}</td>
+                            <td>${transaction.type}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${transaction.command eq 1}">Nạp tiền</c:when>
+                                    <c:otherwise>rút tiền</c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${transaction.amount}</td>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${transaction.status eq 1}">Đang xử lý</c:when>
+                                    <c:when test="${transaction.status eq 2}">Thành công</c:when>
+                                    <c:otherwise>Không Thành công</c:otherwise>
+                                </c:choose>
+                            </td>
+                            <td>${transaction.createAt}</td>
+                            <td>${transaction.createBy}</td>
+                            <td><a href="">Chi tiết</a></td>
+
+                        </tr>
+                    </c:forEach>
+
+                    </tbody>
+                </c:otherwise>
+            </c:choose>
         </table>
     </div>
 
@@ -134,27 +164,28 @@
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-center">
                     <li class="page-item <c:if test="${paging.currentPage == paging.startPage}">disabled</c:if>">
-                            <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage - 1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
-                                   var="previous"/>
-                            <a class="page-link" href="<c:url value='/admin/payment/history${previous}'/>">
-                                Về trang trước
-                            </a>
+                        <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage - 1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                               var="previous"/>
+                        <a class="page-link" href="<c:url value='/admin/payment/history${previous}'/>">
+                            Về trang trước
+                        </a>
                     </li>
 
                     <c:forEach begin="1" end="${paging.totalPage}" varStatus="loop">
                         <li class="page-item <c:if test="${loop.index == paging.currentPage}">active</c:if>">
                             <c:set value="${f:pagingUrlGenerateTransactionHistory(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                    var="current"/>
-                            <a class="page-link" href="<c:url value='/admin/payment/history${current}'/>">${loop.index}</a>
+                            <a class="page-link"
+                               href="<c:url value='/admin/payment/history${current}'/>">${loop.index}</a>
                         </li>
                     </c:forEach>
 
                     <li class="page-item <c:if test="${paging.currentPage == paging.endPage}">disabled</c:if>">
-                            <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage + 1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
-                                   var="next"/>
-                            <a class="page-link" href="<c:url value='/admin/payment/history${next}'/>">
-                                Đến trang tiếp
-                            </a>
+                        <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage + 1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                               var="next"/>
+                        <a class="page-link" href="<c:url value='/admin/payment/history${next}'/>">
+                            Đến trang tiếp
+                        </a>
                     </li>
                 </ul>
             </nav>

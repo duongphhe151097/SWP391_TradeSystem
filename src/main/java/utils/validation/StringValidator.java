@@ -4,6 +4,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,6 +97,9 @@ public class StringValidator {
             return false;
         }
     }
+
+
+
 
     public static boolean isNullOrBlank(String input){
         return input == null || input.isBlank();
