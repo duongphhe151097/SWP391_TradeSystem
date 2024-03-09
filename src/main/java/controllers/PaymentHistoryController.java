@@ -65,7 +65,7 @@ public class PaymentHistoryController extends HttpServlet {
             if (!StringValidator.isNullOrBlank(id)) {
                 if (StringValidator.isUUID(id)) {
                     f_id = UUID.fromString(id);
-                }else{
+                } else {
                     req.setAttribute("ERROR_VALIDATE_ID", true);
                     dispatcher.forward(req, resp);
                     return;
@@ -79,12 +79,12 @@ public class PaymentHistoryController extends HttpServlet {
             }
 
             LocalDateTime startDateConvert = null;
-            if (!StringValidator.isNullOrBlank(startDate)){
+            if (!StringValidator.isNullOrBlank(startDate)) {
                 startDateConvert = DateTimeConvertor.toLocalDateTime(startDate);
             }
 
             LocalDateTime endDateConvert = null;
-            if (!StringValidator.isNullOrBlank(endDate)){
+            if (!StringValidator.isNullOrBlank(endDate)) {
                 endDateConvert = DateTimeConvertor.toLocalDateTime(endDate);
             }
 
@@ -96,7 +96,7 @@ public class PaymentHistoryController extends HttpServlet {
             int startPage = (pagination.getCurrentPage() - 1) * pagination.getPageSize();
             int endPage = pagination.getPageSize();
             List<UserEntity> externalTransactions = transactionManagerRepository
-                    .getExternalTransactionsWithPaging(startPage, endPage, amountFromValue,amountToValue,f_id, createBy, startDateConvert, endDateConvert);
+                    .getExternalTransactionsWithPaging(startPage, endPage, amountFromValue, amountToValue, f_id, createBy, startDateConvert, endDateConvert);
 
             req.setAttribute("FILTER_AmountFrom", amountFrom);
             req.setAttribute("FILTER_AmountTo", amountTo);
@@ -116,7 +116,7 @@ public class PaymentHistoryController extends HttpServlet {
         }
 
     }
-    }
+}
 
 
 
