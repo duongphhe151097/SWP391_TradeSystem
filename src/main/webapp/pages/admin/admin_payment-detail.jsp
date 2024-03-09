@@ -44,61 +44,14 @@
                             </div>
                         </c:when>
                         <c:otherwise>
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <c:choose>
-                                        <c:when test="${requestScope.VAR_TYPE eq 'VNPAY'}">
-                                            <c:import url="admin_payment-detail-vnpay.jsp"/>
-                                        </c:when>
-                                        <c:when test="${requestScope.VAR_TYPE eq 'ITN'}">
-                                            <h1>INTERNAL</h1>
-                                        </c:when>
-                                    </c:choose>
-                                </div>
-                            </div>
-
-                            <div class="row mt-5">
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-header bg-secondary">
-                                            <h5 class="text-white">Thông tin truy xuất từ VNPAY</h5>
-                                        </div>
-                                        <div class="card-body">
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <table class="table table-borderless">
-                                                        <thead>
-                                                            <tr>
-                                                                <th scope="col"></th>
-                                                                <th scope="col"></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <div class="row">
-                                                    <table class="table table-borderless">
-                                                        <thead>
-                                                            <tr>
-                                                                <th scope="col"></th>
-                                                                <th scope="col"></th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <c:choose>
+                                <c:when test="${requestScope.VAR_TYPE eq 'VNPAY'}">
+                                    <c:import url="admin_payment-detail-vnpay.jsp"/>
+                                </c:when>
+                                <c:when test="${requestScope.VAR_TYPE eq 'ITN'}">
+                                    <h1>INTERNAL</h1>
+                                </c:when>
+                            </c:choose>
                         </c:otherwise>
                     </c:choose>
 
@@ -110,5 +63,5 @@
         <jsp:include page="/common/toast.jsp" />
     </body>
     <jsp:include page="/common/common-js.jsp"/>
-    <script type="module" src="<c:url value="/js/admin.account.js"/>"></script>
+    <script type="module" src="<c:url value="/js/admin.payhisdetail.js"/>"></script>
 </html>
