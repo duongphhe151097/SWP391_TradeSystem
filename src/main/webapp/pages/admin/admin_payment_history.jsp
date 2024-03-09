@@ -138,7 +138,7 @@
                             <td>
                                 <c:choose>
                                     <c:when test="${transaction.command eq 1}">Nạp tiền</c:when>
-                                    <c:otherwise>rút tiền</c:otherwise>
+                                    <c:otherwise>Rút tiền</c:otherwise>
                                 </c:choose>
                             </td>
                             <td>${transaction.amount}</td>
