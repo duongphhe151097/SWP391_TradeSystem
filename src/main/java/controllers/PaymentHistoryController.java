@@ -1,6 +1,7 @@
 package controllers;
 
 import dataAccess.TransactionManagerRepository;
+import jakarta.servlet.RequestDispatcher;
 import models.common.Pagination;
 import models.common.ViewPaging;
 import models.UserEntity;
@@ -26,7 +27,7 @@ public class PaymentHistoryController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         TransactionManagerRepository transactionManagerRepository = new TransactionManagerRepository();
-
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/admin/admin_payment_history.jsp");
         // Lấy thông tin từ yêu cầu
         String currentPage = req.getParameter("current");
         String pageSize = req.getParameter("size");
@@ -60,21 +61,30 @@ public class PaymentHistoryController extends HttpServlet {
             }
 
             UUID f_id = null;
+
             if (!StringValidator.isNullOrBlank(id)) {
-                f_id = UUID.fromString(id);
+                if (StringValidator.isUUID(id)) {
+                    f_id = UUID.fromString(id);
+                } else {
+                    req.setAttribute("ERROR_VALIDATE_ID", true);
+                    dispatcher.forward(req, resp);
+                    return;
+                }
+
             }
+
 
             if (StringValidator.isNullOrBlank(createBy)) {
                 createBy = "";
             }
 
             LocalDateTime startDateConvert = null;
-            if (!StringValidator.isNullOrBlank(startDate)){
+            if (!StringValidator.isNullOrBlank(startDate)) {
                 startDateConvert = DateTimeConvertor.toLocalDateTime(startDate);
             }
 
             LocalDateTime endDateConvert = null;
-            if (!StringValidator.isNullOrBlank(endDate)){
+            if (!StringValidator.isNullOrBlank(endDate)) {
                 endDateConvert = DateTimeConvertor.toLocalDateTime(endDate);
             }
 
@@ -86,7 +96,7 @@ public class PaymentHistoryController extends HttpServlet {
             int startPage = (pagination.getCurrentPage() - 1) * pagination.getPageSize();
             int endPage = pagination.getPageSize();
             List<UserEntity> externalTransactions = transactionManagerRepository
-                    .getExternalTransactionsWithPaging(startPage, endPage, amountFromValue,amountToValue,f_id, createBy, startDateConvert, endDateConvert);
+                    .getExternalTransactionsWithPaging(startPage, endPage, amountFromValue, amountToValue, f_id, createBy, startDateConvert, endDateConvert);
 
             req.setAttribute("FILTER_AmountFrom", amountFrom);
             req.setAttribute("FILTER_AmountTo", amountTo);
@@ -106,7 +116,7 @@ public class PaymentHistoryController extends HttpServlet {
         }
 
     }
-    }
+}
 
 
 
