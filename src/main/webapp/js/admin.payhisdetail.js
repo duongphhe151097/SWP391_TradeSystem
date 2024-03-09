@@ -1,4 +1,10 @@
-import {formatCurrency, formatVnPayStatus, formatVnPayTime, formatVnPayTxnRef, urlBuilder} from "./common.js";
+import {
+    formatCurrency,
+    formatVnPayStatus,
+    formatVnPayTime,
+    formatVnPayTxnRef,
+    urlBuilder
+} from "./common.js";
 
 $(document).ready(() => {
     let tempJson = {};
