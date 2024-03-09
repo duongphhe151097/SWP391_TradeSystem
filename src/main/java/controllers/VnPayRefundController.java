@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import utils.annotations.Authorization;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -16,22 +17,27 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.UUID;
 
 @WebServlet(name = "VnPayRefundController", urlPatterns = {"/payment/vnpay/refund"})
+@Authorization(role = "ADMIN", isPublic = false)
 public class VnPayRefundController extends BaseController{
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String vnp_RequestId = VnPayService.getRandomNumber(8);
+        UUID transactionId = UUID.randomUUID();
+        String vnp_RequestId = transactionId.toString()
+                .replace("-", "");
+//        String vnp_RequestId = VnPayService.getRandomNumber(8);
         String vnp_Version = "2.1.0";
         String vnp_Command = "refund";
         String vnp_TmnCode = VnPayService.vnp_TmnCode;
-        String vnp_TransactionType = req.getParameter("trantype");
+        String vnp_TransactionType = req.getParameter("tran_type");
         String vnp_TxnRef = req.getParameter("order_id");
         long amount = Integer.parseInt(req.getParameter("amount"))* 100L;
         String vnp_Amount = String.valueOf(amount);
         String vnp_OrderInfo = "Hoan tien GD OrderId:" + vnp_TxnRef;
         String vnp_TransactionNo = ""; //Assuming value of the parameter "vnp_TransactionNo" does not exist on your system.
-        String vnp_TransactionDate = req.getParameter("trans_date");
+        String vnp_TransactionDate = req.getParameter("tran_date");
         String vnp_CreateBy = req.getParameter("user");
 
         Calendar cld = Calendar.getInstance(TimeZone.getTimeZone("Etc/GMT+7"));
