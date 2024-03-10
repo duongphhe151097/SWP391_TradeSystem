@@ -9,6 +9,7 @@ import models.ExternalTransactionEntity;
 import models.ProductEntity;
 
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,8 +26,8 @@ public class ProductRepository {
 
     public long countAllByUser(UUID userId) {
         try {
-            return entityManager.createQuery("SELECT COUNT(e) FROM product e WHERE e.userId = :userId", Long.class)
-                    .setParameter("userId", userId)
+            return entityManager.createQuery("SELECT COUNT(e) FROM product e WHERE e.userId= :userId", Long.class)
+                    .setParameter("userId",userId)
                     .getSingleResult();
         } catch (Exception e) {
             e.printStackTrace();
@@ -113,5 +114,34 @@ public class ProductRepository {
             return false;
         }
     }
+        public BigInteger getUserBalance(UUID userId) {
+            try {
+                BigInteger balance = entityManager.createQuery("SELECT u.balance FROM user u WHERE u.id = :userId",BigInteger.class)
+                        .setParameter("userId", userId)
+                        .getSingleResult();
+                return balance != null ? balance : BigInteger.ZERO;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return BigInteger.ZERO;
+            }
+        }
+    public void updateUserBalance(UUID userId, BigInteger newBalance) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.createQuery("UPDATE user u SET u.balance = :newBalance WHERE u.id = :userId")
 
+            .setParameter("newBalance", newBalance)
+            .setParameter("userId", userId)
+            .executeUpdate();
+
+            transaction.commit();
+        } catch (RuntimeException e) {
+            if(transaction.isActive()){
+                transaction.rollback();
+
+            }
+            e.printStackTrace();
+        }
+    }
 }
