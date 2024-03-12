@@ -176,13 +176,11 @@ const vnpayQueryTemplate = (data) => {
     templateBuilder.push("</div>")
     templateBuilder.push("</div>")
 
-    if (data?.vnp_TransactionStatus !== "00") {
-        templateBuilder.push("<div class=\"col-md-12 d-flex\">")
-        templateBuilder.push("<div class=\"mr-2\">")
-        templateBuilder.push(`<a id=\"payment-sync\" class=\"btn btn-primary\" href=\"${urlBuilder("/payment/vnpay/query")}\" role=\"button\">Đồng bộ dữ liệu</a>`)
-        templateBuilder.push("</div>")
-        templateBuilder.push("</div>")
-    }
+    templateBuilder.push("<div class=\"col-md-12 d-flex\">")
+    templateBuilder.push("<div class=\"mr-2\">")
+    templateBuilder.push(`<a id=\"payment-sync\" class=\"btn btn-primary\" href=\"${urlBuilder("/payment/vnpay/query")}\" role=\"button\">Đồng bộ dữ liệu</a>`)
+    templateBuilder.push("</div>")
+    templateBuilder.push("</div>")
 
     const template = templateBuilder.join("\n")
     return template;
