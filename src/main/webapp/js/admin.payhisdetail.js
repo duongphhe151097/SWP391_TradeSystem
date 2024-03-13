@@ -95,15 +95,15 @@ $(document).ready(() => {
         })
     })
 
-    $("#payment-refund").off().click((e) => {
-        e.preventDefault()
-
-        $("#modal-title").html("Bạn có chắc?")
-        $("#modal-body").html("Hoàn tiền cho người dùng!")
-        $('#myModal').modal('show')
-
-
-    })
+    // $("#payment-refund").off().click((e) => {
+    //     e.preventDefault()
+    //
+    //     $("#modal-title").html("Bạn có chắc?")
+    //     $("#modal-body").html("Hoàn tiền cho người dùng!")
+    //     $('#myModal').modal('show')
+    //
+    //
+    // })
 })
 
 const wrapperTemplate = (body) => {

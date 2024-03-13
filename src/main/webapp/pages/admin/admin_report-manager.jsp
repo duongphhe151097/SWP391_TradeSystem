@@ -31,7 +31,7 @@
 
                     <div class="row">
                         <div class="col-md-12">
-                            <form method="get" action="<c:url value="/admin/account"/> ">
+                            <form method="get" action="<c:url value="/admin/report"/> ">
                                 <div class="d-flex justify-content-end">
                                     <input type="hidden" value="${paging.currentPage}" name="current">
                                     <input type="hidden" value="${paging.pageSize}" name="size">
@@ -50,34 +50,39 @@
                                         <label for="status">Trạng thái</label>
                                         <select class="custom-select w-100" id="status" name="f_status">
                                             <c:set value="${requestScope.FILTER_STATUS}" var="filter"/>
-                                            <c:set value="ALL" var="ALL"/>
-                                            <c:set value="0" var="PENDING"/>
-                                            <c:set value="1" var="ACTIVE"/>
-                                            <c:set value="2" var="LOCKED"/>
-                                            <c:set value="3" var="BANNED"/>
+                                            <c:set value="0" var="ALL"/>
+                                            <c:set value="1" var="PROCESSING"/>
+                                            <c:set value="2" var="PROCESSED"/>
 
-                                            <option value="ALL" <c:if test="${filter.equals(ALL)}">selected</c:if>>
+                                            <option value="0" <c:if test="${filter.equals(ALL)}">selected</c:if>>
                                                 Tất cả
                                             </option>
-                                            <option value="0" <c:if test="${filter.equals(PENDING)}">selected</c:if>>
-                                                Chưa kích hoạt
+                                            <option value="1" <c:if test="${filter.equals(PROCESSING)}">selected</c:if>>
+                                                Đang chờ xử lý
                                             </option>
-                                            <option value="1" <c:if test="${filter.equals(ACTIVE)}">selected</c:if>>
-                                                Đang hoạt động
+                                            <option value="2" <c:if test="${filter.equals(PROCESSED)}">selected</c:if>>
+                                                Đang xử lý
                                             </option>
-                                            <option value="2" <c:if test="${filter.equals(LOCKED)}">selected</c:if>>
-                                                Đang bị khóa
+                                            <option value="3" <c:if test="${filter.equals(PROCESSED)}">selected</c:if>>
+                                                Đã xử lý (Báo cáo đúng)
                                             </option>
-                                            <option value="3" <c:if test="${filter.equals(BANNED)}">selected</c:if>>
-                                                Đã bị chặn
+                                            <option value="4" <c:if test="${filter.equals(PROCESSED)}">selected</c:if>>
+                                                Đã xử lý (Báo cáo sai)
                                             </option>
                                         </select>
                                     </div>
                                     <div class="input-group mb-3 d-flex flex-column">
                                         <label for="search_input">Tìm kiếm</label>
                                         <input type="text" class="form-control w-100"
-                                               placeholder="Nhập email hoặc username"
-                                               value="${requestScope.FILTER_SEARCH}" name="search" id="search_input">
+                                               placeholder="Nhập username"
+                                               value="${requestScope.FILTER_UNAME}" name="f_uname" id="search_input">
+                                    </div>
+
+                                    <div class="input-group mb-3 d-flex flex-column">
+                                        <label for="title_input">Tìm kiếm theo title</label>
+                                        <input type="text" class="form-control w-100"
+                                               placeholder="Nhập tiêu đề"
+                                               value="${requestScope.FILTER_TITLE}" name="f_title" id="title_input">
                                     </div>
                                     <div class="ml-3 input-group mb-3 d-flex flex-column justify-content-end">
                                         <button type="submit" class="btn btn-primary">Tìm</button>
@@ -94,9 +99,9 @@
                                     <tr>
                                         <th scope="col">#</th>
                                         <th scope="col">Tiêu đề</th>
-                                        <th scope="col">Ngày tạo</th>
-<%--                                        <th scope="col">Trạng thái</th>--%>
                                         <th scope="col">Người tạo</th>
+                                        <th scope="col">Ngày tạo</th>
+                                        <th scope="col">Trạng thái</th>
                                         <th scope="col">Hành động</th>
                                     </tr>
                                 </thead>
@@ -114,15 +119,36 @@
                                     </c:when>
                                     <c:otherwise>
                                         <tbody>
-                                            <c:forEach items="${reports}" var="report" begin="0" end="${paging.totalItem}"
+                                            <c:forEach items="${reports}" var="report" begin="0"
+                                                       end="${paging.totalItem}"
                                                        varStatus="loop">
                                                 <tr class="table-active">
                                                     <th scope="row">${loop.index + 1}</th>
                                                     <td><c:out value="${report.title}"/></td>
-                                                    <td><c:out value="${report.createAt}"/></td>
-<%--                                                    <td><c:out value="${report.createAt}"/></td>--%>
                                                     <td><c:out value="${report.createBy}"/></td>
-                                                    <td><a href="<c:url value="/admin/report/detail?id=${report.id}" />">Xem chi tiết</a></td>
+                                                    <td><c:out value="${f:formatLocalDateTime(report.createAt, 'dd/MM/yyyy hh:mm:ss')}"/></td>
+                                                    <td>
+                                                        <c:choose>
+                                                            <c:when test="${report.status eq 1}">
+                                                                Đang chờ xử lý
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 2}">
+                                                                Đang xử lý
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 3}">
+                                                                Đã xử lý (Báo cáo đúng)
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 4}">
+                                                                Đã xử lý (Báo cáo sai)
+                                                            </c:when>
+                                                            <c:otherwise>
+                                                                Không rõ
+                                                            </c:otherwise>
+                                                        </c:choose>
+                                                    </td>
+                                                    <td>
+                                                        <a href="<c:url value="/admin/report/detail?id=${report.id}" />">Xem
+                                                            chi tiết</a></td>
                                                 </tr>
                                             </c:forEach>
                                         </tbody>
@@ -136,7 +162,7 @@
                                 <nav aria-label="Page navigation example">
                                     <ul class="pagination">
                                         <li class="page-item <c:if test="${paging.currentPage == paging.startPage}">disabled</c:if>">
-                                            <c:set value="${f:pagingUrlGenerate(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                                            <c:set value="${f:pagingUrlGenerateReportManager(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_UNAME, requestScope.FILTER_TITLE, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE,requestScope.FILTER_ENDDATE)}"
                                                    var="previous"/>
                                             <a class="page-link"
                                                href="<c:url value="/admin/account${previous}"/>">
@@ -146,7 +172,7 @@
 
                                         <c:forEach begin="1" end="${paging.totalPage}" varStatus="loop">
                                             <li class="page-item <c:if test="${loop.index == paging.currentPage}">active</c:if>">
-                                                <c:set value="${f:pagingUrlGenerate(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                                                <c:set value="${f:pagingUrlGenerateReportManager(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_UNAME, requestScope.FILTER_TITLE, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE,requestScope.FILTER_ENDDATE)}"
                                                        var="current"/>
                                                 <a class="page-link"
                                                    href="<c:url value="/admin/account${current}"/>">${loop.index}</a>
@@ -154,7 +180,7 @@
                                         </c:forEach>
 
                                         <li class="page-item <c:if test="${paging.currentPage == paging.endPage}">disabled</c:if>">
-                                            <c:set value="${f:pagingUrlGenerate(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_SEARCH, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
+                                            <c:set value="${f:pagingUrlGenerateReportManager(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_UNAME, requestScope.FILTER_TITLE, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE,requestScope.FILTER_ENDDATE)}"
                                                    var="next"/>
                                             <a class="page-link"
                                                href="<c:url value="/admin/account${next}"/>">
@@ -170,8 +196,8 @@
             </div>
         </div>
 
-        <jsp:include page="/common/modal.jsp" />
-        <jsp:include page="/common/toast.jsp" />
+        <jsp:include page="/common/modal.jsp"/>
+        <jsp:include page="/common/toast.jsp"/>
     </body>
     <jsp:include page="/common/common-js.jsp"/>
     <script type="module" src="<c:url value="/js/admin.payhisdetail.js"/>"></script>

@@ -49,11 +49,11 @@ public class AdminReportController extends BaseController {
                 pageRange = "5";
             }
 
-            if (!StringValidator.isNullOrBlank(uname)) {
+            if (StringValidator.isNullOrBlank(uname)) {
                 uname = "";
             }
 
-            if (!StringValidator.isNullOrBlank(title)) {
+            if (StringValidator.isNullOrBlank(title)) {
                 title = "";
             }
 
@@ -83,6 +83,11 @@ public class AdminReportController extends BaseController {
             List<UserReportEntity> userReports = userReportRepository
                     .getReportWithPaging(startPage, endPage, title, uname, startDateConvert, endDateConvert, status);
 
+            req.setAttribute("FILTER_UNAME", uname);
+            req.setAttribute("FILTER_TITLE", title);
+            req.setAttribute("FILTER_STATUS", filterStatus);
+            req.setAttribute("FILTER_STARTDATE", startDate);
+            req.setAttribute("FILTER_ENDDATE", endDate);
             req.setAttribute("VIEW_PAGING", new ViewPaging<>(userReports, pagination));
         } catch (Exception e) {
             e.printStackTrace();

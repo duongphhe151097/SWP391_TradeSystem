@@ -25,8 +25,8 @@ public class UserReportEntity extends BaseEntity implements Serializable {
     @Column(name = "`user_id`", columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID userId;
 
-    @Column(name = "`user_target`", columnDefinition = "uuid", updatable = false, nullable = false)
-    private UUID userTarget;
+    @Column(name = "`product_target`", columnDefinition = "uuid", updatable = false, nullable = false)
+    private UUID productTarget;
 
     @Column(name = "`type`", nullable = false)
     private short type;
@@ -34,15 +34,12 @@ public class UserReportEntity extends BaseEntity implements Serializable {
     @Column(name = "`title`", length = 500, nullable = false)
     private String title;
 
-    @Column(name = "`description`", length = 1000, nullable = false)
+    @Column(name = "`description`", nullable = false)
     private String description;
 
-    @Column(name = "`admin_response`", length = 500, nullable = false)
+    @Column(name = "`admin_response`", nullable = false)
     private String adminResponse;
 
     @Column(name = "`status`", nullable = false)
     private short status;
-
-    @Column(name = "`is_seen`", nullable = false)
-    private boolean isSeen;
 }

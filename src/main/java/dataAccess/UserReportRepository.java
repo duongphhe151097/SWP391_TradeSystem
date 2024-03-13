@@ -1,8 +1,8 @@
 package dataAccess;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
-import models.UserEntity;
 import models.UserReportEntity;
 import utils.validation.StringValidator;
 
@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public class UserReportRepository {
     private final EntityManager entityManager;
@@ -32,23 +33,23 @@ public class UserReportRepository {
             hql.append("SELECT ur FROM user_rp ur WHERE 1=1 ");
 
             if (!StringValidator.isNullOrBlank(userName)) {
-                hql.append("AND u.createBy LIKE :username ");
+                hql.append("AND ur.createBy LIKE :username ");
             }
 
             if (!StringValidator.isNullOrBlank(title)) {
-                hql.append("AND u.title = :title ");
+                hql.append("AND ur.title LIKE :title ");
             }
 
             if (status != 0) {
-                hql.append("AND u.status = :status ");
+                hql.append("AND ur.status = :status ");
             }
 
             if (startDate != null) {
-                hql.append("AND u.createAt >= :startDate ");
+                hql.append("AND ur.createAt >= :startDate ");
             }
 
             if (endDate != null) {
-                hql.append("AND u.createAt <= :endDate");
+                hql.append("AND ur.createAt <= :endDate");
             }
 
             entityManager.clear();
@@ -56,11 +57,11 @@ public class UserReportRepository {
             TypedQuery<UserReportEntity> typedQuery = entityManager
                     .createQuery(queryString, UserReportEntity.class);
 
-            if(queryString.contains(":username")) typedQuery.setParameter("username", "%" + userName + "%");
-            if(queryString.contains(":title")) typedQuery.setParameter("title", "%" + title + "%");
-            if(queryString.contains(":status")) typedQuery.setParameter("status", status);
-            if(queryString.contains(":startDate")) typedQuery.setParameter("startDate", startDate);
-            if(queryString.contains(":endDate")) typedQuery.setParameter("endDate", endDate);
+            if (queryString.contains(":username")) typedQuery.setParameter("username", "%" + userName + "%");
+            if (queryString.contains(":title")) typedQuery.setParameter("title", "%" + title + "%");
+            if (queryString.contains(":status")) typedQuery.setParameter("status", status);
+            if (queryString.contains(":startDate")) typedQuery.setParameter("startDate", startDate);
+            if (queryString.contains(":endDate")) typedQuery.setParameter("endDate", endDate);
 
             typedQuery.setFirstResult(startPage);
             typedQuery.setMaxResults(endPage);
@@ -85,34 +86,34 @@ public class UserReportRepository {
             hql.append("SELECT COUNT(*) FROM user_rp ur WHERE 1=1 ");
 
             if (!StringValidator.isNullOrBlank(userName)) {
-                hql.append("AND u.createBy LIKE :username ");
+                hql.append("AND ur.createBy LIKE :username ");
             }
 
             if (!StringValidator.isNullOrBlank(title)) {
-                hql.append("AND u.title LIKE :title ");
+                hql.append("AND ur.title LIKE :title ");
             }
 
             if (status != 0) {
-                hql.append("AND u.status = :status ");
+                hql.append("AND ur.status = :status ");
             }
 
             if (startDate != null) {
-                hql.append("AND u.createAt >= :startDate ");
+                hql.append("AND ur.createAt >= :startDate ");
             }
 
             if (endDate != null) {
-                hql.append("AND u.createAt <= :endDate");
+                hql.append("AND ur.createAt <= :endDate");
             }
 
             entityManager.clear();
             String queryString = hql.toString();
             TypedQuery<Long> typedQuery = entityManager
                     .createQuery(queryString, Long.class);
-            if(queryString.contains(":username")) typedQuery.setParameter("username", "%" + userName + "%");
-            if(queryString.contains(":title")) typedQuery.setParameter("title", "%" + title + "%");
-            if(queryString.contains(":status")) typedQuery.setParameter("status", status);
-            if(queryString.contains(":startDate")) typedQuery.setParameter("startDate", startDate);
-            if(queryString.contains(":endDate")) typedQuery.setParameter("endDate", endDate);
+            if (queryString.contains(":username")) typedQuery.setParameter("username", "%" + userName + "%");
+            if (queryString.contains(":title")) typedQuery.setParameter("title", "%" + title + "%");
+            if (queryString.contains(":status")) typedQuery.setParameter("status", status);
+            if (queryString.contains(":startDate")) typedQuery.setParameter("startDate", startDate);
+            if (queryString.contains(":endDate")) typedQuery.setParameter("endDate", endDate);
 
             return typedQuery.getSingleResult();
         } catch (Exception e) {
@@ -120,5 +121,37 @@ public class UserReportRepository {
         }
 
         return 0;
+    }
+
+    public Optional<UserReportEntity> getReportById(UUID id) {
+        entityManager.clear();
+        try {
+            UserReportEntity userReport = entityManager
+                    .createQuery("SELECT ur FROM user_rp ur WHERE ur.id = :id AND ur.isDelete = false", UserReportEntity.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+
+            return Optional.ofNullable(userReport);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    public boolean update(UserReportEntity entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.merge(entity);
+            transaction.commit();
+
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }
