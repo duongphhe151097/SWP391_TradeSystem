@@ -145,9 +145,6 @@
                     <div class="mr-2">
                         <a id="payment-check" class="btn btn-primary" href="<c:url value="/payment/vnpay/query?txn=${tranDetail.transactionId}&td=${tranDetail.createDate}"/>" role="button">Kiểm tra giao dịch (VNPAY)</a>
                     </div>
-                    <div>
-                        <a id="payment-refund" class="btn btn-primary" href="#" role="button">Hoàn tiền</a>
-                    </div>
                 </div>
             </div>
         </div>

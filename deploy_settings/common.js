@@ -48,12 +48,26 @@ const formatVnPayStatus = (value) => {
     }
 }
 
+const getParams = (url) => {
+    return new Proxy(new URLSearchParams(url), {
+        get: (searchParams, prop) => searchParams.get(prop),
+    });
+}
+
+const getLocation = (href) => {
+    let l = document.createElement("a");
+    l.href = href;
+    return l;
+};
+
 export {
     urlBuilder,
     formatVnPayTime,
     formatVnPayTxnRef,
     formatVnPayStatus,
     formatCurrency,
+    getParams,
+    getLocation,
     BASE_URL
 }
 
