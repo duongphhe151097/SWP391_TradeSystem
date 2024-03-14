@@ -114,7 +114,8 @@
                                                                 </textarea>
                                                             </td>
                                                         </tr>
-                                                        <c:if test="${report.status != 1}">
+
+                                                        <c:if test="${report.status == 2}">
                                                             <tr>
                                                                 <th>Báo cáo sai:</th>
                                                                 <td>
@@ -124,10 +125,13 @@
                                                                     </div>
                                                                 </td>
                                                             </tr>
+                                                        </c:if>
+                                                        <c:if test="${report.status != 1}">
                                                             <tr>
                                                                 <th>Phản hồi admin:</th>
                                                                 <td>
-                                                                    <textarea id="report-adminres" name="adm_res" <c:if test="${report.status == 3 || report.status == 4}">class="editor-disable"</c:if>>
+                                                                    <textarea id="report-adminres" name="adm_res"
+                                                                              <c:if test="${report.status == 3 || report.status == 4}">class="editor-disable"</c:if>>
                                                                         <c:choose>
                                                                             <c:when test="${report.status == 2 && not empty requestScope.VAR_ADMINRESPONSE}">
                                                                                 <c:out value="${requestScope.VAR_ADMINRESPONSE}"/>
