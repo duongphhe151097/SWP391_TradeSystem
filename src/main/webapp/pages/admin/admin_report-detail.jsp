@@ -11,7 +11,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
-        <jsp:include page="../../common/common-css.jsp"/>
+        <jsp:include page="/common/common-css.jsp"/>
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
         <link rel="stylesheet" href="<c:url value="/css/admin.sidenav.css"/> ">
         <link rel="stylesheet" href="<c:url value="/css/admin.manager.css"/> ">
@@ -94,6 +94,9 @@
                                                                     <c:when test="${report.status eq 4}">
                                                                         Đã xử lý (Báo cáo sai)
                                                                     </c:when>
+                                                                    <c:when test="${report.status eq 5}">
+                                                                        Đã hủy
+                                                                    </c:when>
                                                                     <c:otherwise>
                                                                         Không rõ
                                                                     </c:otherwise>
@@ -130,8 +133,7 @@
                                                             <tr>
                                                                 <th>Phản hồi admin:</th>
                                                                 <td>
-                                                                    <textarea id="report-adminres" name="adm_res"
-                                                                              <c:if test="${report.status == 3 || report.status == 4}">class="editor-disable"</c:if>>
+                                                                    <textarea id="report-adminres" name="adm_res" <c:if test="${report.status == 3 || report.status == 4}">class="editor-disable"</c:if>>
                                                                         <c:choose>
                                                                             <c:when test="${report.status == 2 && not empty requestScope.VAR_ADMINRESPONSE}">
                                                                                 <c:out value="${requestScope.VAR_ADMINRESPONSE}"/>

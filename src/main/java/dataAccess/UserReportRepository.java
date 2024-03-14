@@ -139,6 +139,22 @@ public class UserReportRepository {
         return Optional.empty();
     }
 
+    public boolean add(UserReportEntity entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.persist(entity);
+            transaction.commit();
+
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     public boolean update(UserReportEntity entity) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {

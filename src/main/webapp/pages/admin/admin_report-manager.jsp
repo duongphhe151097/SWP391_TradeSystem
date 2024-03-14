@@ -171,7 +171,7 @@
                                             <c:set value="${f:pagingUrlGenerateReportManager(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_UNAME, requestScope.FILTER_TITLE, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE,requestScope.FILTER_ENDDATE)}"
                                                    var="previous"/>
                                             <a class="page-link"
-                                               href="<c:url value="/admin/account${previous}"/>">
+                                               href="<c:url value="/admin/report${previous}"/>">
                                                 Về trang trước
                                             </a>
                                         </li>
@@ -181,7 +181,7 @@
                                                 <c:set value="${f:pagingUrlGenerateReportManager(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_UNAME, requestScope.FILTER_TITLE, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE,requestScope.FILTER_ENDDATE)}"
                                                        var="current"/>
                                                 <a class="page-link"
-                                                   href="<c:url value="/admin/account${current}"/>">${loop.index}</a>
+                                                   href="<c:url value="/admin/report${current}"/>">${loop.index}</a>
                                             </li>
                                         </c:forEach>
 
@@ -189,7 +189,7 @@
                                             <c:set value="${f:pagingUrlGenerateReportManager(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_UNAME, requestScope.FILTER_TITLE, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE,requestScope.FILTER_ENDDATE)}"
                                                    var="next"/>
                                             <a class="page-link"
-                                               href="<c:url value="/admin/account${next}"/>">
+                                               href="<c:url value="/admin/report${next}"/>">
                                                 Đến trang tiếp
                                             </a>
                                         </li>
