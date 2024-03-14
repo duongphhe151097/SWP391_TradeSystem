@@ -49,7 +49,7 @@ public class StringGenerator {
         return hashedPassword.equals(hashingPassword(originPassword, salt));
     }
 
-    public static String pagingUrlGenerate(String currentPage, String pageSize, String pageRange, String search, String status, String start, String end) {
+    private static String pagingUrlGenerateCommon(String currentPage, String pageSize, String pageRange, String[] filters) {
         StringBuilder result = new StringBuilder();
         if (StringValidator.isNullOrBlank(currentPage)) {
             currentPage = "";
@@ -66,11 +66,78 @@ public class StringGenerator {
         }
 
         result.append("&range=").append(pageRange);
-        if (!StringValidator.isNullOrBlank(search)) result.append("&search=").append(search);
-        if (!StringValidator.isNullOrBlank(status)) result.append("&f_status=").append(status);
-        if (StringValidator.isNullOrBlank(start)) result.append("&f_start=").append(start);
-        if (StringValidator.isNullOrBlank(end)) result.append("&f_end=").append(end);
+
+        if (filters != null) {
+            for (String filter : filters) {
+                if (!StringValidator.isNullOrBlank(filter)) {
+                    result.append("&").append(filter);
+                }
+            }
+        }
 
         return result.toString();
+    }
+
+    public static String pagingUrlGenerate(
+            String currentPage,
+            String pageSize,
+            String pageRange,
+            String search,
+            String status,
+            String start,
+            String end
+    ) {
+        String[] filters = {
+                (!StringValidator.isNullOrBlank(search)) ? "search=" + search : "",
+                (!StringValidator.isNullOrBlank(status)) ? "f_status=" + status : "",
+                (StringValidator.isNullOrBlank(start)) ? "f_start=" + start : "",
+                (StringValidator.isNullOrBlank(end)) ? "f_end=" + end : ""
+        };
+
+        return pagingUrlGenerateCommon(currentPage, pageSize, pageRange, filters);
+    }
+
+    public static String pagingUrlGenerateTransactionHistory(
+            String currentPage,
+            String pageSize,
+            String pageRange,
+            String f_amountFrom,
+            String f_amountTo,
+            String id,
+            String user,
+            String start,
+            String end
+    ) {
+        String[] filters = {
+                (!StringValidator.isNullOrBlank(f_amountFrom)) ? "f_amountFrom=" + f_amountFrom : "",
+                (!StringValidator.isNullOrBlank(f_amountTo)) ? "f_amountTo=" + f_amountTo : "",
+                (!StringValidator.isNullOrBlank(id)) ? "id=" + id : "",
+                (!StringValidator.isNullOrBlank(user)) ? "user=" + user : "",
+                (StringValidator.isNullOrBlank(start)) ? "f_start=" + start : "",
+                (StringValidator.isNullOrBlank(end)) ? "f_end=" + end : ""
+        };
+
+        return pagingUrlGenerateCommon(currentPage, pageSize, pageRange, filters);
+    }
+
+    public static String pagingUrlGenerateReportManager(
+            String currentPage,
+            String pageSize,
+            String pageRange,
+            String uname,
+            String title,
+            String status,
+            String start,
+            String end
+    ) {
+        String[] filters = {
+                (!StringValidator.isNullOrBlank(uname)) ? "f_uname=" + uname : "",
+                (!StringValidator.isNullOrBlank(title)) ? "f_title=" + title : "",
+                (!StringValidator.isNullOrBlank(status)) ? "f_status=" + status : "",
+                (!StringValidator.isNullOrBlank(start)) ? "f_start=" + start : "",
+                (!StringValidator.isNullOrBlank(end)) ? "f_end=" + end : "",
+        };
+
+        return pagingUrlGenerateCommon(currentPage, pageSize, pageRange, filters);
     }
 }

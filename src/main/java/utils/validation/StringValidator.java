@@ -1,10 +1,12 @@
 package utils.validation;
 
-import java.math.BigDecimal;
+import utils.constants.ReportConstant;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,6 +85,14 @@ public class StringValidator {
         return Arrays.asList(validStatus).contains(input);
     }
 
+    public static boolean isValidReportStatus(String input){
+        if (isNullOrBlank(input)) {
+            return false;
+        }
+        String[] validStatus = new String[]{"1", "2", "3"};
+        return Arrays.asList(validStatus).contains(input);
+    }
+
     public static boolean isValidDateFormat(String input) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setLenient(false);
@@ -98,15 +108,16 @@ public class StringValidator {
         }
     }
 
-    public static boolean isNullOrBlank(String input){
+    public static boolean isNullOrBlank(String input) {
         return input == null || input.isBlank();
     }
-    public static boolean isValidDecimal(String str) {
-        try {
-            new BigDecimal(str);
-            return true;
-        } catch (NumberFormatException e) {
 
+    public static boolean isUUID(String input) {
+        try {
+            UUID uuid = UUID.fromString(input);
+
+            return true;
+        } catch (Exception e) {
             return false;
         }
     }

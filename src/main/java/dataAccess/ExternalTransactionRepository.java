@@ -16,6 +16,7 @@ public class ExternalTransactionRepository {
 
     public Optional<ExternalTransactionEntity> getExternalTransactionByIdType(UUID txnId, String type) {
         try {
+            entityManager.clear();
             ExternalTransactionEntity entity = entityManager
                     .createQuery("select ext from externalTrans ext " +
                             "where ext.id = :txnId and ext.type = :type and ext.isDelete = false", ExternalTransactionEntity.class)
@@ -32,9 +33,10 @@ public class ExternalTransactionRepository {
 
     public Optional<ExternalTransactionEntity> getExternalTransactionByUid(UUID uId) {
         try {
+            entityManager.clear();
             ExternalTransactionEntity entity = entityManager
                     .createQuery("select ext from externalTrans ext " +
-                            "where ext.userId = :uid and ext.status = :status and ext.isDelete = false", ExternalTransactionEntity.class)
+                            "where ext.userId = :uid and ext.isDelete = false", ExternalTransactionEntity.class)
                     .setParameter("uid", uId)
                     .getSingleResult();
 
