@@ -18,7 +18,7 @@ LABEL version="1.0"
 LABEL org.opencontainers.image.source=https://github.com/duongphhe151097/SWP391_TradeSystem
 
 FROM tomcat:${TOMCAT_VERSION}
-ENV TZ=${ARG}
+ENV TZ=${TIMEZONE}
 
 RUN groupadd -r tradesys && useradd -r -g tradesys -m tradesys && \
     chown -R tradesys:tradesys /usr/local/tomcat && \
