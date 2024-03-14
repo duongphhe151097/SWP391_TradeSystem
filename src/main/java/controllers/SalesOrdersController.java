@@ -117,7 +117,7 @@ public class SalesOrdersController extends HttpServlet {
 
                 productRepository.updateUserBalance(userId,newBalance);
 
-
+    
                 BigInteger newBalanceFromDB = productRepository.getUserBalance(userId);
 
                 boolean isSeller = "seller".equals(role);
@@ -138,7 +138,9 @@ public class SalesOrdersController extends HttpServlet {
                         .isSeller(true)
                         .build();
 
+
                 Optional<ProductEntity> addedProduct = productRepository.addProduct(productEntity);
+
                 if (addedProduct.isPresent()) {
 
                     req.getRequestDispatcher("/pages/salesorders.jsp").forward(req, resp);

@@ -31,7 +31,7 @@
                 </div>
             </div>
 
-            <form method="get" action="<c:url value="/admin/payment/history"/>">
+                <form method="get" action="<c:url value="/admin/payment/history"/>">
                 <div class="form-row">
                     <div class="col-md-3 mb-3">
                         <label for="amount_from">Tìm theo giá từ</label>

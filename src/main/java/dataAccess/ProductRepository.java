@@ -12,6 +12,7 @@ import models.ProductEntity;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -62,19 +63,28 @@ public class ProductRepository {
         }
 
 
-    public void updateProduct(ProductEntity product) {
+    public void updateProduct(String title, BigInteger price, String description, String contact, String secret, String isPublic) {
         EntityTransaction transaction = entityManager.getTransaction();
+
         try {
             transaction.begin();
-            entityManager.merge(product);
+
+            entityManager.createQuery("UPDATE product p SET p.title = :title, p.price = :price, p.description = :description, p.contact = :contact, p.secret = :secret, p.isPublic = :isPublic WHERE p.id = :productId")
+
+                    .setParameter("title", title)
+                    .setParameter("price", price)
+                    .setParameter("description", description)
+                    .setParameter("contact", contact)
+                    .setParameter("secret", secret)
+                    .setParameter("isPublic",  Boolean.parseBoolean(isPublic))
+                    .executeUpdate();
             transaction.commit();
         } catch (Exception e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-            }
+            transaction.rollback();
             e.printStackTrace();
         }
     }
+
 
     public int getCategoryId() {
         TypedQuery<Integer> query = entityManager.createQuery(
@@ -114,6 +124,22 @@ public class ProductRepository {
             return false;
         }
     }
+            public Optional<ProductEntity> getProductById(UUID id) {
+                try {
+                    entityManager.clear();
+                   ProductEntity entity= entityManager
+                           .createQuery(   "SELECT p FROM product p WHERE p.id = :id", ProductEntity.class)
+                            .setParameter("id", id)
+                            .getSingleResult();
+
+                    return Optional.ofNullable(entity);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                return Optional.empty();
+            }
+
         public BigInteger getUserBalance(UUID userId) {
             try {
                 BigInteger balance = entityManager.createQuery("SELECT u.balance FROM user u WHERE u.id = :userId",BigInteger.class)
