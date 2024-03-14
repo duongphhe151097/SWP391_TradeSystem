@@ -1,9 +1,8 @@
 package controllers;
-
+import models.NotificationEntity;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dataAccess.NotificationRepository;
-import models.NotificationEntity;
 import utils.annotations.Authorization;
 import utils.constants.UserConstant;
 import jakarta.servlet.ServletException;
@@ -19,32 +18,31 @@ import java.util.UUID;
 @Authorization(role = "", isPublic = true)
 public class NotificationController extends BaseController {
     private NotificationRepository notificationRepository;
-    JsonObject jsonObject = new JsonObject();
-    private Gson gson;
 
     @Override
     public void init() throws ServletException {
         this.notificationRepository = new NotificationRepository();
-        gson = new Gson();
     }
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json");
+        Gson gson = new Gson();
+        JsonObject jsonObject = new JsonObject();
         HttpSession session = req.getSession();
         UUID userToNotify = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
 
         try {
-            NotificationRepository notificationRepository = new NotificationRepository();
+            // Lấy danh sách thông báo từ repository
             List<NotificationEntity> notificationList = notificationRepository.getNotificationByUser(userToNotify);
-            Gson gson = new Gson();
-            String json = gson.toJson(notificationList);
 
+            String json = gson.toJson(notificationList);
             resp.setStatus(200);
-            jsonObject.addProperty("code", 200);
-            jsonObject.addProperty("message", "Cập nhật thông báo thành công!");
-            resp.getWriter().write(gson.toJson(jsonObject));
+            resp.getWriter().write(json);
         } catch (Exception e) {
             e.printStackTrace();
+
         }
     }
+
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

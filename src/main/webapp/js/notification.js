@@ -1,20 +1,30 @@
 import { urlBuilder } from "./common.js";
 $(document).ready(() => {
-
     loadNotificationList();
+    $('#notificationDropdown').on('shown.bs.dropdown', function () {
+        $('#notificationBadge').hide(); // Ẩn badge khi dropdown được mở ra
+    });
 });
 
 function loadNotificationList() {
     $.ajax({
         url: urlBuilder("/notification"),
         type: 'get',
-        success: (response) => {
-            console.log(response);
-            displayNotificationList(response);
+        success: function(response) {
+            try {
+                if (!response.trim()) { // Kiểm tra xem dữ liệu phản hồi có trống không
+                    throw new Error("Empty response from server");
+                }
+                let data = JSON.parse(response); // Phân tích dữ liệu JSON
+                console.log(data);
+                displayNotificationList(data);
+            } catch (error) {
+                console.error("Error parsing data:", error);
+                alert("Đã có lỗi xảy ra!");
+            }
         },
-        error: (xhr, status, error) => {
+        error: function(xhr, status, error) {
             console.error(error);
-            // Handle error here, for example: display error message to the user
             alert("Đã có lỗi xảy ra!");
         }
     });
@@ -23,6 +33,7 @@ function loadNotificationList() {
 function displayNotificationList(notificationList) {
     let notificationDropdown = $("#notificationDropdown");
     notificationDropdown.empty();
+
     notificationList.forEach(notification => {
         let formattedCreateAt = moment(notification.createAt).format("YYYY-MM-DD HH:mm:ss");
         // Create a new element to display the notification and add it to the dropdown
@@ -32,39 +43,42 @@ function displayNotificationList(notificationList) {
             .data("is-seen", notification.isSeen) // Attach isSeen status as data attribute
             .data("notification-message", notification.message) // Attach message as data attribute
             .data("create-at", formattedCreateAt) // Attach createAt as data attribute
+            .attr("href", "#") // Add href attribute for better accessibility
+            .click(function() {
+                let notificationId = $(this).data("notification-id");
+                let isSeen = $(this).data("is-seen");
+
+                // Toggle isSeen status and update notification in the database
+                updateNotificationStatus(notificationId, !isSeen);
+            });
         if (!notification.isSeen) {
             listItem.append("<span class='dot'></span>");
         }
         listItem.append(notification.message + " - " + formattedCreateAt);
         notificationDropdown.append(listItem);
     });
-    notificationDropdown.on("click", "a.notification", function() {
-        let notificationId = $(this).data("notification-id");
-        let isSeen = $(this).data("is-seen");
-
-        // Toggle isSeen status and update notification in the database
-        updateNotificationStatus(notificationId, !isSeen);
-    });
 }
 
 function updateNotificationStatus(notificationId, isSeen) {
-    // Prepare data for POST request
-    let data = {
+    // Tạo một đối tượng JSON chứa dữ liệu bạn muốn gửi
+    var data = {
         notificationId: notificationId,
         isSeen: isSeen
     };
 
-    // Send POST request to update notification status
+    // Sử dụng AJAX để gửi yêu cầu POST
     $.ajax({
         url: urlBuilder("/notification"),
-        type: "post",
-        contentType: "application/json",
+        type: 'post',
+        contentType: 'application/json',
         data: JSON.stringify(data),
-        success: function(response) {
-            loadNotificationList();
+        success: function (response) {
+            console.log(response.message); // In ra thông báo từ máy chủ
+            // Nếu bạn muốn cập nhật giao diện người dùng sau khi cập nhật trạng thái thông báo, bạn có thể thực hiện ở đây
         },
-        error: function(xhr, status, error) {
-            alert("Đã có lỗi xảy ra!");
+        error: function (xhr, status, error) {
+            console.error("Error updating notification status:", error);
+            alert("Đã có lỗi xảy ra khi cập nhật trạng thái thông báo!");
         }
     });
 }

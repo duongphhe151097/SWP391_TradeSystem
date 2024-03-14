@@ -1,10 +1,8 @@
 package dataAccess;
 
-import models.*;
+import models.NotificationEntity;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.TypedQuery;
-
 import java.util.*;
 
 public class NotificationRepository {
@@ -15,21 +13,26 @@ public class NotificationRepository {
     }
 
     public List<NotificationEntity> getNotificationByUser(UUID userToNotify) {
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            entityManager.clear();
+            transaction.begin();
+
             List<NotificationEntity> entity = entityManager
                     .createQuery("SELECT n FROM notification n " +
                             "WHERE n.userToNotify = :userToNotify", NotificationEntity.class)
                     .setParameter("userToNotify", userToNotify)
                     .getResultList();
 
+            transaction.commit();
             return entity;
         } catch (Exception e) {
+                transaction.rollback();
             e.printStackTrace();
+            }
+
+            return Collections.emptyList();
         }
 
-        return Collections.emptyList();
-    }
 
     public Optional<NotificationEntity> add(NotificationEntity entity) {
         EntityTransaction transaction = entityManager.getTransaction();
