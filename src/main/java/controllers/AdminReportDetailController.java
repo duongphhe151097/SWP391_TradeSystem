@@ -111,7 +111,7 @@ public class AdminReportDetailController extends BaseController {
                         //Report sai
                         userReportEntity.setStatus(ReportConstant.REPORT_DONE_CLIENT_WRONG);
                     }
-                    userReportEntity.setAdminResponse(reqAdminResponse);
+                    userReportEntity.setAdminResponse(reqAdminResponse.replace("&nbsp;",""));
                     break;
             }
 

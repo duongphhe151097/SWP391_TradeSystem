@@ -154,4 +154,100 @@ public class UserReportRepository {
 
         return false;
     }
+
+    public long countReportByUserIdWithPaging(
+            UUID userId,
+            String title,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            short status
+    ) {
+        try {
+            StringBuilder hql = new StringBuilder();
+            hql.append("SELECT COUNT(*) FROM user_rp ur WHERE ur.userId = :userId ");
+
+            if (!StringValidator.isNullOrBlank(title)) {
+                hql.append("AND ur.title LIKE :title ");
+            }
+
+            if (status != 0) {
+                hql.append("AND ur.status = :status ");
+            }
+
+            if (startDate != null) {
+                hql.append("AND ur.createAt >= :startDate ");
+            }
+
+            if (endDate != null) {
+                hql.append("AND ur.createAt <= :endDate");
+            }
+
+            entityManager.clear();
+            String queryString = hql.toString();
+            TypedQuery<Long> typedQuery = entityManager
+                    .createQuery(queryString, Long.class);
+            if (queryString.contains(":userId")) typedQuery.setParameter("userId", userId);
+            if (queryString.contains(":title")) typedQuery.setParameter("title", "%" + title + "%");
+            if (queryString.contains(":status")) typedQuery.setParameter("status", status);
+            if (queryString.contains(":startDate")) typedQuery.setParameter("startDate", startDate);
+            if (queryString.contains(":endDate")) typedQuery.setParameter("endDate", endDate);
+
+            return typedQuery.getSingleResult();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public List<UserReportEntity> getReportByUserIdWithPaging(
+            UUID userId,
+            int startPage,
+            int endPage,
+            String title,
+            LocalDateTime startDate,
+            LocalDateTime endDate,
+            short status
+    ) {
+        try {
+            StringBuilder hql = new StringBuilder();
+            hql.append("SELECT ur FROM user_rp ur WHERE ur.userId = :userId ");
+
+            if (!StringValidator.isNullOrBlank(title)) {
+                hql.append("AND ur.title LIKE :title ");
+            }
+
+            if (status != 0) {
+                hql.append("AND ur.status = :status ");
+            }
+
+            if (startDate != null) {
+                hql.append("AND ur.createAt >= :startDate ");
+            }
+
+            if (endDate != null) {
+                hql.append("AND ur.createAt <= :endDate");
+            }
+
+            entityManager.clear();
+            String queryString = hql.toString();
+            TypedQuery<UserReportEntity> typedQuery = entityManager
+                    .createQuery(queryString, UserReportEntity.class);
+
+            if (queryString.contains(":userId")) typedQuery.setParameter("userId", userId);
+            if (queryString.contains(":title")) typedQuery.setParameter("title", "%" + title + "%");
+            if (queryString.contains(":status")) typedQuery.setParameter("status", status);
+            if (queryString.contains(":startDate")) typedQuery.setParameter("startDate", startDate);
+            if (queryString.contains(":endDate")) typedQuery.setParameter("endDate", endDate);
+
+            typedQuery.setFirstResult(startPage);
+            typedQuery.setMaxResults(endPage);
+
+            return typedQuery.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
+    }
 }

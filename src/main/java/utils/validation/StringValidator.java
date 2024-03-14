@@ -89,7 +89,7 @@ public class StringValidator {
         if (isNullOrBlank(input)) {
             return false;
         }
-        String[] validStatus = new String[]{"1", "2", "3"};
+        String[] validStatus = new String[]{"1", "2", "3", "4", "5"};
         return Arrays.asList(validStatus).contains(input);
     }
 

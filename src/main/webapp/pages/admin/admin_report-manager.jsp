@@ -51,23 +51,29 @@
                                         <select class="custom-select w-100" id="status" name="f_status">
                                             <c:set value="${requestScope.FILTER_STATUS}" var="filter"/>
                                             <c:set value="0" var="ALL"/>
-                                            <c:set value="1" var="PROCESSING"/>
-                                            <c:set value="2" var="PROCESSED"/>
+                                            <c:set value="1" var="CREATED"/>
+                                            <c:set value="2" var="PROCESSING"/>
+                                            <c:set value="3" var="PROCESSED_RIGHT"/>
+                                            <c:set value="4" var="PROCESSED_WRONG"/>
+                                            <c:set value="5" var="ABORT"/>
 
                                             <option value="0" <c:if test="${filter.equals(ALL)}">selected</c:if>>
                                                 Tất cả
                                             </option>
-                                            <option value="1" <c:if test="${filter.equals(PROCESSING)}">selected</c:if>>
+                                            <option value="1" <c:if test="${filter.equals(CREATED)}">selected</c:if>>
                                                 Đang chờ xử lý
                                             </option>
-                                            <option value="2" <c:if test="${filter.equals(PROCESSED)}">selected</c:if>>
+                                            <option value="2" <c:if test="${filter.equals(PROCESSING)}">selected</c:if>>
                                                 Đang xử lý
                                             </option>
-                                            <option value="3" <c:if test="${filter.equals(PROCESSED)}">selected</c:if>>
+                                            <option value="3" <c:if test="${filter.equals(PROCESSED_RIGHT)}">selected</c:if>>
                                                 Đã xử lý (Báo cáo đúng)
                                             </option>
-                                            <option value="4" <c:if test="${filter.equals(PROCESSED)}">selected</c:if>>
+                                            <option value="4" <c:if test="${filter.equals(PROCESSED_WRONG)}">selected</c:if>>
                                                 Đã xử lý (Báo cáo sai)
+                                            </option>
+                                            <option value="5" <c:if test="${filter.equals(ABORT)}">selected</c:if>>
+                                                Hủy
                                             </option>
                                         </select>
                                     </div>

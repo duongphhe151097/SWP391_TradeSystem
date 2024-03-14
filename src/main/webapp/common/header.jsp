@@ -97,16 +97,7 @@
                                         </span>
                                     </span>
                                 </a>
-                                <a href="<c:url value="/payment/vnpay/create"/>" class="dropdown-item">
-                                    <span class="d-flex align-items-center">
-                                        <span class="material-symbols-outlined">
-                                            payments
-                                        </span>
-                                        <span>
-                                            Nạp tiền
-                                        </span>
-                                    </span>
-                                </a>
+
                                 <a href="<c:url value="/change"/>" class="dropdown-item">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-outlined">
@@ -117,6 +108,40 @@
                                         </span>
                                     </span>
                                 </a>
+
+                                <a href="<c:url value="/payment/vnpay/create"/>" class="dropdown-item">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            payments
+                                        </span>
+                                        <span>
+                                            Nạp tiền
+                                        </span>
+                                    </span>
+                                </a>
+
+                                <a href="<c:url value="/order"/>" class="dropdown-item">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            shopping_cart
+                                        </span>
+                                        <span>
+                                            Đơn hàng của bạn
+                                        </span>
+                                    </span>
+                                </a>
+
+                                <a href="<c:url value="/report"/>" class="dropdown-item">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            report
+                                        </span>
+                                        <span>
+                                            Báo cáo của bạn
+                                        </span>
+                                    </span>
+                                </a>
+
                                 <a href="<c:url value="/logout"/> " class="dropdown-item">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-outlined">
