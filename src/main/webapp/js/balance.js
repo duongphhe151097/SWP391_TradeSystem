@@ -1,3 +1,5 @@
+import {formatCurrency} from "./common.js";
+
 $(document).ready(() => {
     let debounce = null
     $("#refresh-balance").off().click((e) => {
@@ -14,7 +16,7 @@ $(document).ready(() => {
                 },
                 success: (resp) => {
                     if(resp.code === 200){
-                        $("#balance-amount").html(`Số dư: ${resp.message}đ`)
+                        $("#balance-amount").html(`Số dư: ${formatCurrency(resp.message)}`)
                     }
                 },
                 error: (err) => {

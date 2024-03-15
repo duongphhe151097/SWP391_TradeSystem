@@ -11,13 +11,31 @@
 
     <function>
         <name>formatLocalDateTime</name>
-        <function-class>Utils.Convert.DateTimeConvertor</function-class>
+        <function-class>utils.convert.DateTimeConvertor</function-class>
         <function-signature>java.lang.String formatLocalDateTime(java.time.LocalDateTime, java.lang.String)</function-signature>
     </function>
 
     <function>
         <name>pagingUrlGenerate</name>
-        <function-class>Utils.Generators.StringGenerator</function-class>
+        <function-class>utils.generators.StringGenerator</function-class>
         <function-signature>java.lang.String pagingUrlGenerate(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <name>pagingUrlGenerateTransactionHistory</name>
+        <function-class>utils.generators.StringGenerator</function-class>
+        <function-signature>java.lang.String pagingUrlGenerateTransactionHistory(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <name>pagingUrlGenerateReportManager</name>
+        <function-class>utils.generators.StringGenerator</function-class>
+        <function-signature>java.lang.String pagingUrlGenerateReportManager(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
+    </function>
+
+    <function>
+        <name>formatCurrency</name>
+        <function-class>utils.convert.StringConvertor</function-class>
+        <function-signature>java.lang.String currencyFormat(java.math.BigInteger)</function-signature>
     </function>
 </taglib>

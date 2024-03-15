@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="f" uri="tradesys.functions" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <header>
     <div class="sticky-top">
@@ -69,10 +70,23 @@
                                             </a>
                                         </div>
                                         <div>
-                                            <p id="balance-amount">Số dư: ${sessionScope.SESSION_USERBALANCE}đ</p>
+                                            <p id="balance-amount">Số dư: ${f:formatCurrency(sessionScope.SESSION_USERBALANCE)}</p>
                                         </div>
                                     </div>
                                 </div>
+                                <c:if test="${sessionScope.SESSION_ISADMIN == true}" >
+                                    <a href="<c:url value="/admin/account"/>" class="dropdown-item">
+                                        <span class="d-flex align-items-center">
+                                            <span class="material-symbols-outlined">
+                                                shield_person
+                                            </span>
+                                            <span>
+                                                Đến trang admin
+                                            </span>
+                                        </span>
+                                    </a>
+                                </c:if>
+
                                 <a href="<c:url value="/profile"/>" class="dropdown-item">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-outlined">
@@ -86,7 +100,7 @@
                                 <a href="<c:url value="/payment/vnpay/create"/>" class="dropdown-item">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-outlined">
-                                            person
+                                            payments
                                         </span>
                                         <span>
                                             Nạp tiền
