@@ -1,4 +1,4 @@
-package DataAccess;
+package dataAccess;
 
 import Models.CategoryEntity;
 import org.hibernate.Session;
