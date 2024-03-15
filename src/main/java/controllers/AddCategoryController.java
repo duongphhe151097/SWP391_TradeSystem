@@ -1,8 +1,8 @@
 package controllers;
 
 import dataAccess.CategoryRepository;
-import Models.CategoryEntity;
-import Utils.Annotations.Authorization;
+import models.CategoryEntity;
+import utils.annotations.Authorization;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
