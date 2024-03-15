@@ -2,25 +2,28 @@ package DataAccess;
 
 import Models.ProductEntity;
 import Models.UserEntity;
-import org.hibernate.Cache;
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
+import org.hibernate.*;
+import org.hibernate.cfg.Configuration;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.UUID;
 
 public class ProductRepository {
+    private SessionFactory sessionFactory;
 
-    public void purchaseOrder(UUID orderId, UUID userId, Cache HibernateUtil) {
-        Session session = HibernateUtil.getSessionFactory().openSession();
+    public ProductRepository() {
+        sessionFactory = new Configuration().configure("persistence.xml").buildSessionFactory();
+    }
+
+    public void purchaseOrder(UUID id, UUID userId) {
+        Session session = sessionFactory.openSession();
         Transaction transaction = null;
 
         try {
             transaction = session.beginTransaction();
 
-            ProductEntity product = session.get(ProductEntity.class, orderId);
+            ProductEntity product = session.get(ProductEntity.class, id);
 
             if (product == null) {
                 throw new IllegalArgumentException("Không tìm thấy đơn hàng.");
@@ -28,9 +31,9 @@ public class ProductRepository {
 
             UserEntity user = session.get(UserEntity.class, userId);
             BigDecimal productPrice = product.getPrice();
-            BigInteger productPriceBigInteger = productPrice.toBigInteger(); // Chuyển đổi giá tiền sang kiểu BigInteger
+            BigInteger productPriceBigInteger = productPrice.toBigInteger();
             if (user.getBalance().compareTo(productPriceBigInteger) < 0) {
-                throw new IllegalArgumentException("Tài khoản không đủ.");
+                throw new IllegalArgumentException("Tài khoản không đủ tiền.");
             }
 
             BigInteger newBalance = user.getBalance().subtract(productPriceBigInteger);
@@ -40,16 +43,24 @@ public class ProductRepository {
 
             transaction.commit();
 
-
-        } catch (HibernateException e) {
+        } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
             e.printStackTrace();
-            // Xử lý lỗi
             throw new IllegalArgumentException("Mua thất bại.");
         } finally {
             session.close();
         }
     }
+
+    public ProductEntity getOrderDetails(UUID id) {
+        Session session = sessionFactory.openSession();
+        try {
+            return session.get(ProductEntity.class, id);
+        } finally {
+            session.close();
+        }
+    }
+
 }

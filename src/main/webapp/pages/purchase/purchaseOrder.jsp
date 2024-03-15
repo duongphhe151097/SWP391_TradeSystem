@@ -21,17 +21,21 @@
 </c:if>
 <c:if test="${not empty order}">
     <p>Mã đơn: ${order.id}</p>
-    <p>Tên đơn: ${order.title}</p>
-    <p>Mô tả: ${order.description}</p>
-    <p>Nội dung ẩn: ${order.secret}</p>
-    <p>Giá bán: ${order.price}</p>
-    <p>Phương thức liên hệ: ${order.contact}</p>
-    <p>Số lượng: ${order.quantity}</p>
+    <p>Mã sản phẩm: ${order.product_id}</p>
+    <p>Mã người dùng: ${order.user_id}</p>
     <p>Tình trạng: ${order.status}</p>
+    <p>Phi: ${order.fee}</p>
+    <p>Số lượng: ${order.amount}</p>
+    <p>Người tạo: ${order.create_by}</p>
 
-    <form action="<c:url value="/purchaseOrder"/>" method="post">
-        <input type="hidden" name="orderId" value="${order.id}">
-        <input type="submit" value="Purchase">
+    <form action="<c:url value="/acceptOrder"/>" method="get">
+        <input type="hidden" name="id" value="${order.id}">
+        <input type="submit" value="Accept">
+    </form>
+
+    <form action="<c:url value="/rejectOrder"/>" method="get">
+        <input type="hidden" name="id" value="${order.id}">
+        <input type="submit" value="Reject">
     </form>
 </c:if>
 </body>

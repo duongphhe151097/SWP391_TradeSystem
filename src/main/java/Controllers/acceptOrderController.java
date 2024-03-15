@@ -7,24 +7,31 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.hibernate.Cache;
 
 import java.io.IOException;
 import java.util.UUID;
 
-@WebServlet(name = "purchaseOrderController", urlPatterns = "/purchaseOrder")
+@WebServlet(name = "acceptOrderController", urlPatterns = "/acceptOrder")
 @Authorization(role = "", isPublic = false)
-public class purchaseOrderController extends BaseController {
+public class acceptOrderController extends BaseController {
 
     private ProductRepository productRepository;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         UUID id = UUID.fromString(request.getParameter("id"));
-        ProductRepository productRepository = new ProductRepository();
-        ProductEntity order = productRepository.getOrderDetails(id);
+        UUID userId = (UUID) request.getSession().getAttribute("userId");
 
-        request.setAttribute("order", order);
-        request.getRequestDispatcher("/purchaseOrder.jsp").forward(request, response);
+        ProductRepository productRepository = new ProductRepository();
+        try {
+            productRepository.purchaseOrder(id, userId);
+            response.sendRedirect("purchaseSuccess.jsp");
+        } catch (IllegalArgumentException e) {
+            request.setAttribute("errorMessage", e.getMessage());
+            request.getRequestDispatcher("purchaseError.jsp").forward(request, response);
+        }
     }
 
 }
+
