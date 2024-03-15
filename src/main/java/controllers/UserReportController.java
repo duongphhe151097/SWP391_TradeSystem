@@ -160,7 +160,7 @@ public class UserReportController extends BaseController {
 
             // Đưa vào queue để trừ tiền
             transactionQueue.add(new TransactionQueueDto(userId, "SUB_AM", bigIntFee));
-
+            reportContent = reportContent.replace("&nbsp;", "");
             UserReportEntity userReportEntity = UserReportEntity.builder()
                     .id(UUID.randomUUID())
                     .userId(userId)
