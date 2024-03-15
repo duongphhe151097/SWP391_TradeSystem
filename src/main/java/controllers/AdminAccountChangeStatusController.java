@@ -1,18 +1,18 @@
 package controllers;
 
-import dataAccess.SessionManagerRepository;
-import dataAccess.UserRepository;
-import models.SessionManagerEntity;
-import utils.annotations.Authorization;
-import utils.constants.UserConstant;
-import utils.validation.StringValidator;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import dataAccess.SessionManagerRepository;
+import dataAccess.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import models.SessionManagerEntity;
+import utils.annotations.Authorization;
+import utils.constants.UserConstant;
+import utils.validation.StringValidator;
 
 import java.io.IOException;
 import java.util.Optional;
