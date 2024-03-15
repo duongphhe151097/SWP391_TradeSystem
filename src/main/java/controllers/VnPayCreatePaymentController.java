@@ -2,6 +2,7 @@ package controllers;
 
 import dataAccess.ExternalTransactionRepository;
 import dataAccess.VnPayTransactionRepository;
+import jakarta.servlet.ServletContext;
 import models.ExternalTransactionEntity;
 import models.VnPayTransactionEntity;
 import services.VnPayService;
@@ -53,7 +54,7 @@ public class VnPayCreatePaymentController extends BaseController {
             String orderType = "other";
             long amount = Long.parseLong(req.getParameter("amount")) * 100L;
 
-            if(amount < TransactionConstant.MIN_AMOUNT || amount > TransactionConstant.MAX_AMOUNT){
+            if (amount < TransactionConstant.MIN_AMOUNT || amount > TransactionConstant.MAX_AMOUNT) {
                 req.setAttribute("ERROR_AMOUNT", "Số tiền phải lớn hơn 10,000đ và nhỏ hơn 10,000,000đ");
                 dispatcher.forward(req, resp);
                 return;
@@ -149,18 +150,18 @@ public class VnPayCreatePaymentController extends BaseController {
             UUID userId = (UUID) httpSession.getAttribute(UserConstant.SESSION_USERID);
 
             //TODO: Check user still have processing order or not
-            Optional<ExternalTransactionEntity> optionalExternalTransactionEntity = externalTransactionRepository
-                    .getExternalTransactionByUid(userId);
-
-            if(optionalExternalTransactionEntity.isPresent()){
-                ExternalTransactionEntity externalTransaction = optionalExternalTransactionEntity.get();
-                if(externalTransaction.getStatus() == TransactionConstant.STATUS_SUCCESSED
-                        && externalTransaction.getCreateAt().plusMinutes(15).isAfter(LocalDateTime.now())){
-                    req.setAttribute("ERROR_MESSAGE", "Bạn đang có giao dịch chưa hoàn thành, " +
-                            "nếu bạn không thể tạo giao dịch vui lòng thử lại sau 15 phút!");
-                    dispatcher.forward(req, resp);
-                }
-            }
+//            Optional<ExternalTransactionEntity> optionalExternalTransactionEntity = externalTransactionRepository
+//                    .getExternalTransactionByUid(userId);
+//
+//            if (optionalExternalTransactionEntity.isPresent()) {
+//                ExternalTransactionEntity externalTransaction = optionalExternalTransactionEntity.get();
+//                if (externalTransaction.getStatus() == TransactionConstant.STATUS_SUCCESSED
+//                        && externalTransaction.getCreateAt().plusMinutes(15).isAfter(LocalDateTime.now())) {
+//                    req.setAttribute("ERROR_MESSAGE", "Bạn đang có giao dịch chưa hoàn thành, " +
+//                            "nếu bạn không thể tạo giao dịch vui lòng thử lại sau 15 phút!");
+//                    dispatcher.forward(req, resp);
+//                }
+//            }
 
             // TODO: Add insert to db
             ExternalTransactionEntity insertEntity = ExternalTransactionEntity

@@ -25,6 +25,16 @@
                 <p class="mb-1 mt-3 font-weight-semibold">${sessionScope.SESSION_USERFULLNAME}</p>
                 <p class="fw-light text-muted mb-0">${sessionScope.SESSION_USEREMAIL}</p>
             </div>
+            <a href="<c:url value="/home"/>" class="dropdown-item">
+                            <span class="d-flex align-items-center">
+                                <span class="material-symbols-outlined">
+                                    home
+                                </span>
+                                <span>
+                                    Quay về trang chủ
+                                </span>
+                            </span>
+            </a>
             <a href="<c:url value="/profile"/>" class="dropdown-item">
                             <span class="d-flex align-items-center">
                                 <span class="material-symbols-outlined">

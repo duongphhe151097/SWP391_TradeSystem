@@ -17,6 +17,7 @@ public class VnPayTransactionRepository {
 
     public Optional<VnPayTransactionEntity> getByTransactionId(UUID transactionId){
         try {
+            entityManager.clear();
             VnPayTransactionEntity entity = entityManager
                     .createQuery("select ext from vnPayTrans ext " +
                             "where ext.transactionId = :txnId and ext.isDelete = false", VnPayTransactionEntity.class)

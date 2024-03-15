@@ -3,6 +3,8 @@ package controllers;
 import dataAccess.ExternalTransactionRepository;
 import dataAccess.UserRepository;
 import dataAccess.VnPayTransactionRepository;
+import dtos.TransactionQueueDto;
+import jakarta.servlet.ServletContext;
 import models.ExternalTransactionEntity;
 import models.UserEntity;
 import models.VnPayTransactionEntity;
@@ -76,7 +78,8 @@ public class VnPayIpnController extends BaseController {
             jsonObject.addProperty("Message", "Order not found");
             resp.getWriter().write(gson.toJson(jsonObject));
             return;
-        };
+        }
+        ;
         UUID transactionId = StringConvertor.convertToUUID(vnpTxnRef);
 
         Optional<ExternalTransactionEntity> optionalExternalTransactionEntity = transactionRepository
@@ -154,13 +157,17 @@ public class VnPayIpnController extends BaseController {
             return;
         }
         UserEntity userEntity = optionalUserEntity.get();
-        BigInteger newBalance = userEntity.getBalance()
-                .add(externalTransactionEntity.getAmount());
 
         externalTransactionEntity.setStatus(TransactionConstant.STATUS_SUCCESSED);
         transactionRepository.updateStatus(externalTransactionEntity);
         vnPayTransactionRepository.update(vnPayTransactionEntity);
-        userRepository.updateUserBalance(userEntity.getId(), newBalance);
+//        userRepository.updateUserBalance(userEntity.getId(), newBalance);
+
+        ServletContext context = getServletContext();
+        Queue<TransactionQueueDto> transactionQueue = (Queue<TransactionQueueDto>) context
+                .getAttribute("transaction_queue");
+
+        transactionQueue.add(new TransactionQueueDto(userEntity.getId(), "ADD_AM", externalTransactionEntity.getAmount()));
 
         jsonObject.addProperty("RspCode", "00");
         jsonObject.addProperty("Message", "Confirm Success");

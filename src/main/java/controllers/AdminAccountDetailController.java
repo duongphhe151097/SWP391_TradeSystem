@@ -35,26 +35,26 @@ public class AdminAccountDetailController extends BaseController {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String userIdRequest = req.getParameter("id");
+        String userNameRequest = req.getParameter("uname");
 
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/admin/admin_account-detail.jsp");
 
-        if (StringValidator.isNullOrBlank(userIdRequest)) {
+        if (StringValidator.isNullOrBlank(userIdRequest) && StringValidator.isNullOrBlank(userNameRequest)) {
             req.setAttribute("ERROR_NOTFOUND", true);
             dispatcher.forward(req, resp);
             return;
         }
 
-        Optional<UserEntity> optionalUserEntity = userRepository
-                .getUserById(UUID.fromString(userIdRequest));
+        Optional<UserEntity> optionalUserEntity = isUserOrId(userIdRequest, userNameRequest);
 
-        if(optionalUserEntity.isEmpty()){
+        if (optionalUserEntity.isEmpty()) {
             req.setAttribute("ERROR_NOTFOUND", true);
             dispatcher.forward(req, resp);
             return;
         }
 
         Optional<List<RoleEntity>> roleEntities = roleRepository.getAllRole();
-        if(roleEntities.isEmpty()){
+        if (roleEntities.isEmpty()) {
             req.setAttribute("ERROR_NOTFOUND", true);
             dispatcher.forward(req, resp);
             return;
@@ -64,7 +64,7 @@ public class AdminAccountDetailController extends BaseController {
         Optional<Set<RoleEntity>> userRole = roleRepository
                 .getRoleByUserId(userEntity.getId());
 
-        if(userRole.isEmpty()){
+        if (userRole.isEmpty()) {
             req.setAttribute("ERROR_NOTFOUND", true);
             dispatcher.forward(req, resp);
             return;
@@ -90,5 +90,19 @@ public class AdminAccountDetailController extends BaseController {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         super.doPost(req, resp);
+    }
+
+    private Optional<UserEntity> isUserOrId(String uid, String uname) {
+        if (!StringValidator.isNullOrBlank(uid)) {
+            return userRepository
+                    .getUserById(UUID.fromString(uid));
+        }
+
+        if (!StringValidator.isNullOrBlank(uname)) {
+            return userRepository
+                    .getUserByUsername(uname);
+        }
+
+        return Optional.empty();
     }
 }

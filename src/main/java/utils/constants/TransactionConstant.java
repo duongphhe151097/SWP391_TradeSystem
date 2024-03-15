@@ -10,6 +10,7 @@ public class TransactionConstant {
     public static short STATUS_FAILED = 3;
 
     public static String VNPAY = "VNPAY";
+    public static String INTERNAL = "ITN";
 
     public static long MIN_AMOUNT = 10000L;
     public static long MAX_AMOUNT = 10000000L;
