@@ -92,10 +92,7 @@ public class SalesOrdersController extends HttpServlet {
             String isPublic = req.getParameter("public");
 
             // Kiểm tra định dạng giá tiền
-            if (!StringValidator.isValidDecimal(priceString)) {
-                req.setAttribute("resultMessage", "Định dạng giá không hợp lệ!");
-                return;
-            }
+
 
             BigInteger price = new BigInteger(priceString);
 
@@ -117,7 +114,7 @@ public class SalesOrdersController extends HttpServlet {
 
                 productRepository.updateUserBalance(userId,newBalance);
 
-    
+
                 BigInteger newBalanceFromDB = productRepository.getUserBalance(userId);
 
                 boolean isSeller = "seller".equals(role);

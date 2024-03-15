@@ -1,10 +1,7 @@
 package dataAccess;
 
 import dataAccess.DbFactory;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityTransaction;
-import jakarta.persistence.NonUniqueResultException;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import models.ExternalTransactionEntity;
 import models.ProductEntity;
 
@@ -124,21 +121,17 @@ public class ProductRepository {
             return false;
         }
     }
-            public Optional<ProductEntity> getProductById(UUID id) {
-                try {
-                    entityManager.clear();
-                   ProductEntity entity= entityManager
-                           .createQuery(   "SELECT p FROM product p WHERE p.id = :id", ProductEntity.class)
-                            .setParameter("id", id)
-                            .getSingleResult();
-
-                    return Optional.ofNullable(entity);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                return Optional.empty();
-            }
+    public Optional<ProductEntity> getProductById(UUID productId) {
+        try {
+            TypedQuery<ProductEntity> query = entityManager.createQuery(
+                            "SELECT p FROM product p WHERE p.id = :productId", ProductEntity.class)
+                    .setParameter("productId", productId);
+            ProductEntity product = query.getSingleResult();
+            return Optional.of(product);
+        } catch (NoResultException e) {
+            return Optional.empty();
+        }
+    }
 
         public BigInteger getUserBalance(UUID userId) {
             try {

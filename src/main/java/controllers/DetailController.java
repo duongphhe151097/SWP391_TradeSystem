@@ -23,68 +23,32 @@ import java.util.UUID;
 @WebServlet(name = "DetailController", urlPatterns = "/detail")
 public class DetailController extends HttpServlet {
 
+        protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+            String productIdString = req.getParameter("id");
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
+            try {
+                UUID id = UUID.fromString(productIdString);
 
-        try {
-            ProductRepository productRepository = new ProductRepository();
-            Optional<ProductEntity> productOptional = productRepository.getProductById(userId);
+                ProductRepository productRepository = new ProductRepository();
+                Optional<ProductEntity> productOptional = productRepository.getProductById(id);
 
-            if (productOptional.isPresent()) {
-                ProductEntity product = productOptional.get();
-                req.setAttribute("product", product);
-                req.getRequestDispatcher("/pages/detail.jsp").forward(req, resp);
+                if (productOptional.isPresent()) {
+                    ProductEntity product = productOptional.get();
+                    req.setAttribute("product", product);
+                    req.getRequestDispatcher("/pages/detail.jsp").forward(req, resp);
+                } else {
+                    resp.getWriter().println("Sản phẩm không tồn tại");
+                }
+            } catch (IllegalArgumentException e) {
+                resp.getWriter().println("ID sản phẩm không hợp lệ");
+            } catch (Exception e) {
+                e.printStackTrace();
+                resp.getWriter().println("Đã xảy ra lỗi");
             }
+        }
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+   super.doPost(req,resp);
         }
     }
 
-
-
-
-
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        HttpSession session = req.getSession();
-        UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
-        doGet(req,resp);
-
-
-        try {
-            ProductRepository productRepository = new ProductRepository();
-            Optional<ProductEntity> productOptional = productRepository.getProductById(userId);
-
-            if (productOptional.isPresent()) {
-                ProductEntity product = productOptional.get();
-
-                String title = req.getParameter("title");
-                String priceString = req.getParameter("price");
-                String role = req.getParameter("role");
-                String description = req.getParameter("description");
-                String contact = req.getParameter("contact");
-                String secret = req.getParameter("secret");
-                String isPublic = req.getParameter("public");
-                BigInteger price = new BigInteger(priceString);
-                product.getTitle();
-                product.getPrice();
-                product.getDescription();
-                product.getPrice();
-                product.getContact();
-                product.setSecret(secret);
-                product.isPublic();
-
-
-
-
-                      productRepository.updateProduct( title, price, description, contact, secret, isPublic);
-                req.getRequestDispatcher("/pages/detail.jsp").forward(req, resp);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
-    }
-}
