@@ -78,14 +78,14 @@
                                         </select>
                                     </div>
                                     <div class="input-group mb-3 d-flex flex-column">
-                                        <label for="search_input">Tìm kiếm</label>
+                                        <label for="search_input">Tên đăng nhập</label>
                                         <input type="text" class="form-control w-100"
                                                placeholder="Nhập username"
                                                value="${requestScope.FILTER_UNAME}" name="f_uname" id="search_input">
                                     </div>
 
                                     <div class="input-group mb-3 d-flex flex-column">
-                                        <label for="title_input">Tìm kiếm theo title</label>
+                                        <label for="title_input">Tiêu đề</label>
                                         <input type="text" class="form-control w-100"
                                                placeholder="Nhập tiêu đề"
                                                value="${requestScope.FILTER_TITLE}" name="f_title" id="title_input">
@@ -146,6 +146,9 @@
                                                             </c:when>
                                                             <c:when test="${report.status eq 4}">
                                                                 Đã xử lý (Báo cáo sai)
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 5}">
+                                                                Đã hủy
                                                             </c:when>
                                                             <c:otherwise>
                                                                 Không rõ
