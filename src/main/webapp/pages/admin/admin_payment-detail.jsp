@@ -28,7 +28,32 @@
                             <h1>Chi tiết giao dịch</h1>
                         </div>
                     </div>
-
+                    <c:choose>
+                        <c:when test="${not empty requestScope.ERR_MESSAGE}">
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-center">
+                                    <h3>${requestScope.ERR_MESSAGE}</h3>
+                                </div>
+                            </div>
+                        </c:when>
+                        <c:when test="${not empty requestScope.ERR_NOTFOUND}">
+                            <div class="row">
+                                <div class="col-md-12 d-flex justify-content-center">
+                                    <h3>${requestScope.ERR_NOTFOUND}</h3>
+                                </div>
+                            </div>
+                        </c:when>
+                        <c:otherwise>
+                            <c:choose>
+                                <c:when test="${requestScope.VAR_TYPE eq 'VNPAY'}">
+                                    <c:import url="admin_payment-detail-vnpay.jsp"/>
+                                </c:when>
+                                <c:when test="${requestScope.VAR_TYPE eq 'ITN'}">
+                                    <h1>INTERNAL</h1>
+                                </c:when>
+                            </c:choose>
+                        </c:otherwise>
+                    </c:choose>
 
                 </div>
             </div>
@@ -38,5 +63,5 @@
         <jsp:include page="/common/toast.jsp" />
     </body>
     <jsp:include page="/common/common-js.jsp"/>
-    <script type="module" src="<c:url value="/js/admin.account.js"/>"></script>
+    <script type="module" src="<c:url value="/js/admin.payhisdetail.js"/>"></script>
 </html>

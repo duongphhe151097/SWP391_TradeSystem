@@ -1,3 +1,4 @@
+# Arguments
 ARG MAVEN_VERSION=3.8.6-openjdk-11-slim
 ARG TOMCAT_VERSION=10.1.18-jre11-temurin-jammy
 
@@ -11,6 +12,10 @@ COPY ./deploy_settings/common.js ./src/main/webapp/js
 RUN mvn clean package
 
 # Setup tomcat
+LABEL maintainer="duongph"
+LABEL version="1.0"
+LABEL org.opencontainers.image.source=https://github.com/duongphhe151097/SWP391_TradeSystem
+
 FROM tomcat:${TOMCAT_VERSION}
 ENV TZ=Asia/Ho_Chi_Minh
 

@@ -1,5 +1,7 @@
 package utils.validation;
 
+import utils.constants.ReportConstant;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -80,6 +82,14 @@ public class StringValidator {
             return false;
         }
         String[] validStatus = new String[]{"ALL", "0", "1", "2", "3"};
+        return Arrays.asList(validStatus).contains(input);
+    }
+
+    public static boolean isValidReportStatus(String input){
+        if (isNullOrBlank(input)) {
+            return false;
+        }
+        String[] validStatus = new String[]{"1", "2", "3"};
         return Arrays.asList(validStatus).contains(input);
     }
 

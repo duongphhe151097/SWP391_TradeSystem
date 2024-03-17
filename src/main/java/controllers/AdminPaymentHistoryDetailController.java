@@ -7,15 +7,19 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import models.ExternalTransactionEntity;
+import models.VnPayTransactionEntity;
 import utils.annotations.Authorization;
 import utils.constants.TransactionConstant;
 import utils.validation.StringValidator;
 
 import java.io.IOException;
+import java.util.Optional;
+import java.util.UUID;
 
-@WebServlet(name = "AdminPaymentHistoryDetail", urlPatterns = "/admin/payment/history/detail")
+@WebServlet(name = "AdminPaymentHistoryDetailController", urlPatterns = "/admin/payment/history/detail")
 @Authorization(role = "ADMIN", isPublic = false)
-public class AdminPaymentHistoryDetail extends BaseController{
+public class AdminPaymentHistoryDetailController extends BaseController{
     private ExternalTransactionRepository externalTransactionRepository;
     private VnPayTransactionRepository vnPayTransactionRepository;
 
@@ -33,24 +37,39 @@ public class AdminPaymentHistoryDetail extends BaseController{
         String type = req.getParameter("type");
 
         if(StringValidator.isNullOrBlank(id) || StringValidator.isNullOrBlank(type)){
-            req.setAttribute("ERR_MESSAGE", "Tham số không hợp lệ");
+            req.setAttribute("ERR_MESSAGE", "Tham số không hợp lệ!");
             dispatcher.forward(req, resp);
             return;
         }
 
-        if(!type.equals(TransactionConstant.VNPAY) || !type.equals(TransactionConstant.INTERNAL)){
-            req.setAttribute("ERR_MESSAGE", "Kiểu thanh toán không hợp lệ");
+        if(!type.equals(TransactionConstant.VNPAY) && !type.equals(TransactionConstant.INTERNAL)){
+            req.setAttribute("ERR_MESSAGE", "Kiểu thanh toán không hợp lệ!");
             dispatcher.forward(req, resp);
             return;
         }
 
         if(!StringValidator.isUUID(id)){
-            req.setAttribute("ERR_MESSAGE", "Id thanh toán không hợp lệ");
+            req.setAttribute("ERR_MESSAGE", "Id thanh toán không hợp lệ!");
             dispatcher.forward(req, resp);
             return;
         }
 
+        UUID tId = UUID.fromString(id);
+        Optional<VnPayTransactionEntity> optionalVnPayTransactionEntity = vnPayTransactionRepository
+                .getByTransactionId(tId);
 
+        Optional<ExternalTransactionEntity> optionalExternalTransactionEntity = externalTransactionRepository
+                .getExternalTransactionByIdType(tId, TransactionConstant.VNPAY);
+
+        if(optionalVnPayTransactionEntity.isEmpty() || optionalExternalTransactionEntity.isEmpty()){
+            req.setAttribute("ERR_NOTFOUND", "Không tìm thấy id!");
+            dispatcher.forward(req, resp);
+            return;
+        }
+
+        req.setAttribute("VAR_TRANSDETAIL", optionalVnPayTransactionEntity.get());
+        req.setAttribute("VAR_TRANSEXT", optionalExternalTransactionEntity.get());
+        req.setAttribute("VAR_TYPE", type);
 
         dispatcher.forward(req, resp);
     }
