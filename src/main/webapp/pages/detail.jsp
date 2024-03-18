@@ -103,12 +103,14 @@
             <label for="contact">Phương thức liên hệ</label>
             <input type="text" id="contact" name="contact" value="${product.contact}" >
         </div>
-        <div class="form-group">
-            <label for="secret">Nội dung ẩn (*)</label>
-            <textarea id="secret" name="secret" class="secret" >${product.secret}</textarea>
-
-            <small>Các chi tiết nội dung ẩn mà bạn muốn bổ sung</small>
-        </div>
+        <c:if test="${canViewSecret}">
+            <!-- Hiển thị phần nội dung ẩn của sản phẩm -->
+            <div class="form-group">
+                <label for="secret">Nội dung ẩn (*)</label>
+                <textarea id="secret" name="secret" class="secret">${product.secret}</textarea>
+                <small>Các chi tiết nội dung ẩn mà bạn muốn bổ sung</small>
+            </div>
+        </c:if>
         <div class="form-group">
             <label>
                 <input type="checkbox" id="public" name="public" checked>

@@ -37,6 +37,11 @@ public class DetailController extends HttpServlet {
             if (productOptional.isPresent()) {
                 ProductEntity product = productOptional.get();
                 req.setAttribute("product", product);
+                HttpSession session = req.getSession(false);
+                UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
+                boolean canViewSecret = product.isPublic() || (userId != null && product.getUserId().equals(userId));
+                req.setAttribute("canViewSecret", canViewSecret);
+
                 req.getRequestDispatcher("/pages/detail.jsp").forward(req, resp);
             } else {
                 resp.getWriter().println("Sản phẩm không tồn tại");
@@ -59,12 +64,10 @@ public class DetailController extends HttpServlet {
             String secret = req.getParameter("secret");
             String isPublic = req.getParameter("public");
             LocalDateTime updateAt = LocalDateTime.now();
-
             BigInteger price = new BigInteger(priceString);
 
             HttpSession session = req.getSession(false);
             UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
-
             if (userId == null) {
                 req.setAttribute("resultMessage", "Phiên người dùng không hợp lệ!");
                 req.getRequestDispatcher("/pages/salesorders.jsp").forward(req, resp);
