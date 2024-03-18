@@ -64,7 +64,7 @@
                                     </div>
 
                                     <c:if test="${requestScope.FAILED_MESSAGE}">
-                                        <p style="color:red">Mã giao dịch không hợp lệ</p>
+                                        <p style="color:red">thêm không thành công</p>
                                     </c:if>
 
                                 </form>

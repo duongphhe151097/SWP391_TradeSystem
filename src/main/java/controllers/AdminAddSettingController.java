@@ -8,12 +8,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.SettingEntity;
+import utils.annotations.Authorization;
 
 import java.io.IOException;
 import java.util.Optional;
 
 @WebServlet(name = "AdminAddSettingController", urlPatterns = {"/admin/setting/add"})
-
+@Authorization(role = "ADMIN", isPublic = false)
 public class AdminAddSettingController extends HttpServlet {
     private SettingRepository sRepo;
 

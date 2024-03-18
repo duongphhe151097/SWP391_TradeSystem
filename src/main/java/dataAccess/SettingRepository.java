@@ -77,7 +77,7 @@ public class SettingRepository {
             String queryString = hql.toString();
             TypedQuery<Long> query = entityManager.createQuery(queryString, Long.class);
             return query.getSingleResult();
-        }catch (NonUniqueResultException e) {
+        } catch (NonUniqueResultException e) {
             // Log the exception for debugging purposes
             e.printStackTrace();
             throw new NonUniqueResultException("Query returned multiple results.", e);
@@ -88,7 +88,7 @@ public class SettingRepository {
         }
     }
 
-        public List<SettingEntity> getSettingsWithPaging(int start, int pageSize) {
+    public List<SettingEntity> getSettingsWithPaging(int start, int pageSize) {
         try {
             TypedQuery<SettingEntity> query = entityManager.createQuery(
                     "SELECT s FROM setting s WHERE s.isDelete = false ", SettingEntity.class);

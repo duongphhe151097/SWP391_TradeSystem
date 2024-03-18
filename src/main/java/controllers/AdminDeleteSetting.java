@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import models.SessionManagerEntity;
+import utils.annotations.Authorization;
 import utils.constants.UserConstant;
 import utils.validation.StringValidator;
 
@@ -21,6 +22,7 @@ import java.util.UUID;
 
 
 @WebServlet(name = "AdminDeleteSetting", urlPatterns = "/admin/setting/delete")
+@Authorization(role = "ADMIN", isPublic = false)
 public class AdminDeleteSetting extends BaseController {
 
     private SettingRepository settingRepository;
@@ -52,7 +54,6 @@ public class AdminDeleteSetting extends BaseController {
 
             resp.sendRedirect(req.getContextPath() + "/admin/setting");
         } catch (IllegalArgumentException e) {
-            resp.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
 

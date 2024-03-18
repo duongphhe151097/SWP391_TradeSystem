@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import models.SettingEntity;
 import models.common.Pagination;
 import models.common.ViewPaging;
+import utils.annotations.Authorization;
 import utils.validation.StringValidator;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet(name = "AdminSettingController", urlPatterns = {"/admin/setting"})
+@Authorization(role = "ADMIN", isPublic = false)
 public class AdminSettingController extends HttpServlet {
 
     @Override
@@ -34,8 +36,6 @@ public class AdminSettingController extends HttpServlet {
                 pageSize = "10";
                 pageRange = "5";
             }
-
-
 
             long userCount = settingRepository.countAllSetting();
             Pagination pagination
