@@ -9,6 +9,7 @@
         <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/admin/admin_payment-detail.jsp" value="file://$PROJECT_DIR$/src/main/webapp/pages/admin" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/admin/profile.jsp" value="file://$PROJECT_DIR$/src/main/webapp/pages/admin" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/login.jsp" value="file://$PROJECT_DIR$/src/main/webapp/pages" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/payment/vnpay-createpayment.jsp" value="file://$PROJECT_DIR$/src/main/webapp/pages/payment" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/payment/vnpay-return.jsp" value="file://$PROJECT_DIR$/src/main/webapp/pages/payment" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/profile.jsp" value="file://$PROJECT_DIR$/src/main/webapp/pages" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/pages/register.jsp" value="file://$PROJECT_DIR$/src/main/webapp/pages" />
