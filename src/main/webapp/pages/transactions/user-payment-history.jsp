@@ -171,7 +171,6 @@
                                         Về trang trước
                                     </a>
                                 </li>
-
                                 <c:forEach begin="1" end="${paging.totalPage}" varStatus="loop">
                                     <li class="page-item <c:if test="${loop.index == paging.currentPage}">active</c:if>">
                                         <c:set value="${f:pagingUrlGenerateTransactionHistory(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
@@ -180,7 +179,6 @@
                                            href="<c:url value='/payment/userhistory${current}'/>">${loop.index}</a>
                                     </li>
                                 </c:forEach>
-
                                 <li class="page-item <c:if test="${paging.currentPage == paging.endPage}">disabled</c:if>">
                                     <c:set value="${f:pagingUrlGenerateTransactionHistory(paging.currentPage + 1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_AmountFrom, requestScope.FILTER_AmountTo, requestScope.FILTER_ID, requestScope.FILTER_USER, requestScope.FILTER_STARTDATE, requestScope.FILTER_ENDDATE)}"
                                            var="next"/>
