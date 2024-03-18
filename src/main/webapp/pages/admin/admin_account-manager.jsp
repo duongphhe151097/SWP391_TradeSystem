@@ -39,7 +39,7 @@
                                     <input type="hidden" value="${paging.currentPage}" name="current">
                                     <input type="hidden" value="${paging.pageSize}" name="size">
                                     <input type="hidden" value="${paging.pageRangeOutput}" name="range">
-                                    <div class="input-group mb-3 d-flex flex-column">
+                                    <div class="input-group  mb-3 d-flex flex-column">
                                         <label for="start_date">Từ ngày</label>
                                         <input type="date" class="form-control w-100"
                                                value="${requestScope.FILTER_STARTDATE}" id="start_date" name="f_start">

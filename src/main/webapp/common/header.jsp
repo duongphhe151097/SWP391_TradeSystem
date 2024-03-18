@@ -18,7 +18,7 @@
 
                 </a>
 
-                <form method="get" action="" class="search d-flex align-items-center nav-form-search">
+                <form method="get" action="<c:url value="/product/search"/> " class="search d-flex align-items-center nav-form-search">
                     <input class="form-control me-2" type="search" placeholder="Search"
                            aria-label="Search">
                     <button class="btn btn-primary ml-2">
@@ -97,16 +97,7 @@
                                         </span>
                                     </span>
                                 </a>
-                                <a href="<c:url value="/payment/vnpay/create"/>" class="dropdown-item">
-                                    <span class="d-flex align-items-center">
-                                        <span class="material-symbols-outlined">
-                                            payments
-                                        </span>
-                                        <span>
-                                            Nạp tiền
-                                        </span>
-                                    </span>
-                                </a>
+
                                 <a href="<c:url value="/change"/>" class="dropdown-item">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-outlined">
@@ -117,6 +108,40 @@
                                         </span>
                                     </span>
                                 </a>
+
+                                <a href="<c:url value="/payment/vnpay/create"/>" class="dropdown-item">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            payments
+                                        </span>
+                                        <span>
+                                            Nạp tiền
+                                        </span>
+                                    </span>
+                                </a>
+
+                                <a href="<c:url value="/order"/>" class="dropdown-item">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            shopping_cart
+                                        </span>
+                                        <span>
+                                            Đơn hàng của bạn
+                                        </span>
+                                    </span>
+                                </a>
+
+                                <a href="<c:url value="/report"/>" class="dropdown-item">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            report
+                                        </span>
+                                        <span>
+                                            Báo cáo của bạn
+                                        </span>
+                                    </span>
+                                </a>
+
                                 <a href="<c:url value="/logout"/> " class="dropdown-item">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-outlined">
@@ -126,6 +151,7 @@
                                             Đăng xuất
                                         </span>
                                     </span>
+
                                 </a>
                             </div>
                         </div>

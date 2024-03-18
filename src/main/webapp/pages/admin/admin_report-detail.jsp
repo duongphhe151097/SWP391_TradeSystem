@@ -11,11 +11,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
-        <jsp:include page="../../common/common-css.jsp"/>
+        <jsp:include page="/common/common-css.jsp"/>
         <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
         <link rel="stylesheet" href="<c:url value="/css/admin.sidenav.css"/> ">
         <link rel="stylesheet" href="<c:url value="/css/admin.manager.css"/> ">
-        <title>Chi tiết báo cáo</title>
+        <title>Chi tiết khiếu nại</title>
     </head>
     <body>
         <div id="viewport">
@@ -26,7 +26,7 @@
                 <div class="container-fluid p-3 main-content">
                     <div class="row">
                         <div class="col-md-12">
-                            <h1>Chi tiết báo cáo</h1>
+                            <h1>Chi tiết khiếu nại</h1>
                         </div>
                     </div>
 
@@ -83,15 +83,27 @@
                                                             <td>
                                                                 <c:choose>
                                                                     <c:when test="${report.status eq 1}">
-                                                                        Đang chờ xử lý
+                                                                        Đang chờ bên bán phản hồi
                                                                     </c:when>
                                                                     <c:when test="${report.status eq 2}">
-                                                                        Đang xử lý
+                                                                        Đã hủy
                                                                     </c:when>
                                                                     <c:when test="${report.status eq 3}">
-                                                                        Đã xử lý (Báo cáo đúng)
+                                                                        Bên bán đồng ý với khiếu nại
                                                                     </c:when>
                                                                     <c:when test="${report.status eq 4}">
+                                                                        Bên bán không đồng ý với khiếu nại
+                                                                    </c:when>
+                                                                    <c:when test="${report.status eq 5}">
+                                                                        Bên mua yêu cầu admin kiểm tra
+                                                                    </c:when>
+                                                                    <c:when test="${report.status eq 6}">
+                                                                        Admin đang kiểm tra
+                                                                    </c:when>
+                                                                    <c:when test="${report.status eq 7}">
+                                                                        Đã xử lý (Báo cáo đúng)
+                                                                    </c:when>
+                                                                    <c:when test="${report.status eq 8}">
                                                                         Đã xử lý (Báo cáo sai)
                                                                     </c:when>
                                                                     <c:otherwise>
@@ -114,28 +126,40 @@
                                                                 </textarea>
                                                             </td>
                                                         </tr>
-                                                        <c:if test="${report.status != 1}">
+
+                                                        <c:if test="${report.status == 6}">
                                                             <tr>
                                                                 <th>Báo cáo sai:</th>
                                                                 <td>
                                                                     <div class="custom-control custom-checkbox">
-                                                                        <input type="checkbox" class="custom-control-input" id="customCheck1" name="right_report" value="checked">
-                                                                        <label class="custom-control-label" for="customCheck1">(Tích nếu báo cáo sai!)</label>
+                                                                        <input type="checkbox"
+                                                                               class="custom-control-input"
+                                                                               id="customCheck1" name="right_report"
+                                                                               value="checked">
+                                                                        <label class="custom-control-label"
+                                                                               for="customCheck1">Tích vào nếu bên mua
+                                                                            khiếu nại sai!</label>
                                                                     </div>
                                                                 </td>
                                                             </tr>
+
                                                             <tr>
-                                                                <th>Phản hồi admin:</th>
+                                                                <th>Phản hồi của admin:</th>
                                                                 <td>
-                                                                    <textarea id="report-adminres" name="adm_res" <c:if test="${report.status == 3 || report.status == 4}">class="editor-disable"</c:if>>
-                                                                        <c:choose>
-                                                                            <c:when test="${report.status == 2 && not empty requestScope.VAR_ADMINRESPONSE}">
-                                                                                <c:out value="${requestScope.VAR_ADMINRESPONSE}"/>
-                                                                            </c:when>
-                                                                            <c:otherwise>
-                                                                                <c:out value="${report.adminResponse}"/>
-                                                                            </c:otherwise>
-                                                                        </c:choose>
+                                                                    <textarea id="report-adminres" name="adm_res">
+                                                                        <c:if test="${report.status == 5 && not empty requestScope.VAR_ADMINRESPONSE}">
+                                                                            <c:out value="${requestScope.VAR_ADMINRESPONSE}"/>
+                                                                        </c:if>
+                                                                    </textarea>
+                                                                </td>
+                                                            </tr>
+                                                        </c:if>
+                                                        <c:if test="${report.status == 7 || report.status == 8}">
+                                                            <tr>
+                                                                <th>Phản hồi của admin:</th>
+                                                                <td>
+                                                                    <textarea id="report-adminres" name="adm_res" class="editor-disable">
+                                                                        <c:out value="${report.adminResponse}"/>
                                                                     </textarea>
                                                                 </td>
                                                             </tr>
@@ -146,7 +170,7 @@
                                         </div>
                                         <div class="card-footer">
                                             <c:choose>
-                                                <c:when test="${report.status == 1}">
+                                                <c:when test="${report.status == 5}">
                                                     <div class="d-flex">
                                                         <div>
                                                             <a class="btn btn-primary" id="admin-report-processing"
@@ -158,7 +182,7 @@
                                                     </div>
                                                 </c:when>
 
-                                                <c:when test="${report.status == 2}">
+                                                <c:when test="${report.status == 6}">
                                                     <div class="d-flex">
                                                         <div>
                                                             <a class="btn btn-primary" id="adm-response"

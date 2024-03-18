@@ -22,9 +22,9 @@ public class TransactionQueueService implements ServletContextListener {
     public static Queue<TransactionQueueDto> getInstance() {
         Queue<TransactionQueueDto> result = instance;
         if (instance == null) {
-            synchronized (mutex){
+            synchronized (mutex) {
                 result = instance;
-                if(result == null){
+                if (result == null) {
                     instance = result = new ConcurrentLinkedQueue<>();
                 }
             }
@@ -55,12 +55,23 @@ public class TransactionQueueService implements ServletContextListener {
                     Optional<UserEntity> optionalUserEntity = userRepository
                             .getUserById(element.getUserId());
 
-                    if(optionalUserEntity.isEmpty()){
+                    if (optionalUserEntity.isEmpty()) {
                         System.out.println("User not found!");
                         continue;
                     }
-                    BigInteger newBalance = optionalUserEntity.get().getBalance()
-                            .add(element.getAmount());
+                    BigInteger newBalance = optionalUserEntity.get().getBalance();
+                    switch (element.getAction()) {
+                        case "ADD_AM":
+                            newBalance = optionalUserEntity.get().getBalance()
+                                    .add(element.getAmount());
+                            break;
+
+                        case "SUB_AM":
+                            newBalance = optionalUserEntity.get().getBalance()
+                                    .subtract(element.getAmount());
+                            break;
+                    }
+
                     userRepository.updateUserBalance(element.getUserId(), newBalance);
                 } else {
                     try {

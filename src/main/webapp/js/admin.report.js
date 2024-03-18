@@ -8,6 +8,7 @@ $(document).ready(() => {
         tabsize: 2,
         height: 200,
         disableGrammar: false,
+        disableDragAndDrop:true,
         toolbar: []
     }
 
@@ -17,6 +18,7 @@ $(document).ready(() => {
         tabsize: 2,
         height: 200,
         disableGrammar: false,
+        disableDragAndDrop:true,
     }
 
     reportDescription.summernote(disableConf)
