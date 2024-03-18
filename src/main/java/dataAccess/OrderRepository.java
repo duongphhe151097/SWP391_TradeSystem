@@ -7,6 +7,7 @@ import models.OrderEntity;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class OrderRepository {
@@ -98,5 +99,21 @@ public class OrderRepository {
         }
 
         return 0;
+    }
+
+    public Optional<OrderEntity> getOrderByUserId(UUID userId, UUID productId) {
+        try {
+            entityManager.clear();
+            OrderEntity orderEntity = entityManager
+                    .createQuery("SELECT o FROM order o WHERE o.userId = :userId AND o.productId = :productId AND o.isDelete = false", OrderEntity.class)
+                    .setParameter("userId", userId)
+                    .setParameter("productId", productId)
+                    .getSingleResult();
+
+            return Optional.of(orderEntity);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
 }

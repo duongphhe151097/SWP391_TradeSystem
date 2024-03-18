@@ -6,14 +6,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.ProductEntity;
+import utils.annotations.Authorization;
 
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "SearchController", urlPatterns = "/salesorders")
-public class SearchController {
+@WebServlet(name = "SearchController", urlPatterns = "/product/search")
+@Authorization(role = "USER", isPublic = false)
+public class SearchController extends BaseController{
     private ProductRepository productRepository;
-
 
     public void init() throws ServletException {
         productRepository = new ProductRepository();
@@ -29,6 +30,6 @@ public class SearchController {
 
         request.setAttribute("products", productList);
 
-        request.getRequestDispatcher("/salesorders.jsp").forward(request, response);
+        request.getRequestDispatcher("/pages/product/product-sale.jsp").forward(request, response);
     }
 }

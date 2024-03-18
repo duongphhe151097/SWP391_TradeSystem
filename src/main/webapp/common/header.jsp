@@ -18,7 +18,7 @@
 
                 </a>
 
-                <form method="get" action="" class="search d-flex align-items-center nav-form-search">
+                <form method="get" action="<c:url value="/product/search"/> " class="search d-flex align-items-center nav-form-search">
                     <input class="form-control me-2" type="search" placeholder="Search"
                            aria-label="Search">
                     <button class="btn btn-primary ml-2">
