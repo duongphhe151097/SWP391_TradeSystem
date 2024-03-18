@@ -19,6 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
+
 public class ProductEntity extends BaseEntity implements Serializable {
     @Id
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)

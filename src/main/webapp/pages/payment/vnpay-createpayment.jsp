@@ -9,11 +9,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
-        <jsp:include page="../../common/common-css.jsp"/>
+        <jsp:include page="/common/common-css.jsp"/>
         <title>Nạp tiền</title>
     </head>
     <body>
-        <jsp:include page="../../common/header.jsp"/>
+        <jsp:include page="/common/header.jsp"/>
 
         <div class="container">
             <div class="row">
@@ -42,10 +42,10 @@
                                                         <input type="radio" name="bankCode" value="" checked>
                                                         Thanh toán bằng VNPAY
                                                     </label>
-                                                    <label class="btn btn-primary">
-                                                        <input type="radio" name="bankCode" value="">
-                                                        Chuyển khoản ngân hàng
-                                                    </label>
+<%--                                                    <label class="btn btn-primary">--%>
+<%--                                                        <input type="radio" name="bankCode" value="">--%>
+<%--                                                        Chuyển khoản ngân hàng--%>
+<%--                                                    </label>--%>
                                                 </div>
                                             </td>
                                         </tr>
@@ -84,5 +84,5 @@
         </div>
 
     </body>
-    <jsp:include page="../../common/common-js.jsp"/>
+    <jsp:include page="/common/common-js.jsp"/>
 </html>

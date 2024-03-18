@@ -58,7 +58,7 @@ public class AdminReportController extends BaseController {
             }
 
             short status = 0;
-            if (StringValidator.isValidReportStatus(filterStatus)) {
+            if (!StringValidator.isNullOrBlank(filterStatus)) {
                 status = Short.parseShort(filterStatus);
             }
 

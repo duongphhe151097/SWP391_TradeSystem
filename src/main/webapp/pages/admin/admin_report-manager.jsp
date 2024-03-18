@@ -11,10 +11,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
-        <jsp:include page="../../common/common-css.jsp"/>
+        <jsp:include page="/common/common-css.jsp"/>
         <link rel="stylesheet" href="<c:url value="/css/admin.sidenav.css"/> ">
         <link rel="stylesheet" href="<c:url value="/css/admin.manager.css"/> ">
-        <title>Quản lý báo cáo</title>
+        <title>Quản lý khiếu nại</title>
     </head>
     <body>
         <div id="viewport">
@@ -25,7 +25,7 @@
                 <div class="container-fluid p-3 main-content">
                     <div class="row">
                         <div class="col-md-12">
-                            <h1>Quản lý báo cáo</h1>
+                            <h1>Quản lý khiếu nại</h1>
                         </div>
                     </div>
 
@@ -51,35 +51,55 @@
                                         <select class="custom-select w-100" id="status" name="f_status">
                                             <c:set value="${requestScope.FILTER_STATUS}" var="filter"/>
                                             <c:set value="0" var="ALL"/>
-                                            <c:set value="1" var="PROCESSING"/>
-                                            <c:set value="2" var="PROCESSED"/>
+                                            <c:set value="1" var="REPORT_BUYER_CREATED"/>
+                                            <c:set value="2" var="REPORT_BUYER_ABORT"/>
+                                            <c:set value="3" var="REPORT_SELLER_ACCEPT"/>
+                                            <c:set value="4" var="REPORT_SELLER_DENIED"/>
+                                            <c:set value="5" var="REPORT_ADMIN_REQUEST"/>
+                                            <c:set value="6" var="REPORT_ADMIN_CHECKING"/>
+                                            <c:set value="7" var="REPORT_ADMIN_RESPONSE_BUYER_RIGHT"/>
+                                            <c:set value="8" var="REPORT_ADMIN_RESPONSE_BUYER_WRONG"/>
 
                                             <option value="0" <c:if test="${filter.equals(ALL)}">selected</c:if>>
                                                 Tất cả
                                             </option>
-                                            <option value="1" <c:if test="${filter.equals(PROCESSING)}">selected</c:if>>
-                                                Đang chờ xử lý
+                                            <option value="1" <c:if test="${filter.equals(REPORT_BUYER_CREATED)}">selected</c:if>>
+                                                Đang chờ bên bán phản hồi
                                             </option>
-                                            <option value="2" <c:if test="${filter.equals(PROCESSED)}">selected</c:if>>
-                                                Đang xử lý
+                                            <option value="2" <c:if test="${filter.equals(REPORT_BUYER_ABORT)}">selected</c:if>>
+                                                Đã hủy
                                             </option>
-                                            <option value="3" <c:if test="${filter.equals(PROCESSED)}">selected</c:if>>
+                                            <option value="3"
+                                                    <c:if test="${filter.equals(REPORT_SELLER_ACCEPT)}">selected</c:if>>
+                                                Bên bán đồng ý với khiếu nại
+                                            </option>
+                                            <option value="4"
+                                                    <c:if test="${filter.equals(REPORT_SELLER_DENIED)}">selected</c:if>>
+                                                Bên bán không đồng ý với khiếu nại
+                                            </option>
+                                            <option value="5" <c:if test="${filter.equals(REPORT_ADMIN_REQUEST)}">selected</c:if>>
+                                                Bên mua yêu cầu admin kiểm tra
+                                            </option>
+                                            <option value="6" <c:if test="${filter.equals(REPORT_ADMIN_CHECKING)}">selected</c:if>>
+                                                Admin đang kiểm tra
+                                            </option>
+                                            <option value="7" <c:if test="${filter.equals(REPORT_ADMIN_RESPONSE_BUYER_RIGHT)}">selected</c:if>>
                                                 Đã xử lý (Báo cáo đúng)
                                             </option>
-                                            <option value="4" <c:if test="${filter.equals(PROCESSED)}">selected</c:if>>
+                                            <option value="8" <c:if test="${filter.equals(REPORT_ADMIN_RESPONSE_BUYER_WRONG)}">selected</c:if>>
                                                 Đã xử lý (Báo cáo sai)
                                             </option>
                                         </select>
                                     </div>
                                     <div class="input-group mb-3 d-flex flex-column">
-                                        <label for="search_input">Tìm kiếm</label>
+                                        <label for="search_input">Tên đăng nhập</label>
                                         <input type="text" class="form-control w-100"
                                                placeholder="Nhập username"
                                                value="${requestScope.FILTER_UNAME}" name="f_uname" id="search_input">
                                     </div>
 
                                     <div class="input-group mb-3 d-flex flex-column">
-                                        <label for="title_input">Tìm kiếm theo title</label>
+                                        <label for="title_input">Tiêu đề</label>
                                         <input type="text" class="form-control w-100"
                                                placeholder="Nhập tiêu đề"
                                                value="${requestScope.FILTER_TITLE}" name="f_title" id="title_input">
@@ -124,21 +144,33 @@
                                                        varStatus="loop">
                                                 <tr class="table-active">
                                                     <th scope="row">${loop.index + 1}</th>
-                                                    <td><c:out value="${report.title}"/></td>
+                                                    <td class="text-break"><c:out value="${report.title}"/></td>
                                                     <td><c:out value="${report.createBy}"/></td>
                                                     <td><c:out value="${f:formatLocalDateTime(report.createAt, 'dd/MM/yyyy hh:mm:ss')}"/></td>
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${report.status eq 1}">
-                                                                Đang chờ xử lý
+                                                                Đang chờ bên bán phản hồi
                                                             </c:when>
                                                             <c:when test="${report.status eq 2}">
-                                                                Đang xử lý
+                                                                Đã hủy
                                                             </c:when>
                                                             <c:when test="${report.status eq 3}">
-                                                                Đã xử lý (Báo cáo đúng)
+                                                                Bên bán đồng ý với khiếu nại
                                                             </c:when>
                                                             <c:when test="${report.status eq 4}">
+                                                                Bên bán không đồng ý với khiếu nại
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 5}">
+                                                                Bên mua yêu cầu admin kiểm tra
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 6}">
+                                                                Admin đang kiểm tra
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 7}">
+                                                                Đã xử lý (Báo cáo đúng)
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 8}">
                                                                 Đã xử lý (Báo cáo sai)
                                                             </c:when>
                                                             <c:otherwise>
@@ -165,7 +197,7 @@
                                             <c:set value="${f:pagingUrlGenerateReportManager(paging.currentPage-1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_UNAME, requestScope.FILTER_TITLE, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE,requestScope.FILTER_ENDDATE)}"
                                                    var="previous"/>
                                             <a class="page-link"
-                                               href="<c:url value="/admin/account${previous}"/>">
+                                               href="<c:url value="/admin/report${previous}"/>">
                                                 Về trang trước
                                             </a>
                                         </li>
@@ -175,7 +207,7 @@
                                                 <c:set value="${f:pagingUrlGenerateReportManager(loop.index, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_UNAME, requestScope.FILTER_TITLE, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE,requestScope.FILTER_ENDDATE)}"
                                                        var="current"/>
                                                 <a class="page-link"
-                                                   href="<c:url value="/admin/account${current}"/>">${loop.index}</a>
+                                                   href="<c:url value="/admin/report${current}"/>">${loop.index}</a>
                                             </li>
                                         </c:forEach>
 
@@ -183,7 +215,7 @@
                                             <c:set value="${f:pagingUrlGenerateReportManager(paging.currentPage+1, paging.pageSize, paging.pageRangeOutput, requestScope.FILTER_UNAME, requestScope.FILTER_TITLE, requestScope.FILTER_STATUS, requestScope.FILTER_STARTDATE,requestScope.FILTER_ENDDATE)}"
                                                    var="next"/>
                                             <a class="page-link"
-                                               href="<c:url value="/admin/account${next}"/>">
+                                               href="<c:url value="/admin/report${next}"/>">
                                                 Đến trang tiếp
                                             </a>
                                         </li>

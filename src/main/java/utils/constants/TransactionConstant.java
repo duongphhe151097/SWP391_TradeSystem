@@ -5,6 +5,9 @@ public class TransactionConstant {
     public static short CASH_OUT = 2;
     public static short REFUND = 3;
 
+    public static short INTERNAL_SUB = 1;
+    public static short INTERNAL_ADD = 2;
+
     public static short STATUS_PROCESSING = 1;
     public static short STATUS_SUCCESSED = 2;
     public static short STATUS_FAILED = 3;
