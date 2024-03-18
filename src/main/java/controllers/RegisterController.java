@@ -159,7 +159,7 @@ public class RegisterController extends BaseController {
                 roleId = roles.get().getRoleId();
             }
 
-            UserEntity userEntity = UserEntity
+                UserEntity userEntity = UserEntity
                     .builder()
                     .id(UUID.randomUUID())
                     .username(username)

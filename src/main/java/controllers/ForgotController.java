@@ -64,7 +64,7 @@ public class ForgotController extends BaseController {
                 dispatcher.forward(req, resp);
                 return;
             }
-            if (captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
+            if (!captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
                 req.setAttribute("VAR_EMAIL", "email");
                 req.setAttribute("CAPTCHA_ERROR", "Captcha bạn nhập không đúng!");
                 dispatcher.forward(req, resp);
@@ -109,5 +109,6 @@ public class ForgotController extends BaseController {
             req.setAttribute("FAILED_MESSAGE", "Có lỗi xảy ra khi thực hiện quên mật khẩu");
             dispatcher.forward(req, resp);
         }
+
     }
 }

@@ -10,6 +10,9 @@
         <class>models.TokenActivationEntity</class>
         <class>models.CaptchaEntity</class>
         <class>models.SessionManagerEntity</class>
+        <class>models.CategoryEntity</class>
+        <class>models.ProductEntity</class>
+
 
 
         <properties>
