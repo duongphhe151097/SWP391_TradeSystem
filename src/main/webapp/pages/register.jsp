@@ -35,7 +35,6 @@
                             <small id="nameHelp"
                                    class="form-text text-muted error-message">${requestScope.FULLNAME_ERROR}</small>
                         </c:if>
-
                     </div>
 
                     <div class="form-group">
