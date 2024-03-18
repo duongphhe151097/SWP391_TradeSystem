@@ -109,5 +109,6 @@ public class ForgotController extends BaseController {
             req.setAttribute("FAILED_MESSAGE", "Có lỗi xảy ra khi thực hiện quên mật khẩu");
             dispatcher.forward(req, resp);
         }
+
     }
 }

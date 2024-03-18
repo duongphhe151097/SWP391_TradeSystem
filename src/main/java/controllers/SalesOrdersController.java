@@ -2,6 +2,7 @@ package controllers;
 
 import dataAccess.ProductRepository;
 import dataAccess.UserRepository;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -39,7 +40,6 @@ public class SalesOrdersController extends HttpServlet {
         HttpSession session = req.getSession(false);
         if (session != null) {
             UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
-            String sessionId = session.getId();
 
 
             boolean isSeller = productRepository.isUserSeller(userId);
@@ -74,14 +74,14 @@ public class SalesOrdersController extends HttpServlet {
                     req.setAttribute("VIEW_PAGING", new ViewPaging<ProductEntity>(new ArrayList<>(), pagination));
                 }
             } else {
-                req.setAttribute("resultMessage","");
+                req.getRequestDispatcher("/pages/salesorders.jsp").forward(req, resp);
             }
         }
     }
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         ProductRepository productRepository = new ProductRepository();
-        doGet(req,resp);
+doGet(req,resp);
         try {
             String title = req.getParameter("title");
             String priceString = req.getParameter("price");
@@ -115,9 +115,6 @@ public class SalesOrdersController extends HttpServlet {
                 productRepository.updateUserBalance(userId,newBalance);
 
 
-                BigInteger newBalanceFromDB = productRepository.getUserBalance(userId);
-
-                boolean isSeller = "seller".equals(role);
 
                 ProductEntity productEntity = ProductEntity.builder()
                         .id(UUID.randomUUID())
@@ -131,7 +128,7 @@ public class SalesOrdersController extends HttpServlet {
                         .isPublic(isPublic != null && isPublic.equals("on"))
                         .updatable(false)
                         .quantity(0)
-                        .status((short) 6)
+                        .status((short) 1)
                         .isSeller(true)
                         .build();
 
@@ -144,6 +141,7 @@ public class SalesOrdersController extends HttpServlet {
                 } else {
 
                     req.setAttribute( "resultMessage","Lỗi khi thêm sản phẩm vào cơ sở dữ liệu!");
+
                 }
             } else {
 
@@ -153,9 +151,10 @@ public class SalesOrdersController extends HttpServlet {
             e.printStackTrace();
 
             req.setAttribute("resultMessage", "Đã xảy ra lỗi khi thêm sản phẩm: ");
-            req.getRequestDispatcher("/pages/salesorders.jsp").forward(req, resp);
 
         }
+        RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/salesorders.jsp");
+        dispatcher.forward(req, resp);
     }
 
 }

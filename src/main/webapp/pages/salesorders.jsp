@@ -9,11 +9,12 @@
     <link rel="stylesheet" href="<c:url value='/css/admin.manager.css'/> ">
     <title>Đơn Bán</title>
     <style>
-        /* Modal */
+        /* CSS cho modal */
+        /* CSS cho modal */
         .modal {
             display: none;
             position: fixed;
-            z-index: 1;
+            z-index: 2;
             left: 0;
             top: 0;
             width: 100%;
@@ -22,7 +23,6 @@
             background-color: rgba(0, 0, 0, 0.4);
         }
 
-        /* Modal content */
         .modal-content {
             background-color: #fefefe;
             margin: 15% auto;
@@ -31,12 +31,15 @@
             width: 80%;
         }
 
-        /* Close button */
         .close {
             color: #aaa;
             float: right;
             font-size: 28px;
             font-weight: bold;
+        }
+
+        .modal-open {
+            overflow: hidden;
         }
 
         .close:hover,
@@ -45,44 +48,78 @@
             text-decoration: none;
             cursor: pointer;
         }
+
+        .button-container {
+            text-align: right;
+            margin-bottom: 20px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        /* Button CSS */
+        .add-product-button {
+            display: inline-block;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
-<div id="">
+<div id="content">
+    <div class="container-fluid p-3 main-content">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>Đơn bán của tôi</h1>
+            </div>
+
+        </div>
     <!-- Content -->
-    <div id="content">
         <c:set var="paging" value="${requestScope.VIEW_PAGING.paging}"/>
         <c:set var="product" value="${requestScope.VIEW_PAGING.items}"/>
-        <div class="container-fluid p-3 main-content">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1>Đơn bán của tôi</h1>
+
+        <form method="get" action="<c:url value='/sale'/>">
+            <div class="form-row">
+                <div class="col-md-3 mb-3">
+                    <label for="amount_from">Tìm theo giá từ</label>
+                    <input type="number" class="form-control" value="${requestScope.FILTER_AmountFrom}" id="amount_from" name="f_amountFrom">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="amount_to">Tìm theo giá đến</label>
+                    <input type="number" class="form-control" value="${requestScope.FILTER_AmountTo}" id="amount_to" name="f_amountTo">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="start_date">Từ ngày</label>
+                    <input type="date" class="form-control" value="${requestScope.FILTER_STARTDATE}" id="start_date" name="f_start">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label for="end_date">Đến ngày</label>
+                    <input type="date" class="form-control" value="${requestScope.FILTER_ENDDATE}" id="end_date" name="f_end">
                 </div>
             </div>
-            <form method="get" action="<c:url value='/sale'/>">
-                <div class="form-row">
-                    <div class="col-md-3 mb-3">
-                        <label for="amount_from">Tìm theo giá từ</label>
-                        <input type="number" class="form-control" value="${requestScope.FILTER_AmountFrom}" id="amount_from" name="f_amountFrom">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="amount_to">Tìm theo giá đến</label>
-                        <input type="number" class="form-control" value="${requestScope.FILTER_AmountTo}" id="amount_to" name="f_amountTo">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="start_date">Từ ngày</label>
-                        <input type="date" class="form-control" value="${requestScope.FILTER_STARTDATE}" id="start_date" name="f_start">
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="end_date">Đến ngày</label>
-                        <input type="date" class="form-control" value="${requestScope.FILTER_ENDDATE}" id="end_date" name="f_end">
-                    </div>
-                </div>
-                <div class="ml-3 input-group mb-3 d-flex flex-column justify-content-end">
-                    <button type="submit" class="btn btn-primary">Tìm</button>
-                </div>
-            </form>
-            <div class="col-md-12 mt-4">
+            <div class="ml-3 input-group mb-3 d-flex flex-column justify-content-end">
+                <button type="submit" class="btn btn-primary">Tìm</button>
+                <!-- Button to add product -->
+                <button type="button" class="btn btn-primary mt-3" onclick="openModal()">Thêm sản phẩm</button>
+            </div>
+        </form>
+
+        <div class="col-md-12 mt-4">
                 <table class="table">
                     <thead class="thead-dark">
                     <tr>
@@ -103,13 +140,8 @@
                             <td>${product.id}</td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${product.status eq 0}">Đang chờ xử lý.</c:when>
-                                    <c:when test="${product.status eq 1}">Sản phẩm đã được phê duyệt.</c:when>
-                                    <c:when test="${product.status eq 2}">Bị từ chối.</c:when>
-                                    <c:when test="${product.status eq 3}">Thành công.</c:when>
-                                    <c:when test="${product.status eq 4}">Đã hủy.</c:when>
-                                    <c:when test="${product.status eq 5}">Đang trong trạng thái tranh chấp.</c:when>
-                                    <c:when test="${product.status eq 6}">Đã sẵn sàng.</c:when>
+                                    <c:when test="${product.status eq 0}">Ngừng Giao Dịch.</c:when>
+                                    <c:when test="${product.status eq 1}">Đã sẵn sàng.</c:when>
                                     <c:otherwise>Được tạo</c:otherwise>
                                 </c:choose>
                             </td>
@@ -120,9 +152,9 @@
                             <td>${product.createAt}</td>
                             <td>${product.updateAt}</td>
                             <td>
-                                <a href="<c:url value='/detail'/>">Chi tiết</a>
-                                |
-                                <a href="#" onclick="openModal()">Thêm sản phẩm</a>
+                                <a href="<c:url value='/detail?id=${product.id}'/>">Chi tiết</a>
+
+
                             </td>
 
                         </tr>
@@ -153,11 +185,11 @@
             </nav>
         </div>
     </div>
-</div>
 
 <!-- Modal -->
 <div id="myModal" class="modal">
     <div class="modal-content">
+        <!-- Nội dung modal -->
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -221,8 +253,9 @@
                 </div>
                 <div class="form-group">
                     <label for="price">Giá tiền (*)</label>
-                    <input type="text" id="price" name="price" required pattern="[0-9]*" inputmode="numeric">
+                    <input type="text" id="price" name="price" required oninput="this.value = this.value.replace(/[^0-9]/g, '')" inputmode="numeric">
                 </div>
+
                 <div class="form-group">
                     <label for="role">Bên chịu phí trung gian (*)</label>
                     <select id="role" name="role" required>
@@ -251,56 +284,49 @@
                     </label>
                 </div>
                 <c:if test="${not empty resultMessage}">
-                    <div class="form-group">
-                        <p class="message">${resultMessage}</p>
-                    </div>
+                    <script>
+                        window.onload = function() {
+                            showToast("${resultMessage}");
+                        }
+                    </script>
                 </c:if>
                 <input type="hidden" name="userId" value="<%= session.getAttribute("userId") %>">
                 <button type="submit">Gửi</button>
             </form> <!-- Kết thúc biểu mẫu -->
         </div>
         <script>
-
             CKEDITOR.replace('description');
             CKEDITOR.replace('secret');
         </script>
         </body>
     </div>
-
-
-    <script>
-        // Function to close the modal
-        function closeModal() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "none";
-        }
-    </script>
-</div>
-
-    <script>
-
-        function openModal() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "block";
-        }
-
-        function closeModal() {
-            var modal = document.getElementById("myModal");
-            modal.style.display = "none";
-        }
-
-        window.onclick = function(event) {
-            var modal = document.getElementById("myModal");
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    </script>
 </div>
 
 <jsp:include page="../common/modal.jsp" />
 <jsp:include page="../common/toast.jsp" />
 <jsp:include page="../common/common-js.jsp"/>
+
+<script>
+    function openModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "block";
+        document.body.classList.add("modal-open"); // Thêm lớp modal-open vào body
+    }
+
+    function closeModal() {
+        var modal = document.getElementById("myModal");
+        modal.style.display = "none";
+        document.body.classList.remove("modal-open"); // Loại bỏ lớp modal-open khỏi body
+    }
+
+    window.onclick = function(event) {
+        var modal = document.getElementById("myModal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+            document.body.classList.remove("modal-open"); // Loại bỏ lớp modal-open khỏi body
+        }
+    }
+</script>
 
 </body>
 </html>

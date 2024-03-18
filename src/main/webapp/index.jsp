@@ -9,6 +9,7 @@ x<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <body>
 <jsp:include page="common/header.jsp"/>
 <h1>Home</h1>
+<a href="<c:url value="/market" />" >Chợ Công Khai</a>
 <a href="<c:url value="/sale" />" >Đơn bán của bạn</a>
 </body>
 <jsp:include page="common/common-js.jsp"/>

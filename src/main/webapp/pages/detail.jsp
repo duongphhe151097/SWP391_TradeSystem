@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
@@ -50,6 +51,12 @@
             color: red;
             font-weight: bold;
         }
+        input[readonly], textarea[readonly], select[readonly] {
+            font-weight: bold;
+        }
+        input[readonly], textarea[readonly], select[readonly] {
+            color: gray;
+        }
     </style>
 </head>
 <body>
@@ -63,40 +70,43 @@
         </div>
         <div class="form-group">
             <label for="title">Chủ đề trung gian (*)</label>
-            <input type="text" id="title" name="title" value="${product.title}" readonly>
+            <input type="text" id="title" name="title" value="${product.title}" >
         </div>
-        <div class="form-group">
-            <label for="buyer">Người mua (*)</label>
-            <input type="text" id="buyer" name="buyer" value="${product.buyer}" readonly>
-        </div>
+        <%--        <div class="form-group">--%>
+        <%--            <label for="buyer">Người mua (*)</label>--%>
+        <%--            <input type="text" id="buyer" name="buyer" value="${product.buyer}" readonly>--%>
+        <%--        </div>--%>
         <div class="form-group">
             <label for="status">Trạng thái (*)</label>
             <input type="text" id="status" name="status" value="${product.status}" readonly>
         </div>
         <div class="form-group">
             <label for="price">Giá tiền (*)</label>
-            <input type="text" id="price" name="price" value="${product.price}" readonly>
+            <input type="text" id="price" name="price" value="${product.price}" >
         </div>
-        <div class="form-group">
-            <label for="role">Bên chịu phí trung gian (*)</label>
-            <input type="text" id="role" name="role" value="${product.role}" readonly>
-        </div>
+        <%--        <div class="form-group">--%>
+        <%--            <label for="role">Bên chịu phí trung gian (*)</label>--%>
+        <%--            <input type="text" id="role" name="role" value="${product.role}" readonly>--%>
+        <%--        </div>--%>
         <div class="form-group">
             <label for="description">Mô tả (*)</label>
-            <textarea id="description" name="description" value="${product.description}" readonly></textarea>
+            <textarea id="description" name="description" >${product.description}</textarea>
+
+
             <small>Càng chi tiết về sản phẩm càng tốt vì đây sẽ là cơ sở pháp lý giải quyết khiếu nại nếu có sau này</small>
         </div>
         <div class="form-group">
-            <label for="seller">Người Bán (*)</label>
-            <input type="text" id="seller" name="seller" value="${product.seller}" readonly>
+            <label for="createBy">Người Bán (*)</label>
+            <input type="text" id="createBy" name="createBy" value="${product.createBy}" readonly>
         </div>
         <div class="form-group">
             <label for="contact">Phương thức liên hệ</label>
-            <input type="text" id="contact" name="contact" value="${product.contact}" readonly>
+            <input type="text" id="contact" name="contact" value="${product.contact}" >
         </div>
         <div class="form-group">
             <label for="secret">Nội dung ẩn (*)</label>
-            <textarea id="secret" name="secret" class="secret" value="${product.secret}" readonly></textarea>
+            <textarea id="secret" name="secret" class="secret" >${product.secret}</textarea>
+
             <small>Các chi tiết nội dung ẩn mà bạn muốn bổ sung</small>
         </div>
         <div class="form-group">
@@ -111,22 +121,26 @@
         </div>
         <div class="form-group">
             <label for="UpdateAt">Cập nhật lần cuối (*)</label>
-            <input type="text" id="UpdateAt" name="UpdateAt" value="${product.UpdateAt}" readonly>
+            <input type="text" id="UpdateAt" name="UpdateAt" value="${product.updateAt}" readonly>
         </div>
         <c:if test="${not empty resultMessage}">
             <div class="form-group">
                 <p class="message">${resultMessage}</p>
             </div>
         </c:if>
-        <input type="hidden" name="userId" value="<%= session.getAttribute("userId") %>">
-        <button type="submit">Gửi</button>
-    </form> <!-- Kết thúc biểu mẫu -->
+
+        <c:if test="${not product.userId.equals(sessionScope.SESSION_USERID)}">
+            <button type="submit">Mua</button>
+        </c:if>
+
+        <c:if test="${product.userId.equals(sessionScope.SESSION_USERID)}">
+            <button type="submit">Cập nhật</button>
+        </c:if>
+    </form>
 </div>
 <script>
-
     CKEDITOR.replace('description');
     CKEDITOR.replace('secret');
-
 </script>
 </body>
 </html>

@@ -4,6 +4,7 @@ import dataAccess.DbFactory;
 import jakarta.persistence.*;
 import models.ExternalTransactionEntity;
 import models.ProductEntity;
+import utils.constants.ProductConstant;
 
 
 import java.math.BigDecimal;
@@ -60,13 +61,13 @@ public class ProductRepository {
         }
 
 
-    public void updateProduct(String title, BigInteger price, String description, String contact, String secret, String isPublic) {
+    public void updateProduct(UUID id,String title, BigInteger price, String description, String contact, String secret, String isPublic, LocalDateTime updateAt) {
         EntityTransaction transaction = entityManager.getTransaction();
 
         try {
             transaction.begin();
 
-            entityManager.createQuery("UPDATE product p SET p.title = :title, p.price = :price, p.description = :description, p.contact = :contact, p.secret = :secret, p.isPublic = :isPublic WHERE p.id = :productId")
+            entityManager.createQuery("UPDATE product p SET p.title = :title, p.price = :price, p.description = :description, p.contact = :contact, p.secret = :secret, p.isPublic = :isPublic, p.updateAt = :updateAt WHERE p.id = :id")
 
                     .setParameter("title", title)
                     .setParameter("price", price)
@@ -74,6 +75,9 @@ public class ProductRepository {
                     .setParameter("contact", contact)
                     .setParameter("secret", secret)
                     .setParameter("isPublic",  Boolean.parseBoolean(isPublic))
+                    .setParameter("updateAt", updateAt)
+
+                    .setParameter("id", id)
                     .executeUpdate();
             transaction.commit();
         } catch (Exception e) {
@@ -93,20 +97,20 @@ public class ProductRepository {
             return 0;
         }
 
-    }
-    public List<ProductEntity> getUserProductWithPaging(int start, int end, UUID userId) {
-        try {
-            TypedQuery<ProductEntity> query = entityManager.createQuery(
-                            "SELECT e FROM product e WHERE e.userId = :userId", ProductEntity.class)
-                    .setParameter("userId", userId);
-
-            query.setFirstResult(start);
-            query.setMaxResults(end);
-            return query.getResultList();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        return null;
+        public List<ProductEntity> getUserProductWithPaging(int start, int end, UUID userId) {
+            try {
+                TypedQuery<ProductEntity> query = entityManager.createQuery(
+                                "SELECT e FROM product e WHERE e.userId = :userId", ProductEntity.class)
+                        .setParameter("userId", userId);
+
+                query.setFirstResult(start);
+                query.setMaxResults(end);
+                return query.getResultList();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
     }
     public boolean isUserSeller(UUID userId) {
         try {
@@ -132,7 +136,20 @@ public class ProductRepository {
             return Optional.empty();
         }
     }
+    public List<ProductEntity> getSellerProducts(UUID sellerId) {
+        try {
+            TypedQuery<ProductEntity> query = entityManager.createQuery(
+                            "SELECT e FROM product e WHERE e.userId = :sellerId", ProductEntity.class)
+                    .setParameter("sellerId", sellerId);
 
+
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Xử lý ngoại lệ nếu cần
+            return null;
+        }
+    }
         public BigInteger getUserBalance(UUID userId) {
             try {
                 BigInteger balance = entityManager.createQuery("SELECT u.balance FROM user u WHERE u.id = :userId",BigInteger.class)
@@ -163,4 +180,19 @@ public class ProductRepository {
             e.printStackTrace();
         }
     }
+    public List<ProductEntity> getAllProducts(int start, int end) {
+        try {
+            TypedQuery<ProductEntity> query = entityManager.createQuery(
+                            "SELECT e FROM product e WHERE e.status = :status", ProductEntity.class)
+                    .setParameter("status", ProductConstant.PRODUCT_STATUS_READY);
+
+            query.setFirstResult(start);
+            query.setMaxResults(end);
+            return query.getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
+
