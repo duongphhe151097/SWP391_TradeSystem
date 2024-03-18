@@ -180,7 +180,7 @@ public class UserReportRepository {
     ) {
         try {
             StringBuilder hql = new StringBuilder();
-            hql.append("SELECT COUNT(*) FROM user_rp ur WHERE ur.userId = :userId ");
+            hql.append("SELECT COUNT(*) FROM user_rp ur WHERE ur.userId = :userId OR ur.userTarget = :userId ");
 
             if (!StringValidator.isNullOrBlank(title)) {
                 hql.append("AND ur.title LIKE :title ");
@@ -227,7 +227,7 @@ public class UserReportRepository {
     ) {
         try {
             StringBuilder hql = new StringBuilder();
-            hql.append("SELECT ur FROM user_rp ur WHERE ur.userId = :userId ");
+            hql.append("SELECT ur FROM user_rp ur WHERE ur.userId = :userId OR ur.userTarget = :userId ");
 
             if (!StringValidator.isNullOrBlank(title)) {
                 hql.append("AND ur.title LIKE :title ");

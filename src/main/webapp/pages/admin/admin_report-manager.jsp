@@ -11,10 +11,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
     <head>
-        <jsp:include page="../../common/common-css.jsp"/>
+        <jsp:include page="/common/common-css.jsp"/>
         <link rel="stylesheet" href="<c:url value="/css/admin.sidenav.css"/> ">
         <link rel="stylesheet" href="<c:url value="/css/admin.manager.css"/> ">
-        <title>Quản lý báo cáo</title>
+        <title>Quản lý khiếu nại</title>
     </head>
     <body>
         <div id="viewport">
@@ -25,7 +25,7 @@
                 <div class="container-fluid p-3 main-content">
                     <div class="row">
                         <div class="col-md-12">
-                            <h1>Quản lý báo cáo</h1>
+                            <h1>Quản lý khiếu nại</h1>
                         </div>
                     </div>
 
@@ -51,29 +51,43 @@
                                         <select class="custom-select w-100" id="status" name="f_status">
                                             <c:set value="${requestScope.FILTER_STATUS}" var="filter"/>
                                             <c:set value="0" var="ALL"/>
-                                            <c:set value="1" var="CREATED"/>
-                                            <c:set value="2" var="PROCESSING"/>
-                                            <c:set value="3" var="PROCESSED_RIGHT"/>
-                                            <c:set value="4" var="PROCESSED_WRONG"/>
-                                            <c:set value="5" var="ABORT"/>
+                                            <c:set value="1" var="REPORT_BUYER_CREATED"/>
+                                            <c:set value="2" var="REPORT_BUYER_ABORT"/>
+                                            <c:set value="3" var="REPORT_SELLER_ACCEPT"/>
+                                            <c:set value="4" var="REPORT_SELLER_DENIED"/>
+                                            <c:set value="5" var="REPORT_ADMIN_REQUEST"/>
+                                            <c:set value="6" var="REPORT_ADMIN_CHECKING"/>
+                                            <c:set value="7" var="REPORT_ADMIN_RESPONSE_BUYER_RIGHT"/>
+                                            <c:set value="8" var="REPORT_ADMIN_RESPONSE_BUYER_WRONG"/>
 
                                             <option value="0" <c:if test="${filter.equals(ALL)}">selected</c:if>>
                                                 Tất cả
                                             </option>
-                                            <option value="1" <c:if test="${filter.equals(CREATED)}">selected</c:if>>
-                                                Đang chờ xử lý
+                                            <option value="1" <c:if test="${filter.equals(REPORT_BUYER_CREATED)}">selected</c:if>>
+                                                Đang chờ bên bán phản hồi
                                             </option>
-                                            <option value="2" <c:if test="${filter.equals(PROCESSING)}">selected</c:if>>
-                                                Đang xử lý
+                                            <option value="2" <c:if test="${filter.equals(REPORT_BUYER_ABORT)}">selected</c:if>>
+                                                Đã hủy
                                             </option>
-                                            <option value="3" <c:if test="${filter.equals(PROCESSED_RIGHT)}">selected</c:if>>
+                                            <option value="3"
+                                                    <c:if test="${filter.equals(REPORT_SELLER_ACCEPT)}">selected</c:if>>
+                                                Bên bán đồng ý với khiếu nại
+                                            </option>
+                                            <option value="4"
+                                                    <c:if test="${filter.equals(REPORT_SELLER_DENIED)}">selected</c:if>>
+                                                Bên bán không đồng ý với khiếu nại
+                                            </option>
+                                            <option value="5" <c:if test="${filter.equals(REPORT_ADMIN_REQUEST)}">selected</c:if>>
+                                                Bên mua yêu cầu admin kiểm tra
+                                            </option>
+                                            <option value="6" <c:if test="${filter.equals(REPORT_ADMIN_CHECKING)}">selected</c:if>>
+                                                Admin đang kiểm tra
+                                            </option>
+                                            <option value="7" <c:if test="${filter.equals(REPORT_ADMIN_RESPONSE_BUYER_RIGHT)}">selected</c:if>>
                                                 Đã xử lý (Báo cáo đúng)
                                             </option>
-                                            <option value="4" <c:if test="${filter.equals(PROCESSED_WRONG)}">selected</c:if>>
+                                            <option value="8" <c:if test="${filter.equals(REPORT_ADMIN_RESPONSE_BUYER_WRONG)}">selected</c:if>>
                                                 Đã xử lý (Báo cáo sai)
-                                            </option>
-                                            <option value="5" <c:if test="${filter.equals(ABORT)}">selected</c:if>>
-                                                Hủy
                                             </option>
                                         </select>
                                     </div>
@@ -130,25 +144,34 @@
                                                        varStatus="loop">
                                                 <tr class="table-active">
                                                     <th scope="row">${loop.index + 1}</th>
-                                                    <td><c:out value="${report.title}"/></td>
+                                                    <td class="text-break"><c:out value="${report.title}"/></td>
                                                     <td><c:out value="${report.createBy}"/></td>
                                                     <td><c:out value="${f:formatLocalDateTime(report.createAt, 'dd/MM/yyyy hh:mm:ss')}"/></td>
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${report.status eq 1}">
-                                                                Đang chờ xử lý
+                                                                Đang chờ bên bán phản hồi
                                                             </c:when>
                                                             <c:when test="${report.status eq 2}">
-                                                                Đang xử lý
+                                                                Đã hủy
                                                             </c:when>
                                                             <c:when test="${report.status eq 3}">
-                                                                Đã xử lý (Báo cáo đúng)
+                                                                Bên bán đồng ý với khiếu nại
                                                             </c:when>
                                                             <c:when test="${report.status eq 4}">
-                                                                Đã xử lý (Báo cáo sai)
+                                                                Bên bán không đồng ý với khiếu nại
                                                             </c:when>
                                                             <c:when test="${report.status eq 5}">
-                                                                Đã hủy
+                                                                Bên mua yêu cầu admin kiểm tra
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 6}">
+                                                                Admin đang kiểm tra
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 7}">
+                                                                Đã xử lý (Báo cáo đúng)
+                                                            </c:when>
+                                                            <c:when test="${report.status eq 8}">
+                                                                Đã xử lý (Báo cáo sai)
                                                             </c:when>
                                                             <c:otherwise>
                                                                 Không rõ

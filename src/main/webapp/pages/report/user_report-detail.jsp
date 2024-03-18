@@ -30,7 +30,7 @@
                                 </a>
                             </div>
                             <div>
-                                <h4 class="text">Tạo yêu cầu nạp tiền</h4>
+                                <h4 class="text">Chi tiết báo cáo</h4>
                             </div>
                         </div>
                         <div class="card-body">
@@ -67,19 +67,28 @@
                                                 <td>
                                                     <c:choose>
                                                         <c:when test="${report.status eq 1}">
-                                                            Đang chờ xử lý
+                                                            Đang chờ bên bán phản hồi
                                                         </c:when>
                                                         <c:when test="${report.status eq 2}">
-                                                            Đang xử lý
+                                                            Đã hủy
                                                         </c:when>
                                                         <c:when test="${report.status eq 3}">
-                                                            Đã xử lý (Báo cáo đúng)
+                                                            Bên bán đồng ý với khiếu nại
                                                         </c:when>
                                                         <c:when test="${report.status eq 4}">
-                                                            Đã xử lý (Báo cáo sai)
+                                                            Bên bán không đồng ý với khiếu nại
                                                         </c:when>
                                                         <c:when test="${report.status eq 5}">
-                                                            Đã hủy
+                                                            Bên mua yêu cầu admin kiểm tra
+                                                        </c:when>
+                                                        <c:when test="${report.status eq 6}">
+                                                            Admin đang kiểm tra
+                                                        </c:when>
+                                                        <c:when test="${report.status eq 7}">
+                                                            Đã xử lý (Báo cáo đúng)
+                                                        </c:when>
+                                                        <c:when test="${report.status eq 8}">
+                                                            Đã xử lý (Báo cáo sai)
                                                         </c:when>
                                                         <c:otherwise>
                                                             Không rõ
@@ -107,29 +116,58 @@
                                                     </textarea>
                                                 </td>
                                             </tr>
-
-                                            <tr>
-                                                <th scope="row">Phản hồi của admin:</th>
-                                                <td>
+                                            <c:if test="${report.status eq 7 || report.status eq 8}">
+                                                <tr>
+                                                    <th scope="row">Phản hồi của admin:</th>
+                                                    <td>
                                                     <textarea id="admin-response" disabled>
                                                         <c:out value="${report.adminResponse}"/>
                                                     </textarea>
-                                                </td>
-                                            </tr>
+                                                    </td>
+                                                </tr>
+                                            </c:if>
+
                                         </tbody>
                                     </c:otherwise>
                                 </c:choose>
                             </table>
                         </div>
 
-                        <c:if test="${report.status == 1}">
-                            <div class="card-footer">
-                                <div>
-                                    <a class="btn btn-danger" href="<c:url value="/report/detail?id=${report.id}"/>"
-                                       role="button" id="abort-report">Hủy báo cáo</a>
+                        <c:choose>
+                            <c:when test="${report.status == 1 && report.userId eq sessionScope.SESSION_USERID}">
+                                <div class="card-footer">
+                                    <div>
+                                        <a class="btn btn-danger" href="<c:url value="/report/detail?id=${report.id}"/>"
+                                           role="button" id="abort-report">Hủy báo cáo</a>
+                                    </div>
                                 </div>
-                            </div>
-                        </c:if>
+                            </c:when>
+
+                            <c:when test="${report.status == 4 && report.userId eq sessionScope.SESSION_USERID}">
+                                <div class="card-footer">
+                                    <div>
+                                        <a class="btn btn-danger" href="<c:url value="/report/detail?id=${report.id}"/>"
+                                           role="button" id="request-admin">Yêu cầu admin xử lý</a>
+                                    </div>
+                                </div>
+                            </c:when>
+
+                            <c:when test="${report.status == 1 && report.userId ne sessionScope.SESSION_USERID}">
+                                <div class="card-footer">
+                                    <div>
+                                        <a class="btn btn-danger" href="<c:url value="/report/detail?id=${report.id}"/>"
+                                           role="button" id="denied-report">Không đồng ý với khiếu nại</a>
+                                    </div>
+
+                                    <div>
+                                        <a class="btn btn-success" href="<c:url value="/report/detail?id=${report.id}"/>"
+                                           role="button" id="accept-report">Đồng ý với khiếu nại</a>
+                                    </div>
+                                </div>
+                            </c:when>
+                        </c:choose>
+
+
                     </div>
                 </div>
             </div>

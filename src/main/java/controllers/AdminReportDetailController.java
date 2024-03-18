@@ -102,7 +102,7 @@ public class AdminReportDetailController extends BaseController {
             UserReportEntity userReportEntity = optionalUserReport.get();
             switch (reqType) {
                 case "PROCESSING":
-                    userReportEntity.setStatus(ReportConstant.REPORT_PROCESSING);
+                    userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_CHECKING);
                     break;
 
                 case "PROCESSED":
@@ -119,10 +119,10 @@ public class AdminReportDetailController extends BaseController {
                     //Report đúng
                     if (!StringValidator.isNullOrBlank(reqIsRightReport) && reqIsRightReport.equals("checked")) {
                         //Report sai
-                        userReportEntity.setStatus(ReportConstant.REPORT_DONE_CLIENT_WRONG);
+                        userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_RESPONSE_BUYER_WRONG);
                     } else {
                         BigInteger returnAmount = BigInteger.valueOf((50000 * 20) / 100);
-                        userReportEntity.setStatus(ReportConstant.REPORT_DONE_CLIENT_RIGHT);
+                        userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_RESPONSE_BUYER_RIGHT);
                         InternalTransactionEntity internalTransaction = InternalTransactionEntity.builder()
                                 .id(UUID.randomUUID())
                                 .from(userReportEntity.getUserId())

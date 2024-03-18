@@ -2,30 +2,45 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import dataAccess.InternalTransactionRepository;
 import dataAccess.UserReportRepository;
+import dataAccess.UserRepository;
+import dtos.TransactionQueueDto;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import models.InternalTransactionEntity;
+import models.UserEntity;
 import models.UserReportEntity;
 import utils.annotations.Authorization;
 import utils.constants.ReportConstant;
+import utils.constants.TransactionConstant;
+import utils.constants.UserConstant;
 import utils.validation.StringValidator;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.UUID;
 
 @WebServlet(name = "UserReportDetailController", urlPatterns = "/report/detail")
 @Authorization(role = "USER", isPublic = false)
 public class UserReportDetailController extends BaseController {
     private UserReportRepository userReportRepository;
+    private UserRepository userRepository;
+    private InternalTransactionRepository internalTransactionRepository;
     private Gson gson;
 
     @Override
     public void init() throws ServletException {
         this.userReportRepository = new UserReportRepository();
+        this.userRepository = new UserRepository();
+        this.internalTransactionRepository = new InternalTransactionRepository();
         this.gson = new Gson();
     }
 
@@ -64,15 +79,15 @@ public class UserReportDetailController extends BaseController {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
-        JsonObject jsonObject = new JsonObject();
 
         String reqId = req.getParameter("id");
+        String type = req.getParameter("type");
         try {
-            if (StringValidator.isNullOrBlank(reqId) || !StringValidator.isUUID(reqId)) {
-                resp.setStatus(400);
-                jsonObject.addProperty("code", 400);
-                jsonObject.addProperty("message", "Tham số không hợp lệ!");
-                resp.getWriter().write(gson.toJson(jsonObject));
+            HttpSession httpSession = req.getSession(false);
+            UUID userId = (UUID) httpSession.getAttribute(UserConstant.SESSION_USERID);
+
+            if (StringValidator.isNullOrBlank(reqId) || StringValidator.isNullOrBlank(type) || !StringValidator.isUUID(reqId)) {
+                returnResult(resp, 400, "Tham số không hợp lệ!");
                 return;
             }
 
@@ -81,35 +96,83 @@ public class UserReportDetailController extends BaseController {
                     .getReportById(rid);
 
             if (optionalUserReport.isEmpty()) {
-                resp.setStatus(400);
-                jsonObject.addProperty("code", 400);
-                jsonObject.addProperty("message", "Không tìm thấy báo cáo!");
-                resp.getWriter().write(gson.toJson(jsonObject));
+                returnResult(resp, 400, "Không tìm thấy báo cáo!");
                 return;
             }
 
             UserReportEntity userReportEntity = optionalUserReport.get();
-            userReportEntity.setStatus(ReportConstant.REPORT_ABORT);
+            switch (type) {
+                case "ABORTED":
+                    userReportEntity.setStatus(ReportConstant.REPORT_BUYER_ABORT);
+                    break;
+
+                case "DENIED":
+                    userReportEntity.setStatus(ReportConstant.REPORT_SELLER_DENIED);
+                    break;
+
+                case "REQUEST_ADMIN":
+                    Optional<UserEntity> userEntity = userRepository
+                            .getUserById(userId);
+
+                    if(userEntity.isEmpty()){
+                        returnResult(resp, 400, "Không tìm thấy người dùng!");
+                        return;
+                    }
+
+                    BigInteger balance = userEntity.get().getBalance();
+                    long fee = 50000;
+                    BigInteger bigIntFee = BigInteger.valueOf(fee);
+
+                    if(balance.compareTo(bigIntFee) < 0){
+                        returnResult(resp, 400, "NOT_ENOUGH_MONEY");
+                        return;
+                    }
+
+                    ServletContext context = getServletContext();
+                    Queue<TransactionQueueDto> transactionQueue = (Queue<TransactionQueueDto>) context
+                            .getAttribute("transaction_queue");
+
+                    InternalTransactionEntity internalTransaction = InternalTransactionEntity.builder()
+                            .id(UUID.randomUUID())
+                            .from(userId)
+                            .amount(bigIntFee)
+                            .description("Thu tiền yêu cầu admin xử lý đơn trung gian!")
+                            .status(TransactionConstant.INTERNAL_SUB)
+                            .build();
+
+                    internalTransactionRepository.add(internalTransaction);
+                    transactionQueue.add(new TransactionQueueDto(userId, "SUB_AM", bigIntFee));
+
+                    userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_REQUEST);
+                    break;
+
+                case "ACCEPTED":
+                    userReportEntity.setStatus(ReportConstant.REPORT_SELLER_ACCEPT);
+                    break;
+
+                default:
+                    returnResult(resp, 400, "Tham số không hợp lệ!");
+                    return;
+            }
 
             boolean isSuccess = userReportRepository.update(userReportEntity);
-            if(isSuccess){
-                resp.setStatus(200);
-                jsonObject.addProperty("code", 200);
-                jsonObject.addProperty("message", "Cập nhật thành công!");
-                resp.getWriter().write(gson.toJson(jsonObject));
+            if (isSuccess) {
+                returnResult(resp, 200, "Cập nhật thành công!");
                 return;
             }
 
-            resp.setStatus(409);
-            jsonObject.addProperty("code", 409);
-            jsonObject.addProperty("message", "Cập nhật không thành công!");
-            resp.getWriter().write(gson.toJson(jsonObject));
+            returnResult(resp, 409, "Cập nhật không thành công!");
         } catch (Exception e) {
             e.printStackTrace();
-            resp.setStatus(500);
-            jsonObject.addProperty("code", 500);
-            jsonObject.addProperty("message", "Lỗi server!");
-            resp.getWriter().write(gson.toJson(jsonObject));
+            returnResult(resp, 500, "Lỗi server!");
         }
+    }
+
+    private void returnResult(HttpServletResponse resp, int code, String message) throws IOException {
+        resp.setStatus(code);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("code", code);
+        jsonObject.addProperty("message", message);
+        resp.getWriter().write(gson.toJson(jsonObject));
     }
 }

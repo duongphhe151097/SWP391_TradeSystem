@@ -69,7 +69,7 @@ public class UserReportController extends BaseController {
             }
 
             short status = 0;
-            if (StringValidator.isValidReportStatus(filterStatus)) {
+            if (!StringValidator.isNullOrBlank(filterStatus)) {
                 status = Short.parseShort(filterStatus);
             }
 
@@ -167,7 +167,7 @@ public class UserReportController extends BaseController {
                     .type(ReportConstant.USER_REPORT)
                     .title(reportTitle)
                     .description(reportContent)
-                    .status(ReportConstant.REPORT_CREATED)
+                    .status(ReportConstant.REPORT_BUYER_CREATED)
                     .productTarget(productId)
                     .build();
             userReportRepository.add(userReportEntity);
