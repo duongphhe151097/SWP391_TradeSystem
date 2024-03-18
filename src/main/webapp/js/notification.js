@@ -5,61 +5,103 @@ $(document).ready(() => {
         $('#notificationBadge').hide(); // Ẩn badge khi dropdown được mở ra
     });
 });
-
+let debounce = null
 function loadNotificationList() {
+    clearTimeout(debounce)
+    debounce = setTimeout(() => {
     $.ajax({
         url: urlBuilder("/notification"),
         type: 'get',
         success: function(response) {
-            try {
-                if (!response.trim()) { // Kiểm tra xem dữ liệu phản hồi có trống không
-                    throw new Error("Empty response from server");
-                }
-                let data = JSON.parse(response); // Phân tích dữ liệu JSON
-                console.log(data);
-                displayNotificationList(data);
-            } catch (error) {
-                console.error("Error parsing data:", error);
-                alert("Đã có lỗi xảy ra!");
-            }
+                console.log(response);
+                displayNotificationList(response);
         },
         error: function(xhr, status, error) {
             console.error(error);
             alert("Đã có lỗi xảy ra!");
         }
     });
-}
+    },1000)
+    }
+
 
 function displayNotificationList(notificationList) {
     let notificationDropdown = $("#notificationDropdown");
     notificationDropdown.empty();
 
     notificationList.forEach(notification => {
-        let formattedCreateAt = moment(notification.createAt).format("YYYY-MM-DD HH:mm:ss");
-        // Create a new element to display the notification and add it to the dropdown
+       let createAt =null;
+        if (notification.createAt instanceof Date && !isNaN(notification.createAt)) {
+             createAt = notification.createAt;
+
+        } else {
+
+          createAt = new Date(notification.createAt);
+        }
+        let formattedCreateAt = createAt.toLocaleString();
+        let messageDiv = $("<div>")
+            .addClass("d-flex w-100 justify-content-between align-items-center");
+
+
+        // Thêm tiêu đề thông điệp
+        let title = $("<h5>")
+            .addClass("mb-1")
+            .text(notification.message);
+        let messageContainer = $("<div>")
+            .addClass("message-container");
+
+
+        messageContainer.append(title);
+        if (!notification.isSeen) {
+            let isSeenStatus = $("<span>")
+                .addClass("is-seen-status")
+                .text("Chưa đọc");
+            messageContainer.append(isSeenStatus);
+        } else {
+            let isSeenStatus = $("<span>")
+                .addClass("is-seen-status")
+                .text("Đã đọc");
+            messageContainer.append(isSeenStatus);
+        }
+        messageDiv.append(messageContainer);
+
+        messageDiv.append(title);
+
+        // Tạo phần tử p chứa thời gian tạo
+        let timeParagraph = $("<p>")
+            .addClass("mb-1")
+            .text(formattedCreateAt);
+
+
+        // Thêm phần tử p vào phần tử div
+        messageDiv.append(timeParagraph);
+        // Tạo listItem và thêm messageDiv vào đó
         let listItem = $("<a>")
-            .addClass("dropdown-item notification") // Add a class to identify notification items
-            .data("notification-id", notification.id) // Attach notification ID as data attribute
-            .data("is-seen", notification.isSeen) // Attach isSeen status as data attribute
-            .data("notification-message", notification.message) // Attach message as data attribute
-            .data("create-at", formattedCreateAt) // Attach createAt as data attribute
-            .attr("href", "#") // Add href attribute for better accessibility
+            .addClass("dropdown-item notification")
+            .data("notification-id", notification.id)
+            .data("is-seen", notification.isSeen)
+            .data("notification-message", notification.message)
+            .data("create-at", formattedCreateAt)
+            .attr("href", "#")
             .click(function() {
                 let notificationId = $(this).data("notification-id");
                 let isSeen = $(this).data("is-seen");
+                if(!isSeen){
+                updateNotificationStatus(notificationId, true);
+                }else{
 
-                // Toggle isSeen status and update notification in the database
-                updateNotificationStatus(notificationId, !isSeen);
-            });
-        if (!notification.isSeen) {
-            listItem.append("<span class='dot'></span>");
-        }
-        listItem.append(notification.message + " - " + formattedCreateAt);
+                }
+            })
+            .append(messageDiv);
+
+        // Thêm listItem vào notificationDropdown
         notificationDropdown.append(listItem);
     });
 }
 
-function updateNotificationStatus(notificationId, isSeen) {
+function updateNotificationStatus( notificationId, isSeen) {
+    clearTimeout(debounce)
+    debounce = setTimeout(() => {
     // Tạo một đối tượng JSON chứa dữ liệu bạn muốn gửi
     var data = {
         notificationId: notificationId,
@@ -71,33 +113,28 @@ function updateNotificationStatus(notificationId, isSeen) {
         url: urlBuilder("/notification"),
         type: 'post',
         contentType: 'application/json',
-        data: JSON.stringify(data),
+        data:JSON.stringify(data),
         success: function (response) {
-            console.log(response.message); // In ra thông báo từ máy chủ
-            // Nếu bạn muốn cập nhật giao diện người dùng sau khi cập nhật trạng thái thông báo, bạn có thể thực hiện ở đây
+            console.log(response.message);
         },
         error: function (xhr, status, error) {
             console.error("Error updating notification status:", error);
             alert("Đã có lỗi xảy ra khi cập nhật trạng thái thông báo!");
         }
     });
-}
+    },1000)
+    }
 let submitCount = 0;
-
-// Cập nhật số lần click submit và hiển thị badge
 function updateSubmitCount() {
     submitCount++;
-    $("#notificationBadge").text(submitCount).show(); // Hiển thị badge và cập nhật số lần click submit
+    $("#notificationBadge").text(submitCount).show();
 }
 
-// Ẩn badge nếu số lần click submit là 0
 function hideBadge() {
     if (submitCount === 0) {
         $("#notificationBadge").hide();
     }
 }
-
-// Thêm sự kiện click vào dropdown
 $("#dropdownMenuButton").on("click", function() {
     submitCount = 0; // Reset số lần click submit
     hideBadge(); // Ẩn badge nếu số lần click submit là 0

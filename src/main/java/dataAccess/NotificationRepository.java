@@ -19,19 +19,20 @@ public class NotificationRepository {
 
             List<NotificationEntity> entity = entityManager
                     .createQuery("SELECT n FROM notification n " +
-                            "WHERE n.userToNotify = :userToNotify", NotificationEntity.class)
+                            "WHERE n.userToNotify = :userToNotify"+
+                            " order by n.createAt DESC ", NotificationEntity.class)
                     .setParameter("userToNotify", userToNotify)
                     .getResultList();
 
             transaction.commit();
             return entity;
         } catch (Exception e) {
-                transaction.rollback();
+            transaction.rollback();
             e.printStackTrace();
-            }
-
-            return Collections.emptyList();
         }
+
+        return Collections.emptyList();
+    }
 
 
     public Optional<NotificationEntity> add(NotificationEntity entity) {
@@ -49,11 +50,12 @@ public class NotificationRepository {
 
         return Optional.empty();
     }
-    public boolean updateNotificationStatus(UUID notificationId, boolean isSeen) {
+
+    public boolean updateNotificationStatus( UUID notificationId, boolean isSeen) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.createQuery("UPDATE notification n SET n.isSeen = :isSeen WHERE n.id = :id")
+            entityManager.createQuery("UPDATE notification n SET n.isSeen = :isSeen WHERE n.id = :id ")
                     .setParameter("id", notificationId)
                     .setParameter("isSeen", isSeen)
                     .executeUpdate();

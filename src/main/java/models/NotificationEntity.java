@@ -3,11 +3,9 @@ package models;
 import jakarta.persistence.*;
 import lombok.*;
 import models.common.BaseEntity;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UuidGenerator;
 
+import org.hibernate.annotations.UuidGenerator;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity(name = "notification")
@@ -23,7 +21,7 @@ public class NotificationEntity extends BaseEntity implements Serializable {
     @Column(name = "`id`", columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "`user_fired_notify`", nullable = false)
+    @Column(name = "`user_fired_notify`")
     private UUID userFriedNotify;
 
     @Column(name = "`user_to_notify`")
@@ -37,8 +35,4 @@ public class NotificationEntity extends BaseEntity implements Serializable {
 
     @Column(name = "`is_seen`", nullable = false)
     private boolean isSeen;
-    @Basic
-    @Column(name = "`create_at`", updatable = false)
-    @CreationTimestamp
-    private LocalDateTime createAt;
 }

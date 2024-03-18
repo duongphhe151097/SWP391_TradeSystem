@@ -44,24 +44,23 @@
 
                 <!-- Post Login -->
                 <c:if test="${sessionScope.SESSION_USERID != null}">
-                <div class="nav-item dropdown d-none d-lg-block notification-dropdown">
-                    <a class="nav-link" id="notification-dropdown" href="#" data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        <span class="material-symbols-outlined">notifications</span>
-                        <!-- Badge for notification count -->
-                        <span id="notificationBadge" class="badge badge-pill badge-primary"></span>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-left navbar-dropdown"
-                         aria-labelledby="notification-dropdown" id="notificationDropdown">
-                        <ul class="dropdown-menu">
-                            <li><h6 class="dropdown-header">Dropdown header</h6></li>
-                            <li><hr class="dropdown-divider"></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
                     <div class="d-flex align-items-center">
-                        <div class="nav-item dropdown d-none d-lg-block user-dropdown">
+                        <div class="nav-item dropdown d-none d-lg-block notification-dropdown">
+                            <a class="nav-link" id="notification-dropdown" href="#" data-bs-toggle="dropdown"
+                               aria-expanded="false">
+                                <span class="material-symbols-outlined">notifications</span>
+                                <!-- Badge for notification count -->
+                                <span id="notificationBadge" class="badge badge-pill badge-primary"></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-left navbar-dropdown"
+                                 aria-labelledby="notification-dropdown" id="notificationDropdown">
+                                <ul class="dropdown-menu">
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                        <div class="nav-item dropdown d-none d-lg-block user-dropdown ml-3">
                             <a class="nav-link" id="user-dropdown" href="#" data-bs-toggle="dropdown"
                                aria-expanded="false">
                                 <img class="img-xs rounded-circle" src="<c:url value="/img/default_male.jpg"/>"

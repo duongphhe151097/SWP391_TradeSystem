@@ -67,11 +67,10 @@ public class ProfileController extends BaseController {
                 NotificationEntity notificationEntity = NotificationEntity
                         .builder()
                         .id(UUID.randomUUID())
-                        .userFriedNotify(userId)
+                        .userToNotify(userId)
                         .type((short)1)
                         .message(message)
                         .isSeen(false)
-                        .createAt(LocalDateTime.now())
                         .build();
                 notificationRepository.add(notificationEntity);
 

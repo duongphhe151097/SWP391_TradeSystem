@@ -86,6 +86,7 @@
         <script>
             function updateProfile() {
                 $('#successModal').modal('show');
+                updateSubmitCount();
             }
         </script>
     </body>
