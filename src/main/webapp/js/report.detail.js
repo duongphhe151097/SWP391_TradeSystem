@@ -141,7 +141,7 @@ $(document).ready(() => {
         const hrefUrl = e?.currentTarget?.href;
         const params = getParams(hrefUrl.split("?")[1]);
 
-        $('#modal-seller-response').modal('show')
+        $('#report-acp-seller').modal('show')
 
         let debounce = null
         $("#report-acp-seller-modal-confirm").off().click(() => {
@@ -161,7 +161,7 @@ $(document).ready(() => {
                         seller_resp: resp
                     },
                     success: (resp) => {
-                        $('#myModal').modal('hide')
+                        $('#report-acp-seller').modal('hide')
 
                         $('#toast-title').html('Thành công!')
                         $('#toast-body').html(resp.message)
@@ -173,7 +173,7 @@ $(document).ready(() => {
                         })
                     },
                     error: (err) => {
-                        $('#myModal').modal('hide')
+                        $('#report-acp-seller').modal('hide')
 
                         $('#toast-title').html('Không thành công!')
                         $('#toast-body').html(err?.responseJSON?.message)

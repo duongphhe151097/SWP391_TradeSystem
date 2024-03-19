@@ -5,6 +5,7 @@
   Time: 1:02 AM
   To change this template use File | Settings | File Templates.
 --%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div class="modal" tabindex="-1" id="report-acp-seller">
     <div class="modal-dialog modal-lg">
