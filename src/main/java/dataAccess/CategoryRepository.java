@@ -1,53 +1,104 @@
 package dataAccess;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NonUniqueResultException;
+import jakarta.persistence.TypedQuery;
 import models.CategoryEntity;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
-
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CategoryRepository {
-    private SessionFactory sessionFactory;
 
-    public CategoryRepository(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
+    private final EntityManager entityManager;
+
+    public CategoryRepository() {
+        this.entityManager = DbFactory.getFactory().createEntityManager();
     }
 
-    public List<CategoryEntity> getAllCategories() {
-        try (Session session = sessionFactory.openSession()) {
-            return session.createQuery("FROM category", CategoryEntity.class).list();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
+    public Optional<CategoryEntity> addCategory(CategoryEntity categoríes) {
 
-    public void addCategory(CategoryEntity category) {
-        Transaction transaction = null;
-        try (Session session = sessionFactory.openSession()) {
-            transaction = session.beginTransaction();
-            session.save(category);
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            CategoryEntity entity = entityManager.merge(categoríes);
+            entityManager.persist(entity);
             transaction.commit();
+
+            return Optional.of(entity);
         } catch (Exception e) {
-            if (transaction != null) {
-                transaction.rollback();
-            }
+            transaction.rollback();
             e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
+    public List<CategoryEntity> getCategory() {
+        try {
+            entityManager.clear();
+            List<CategoryEntity> entity = entityManager
+                    .createQuery("select c from category c where c.isDelete = false", CategoryEntity.class)
+                    .getResultList();
+
+            return entity;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ArrayList<>();
+    }
+
+    public boolean updateCategoryStatus(int id, boolean isDelete) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.createQuery("UPDATE category c SET c.isDelete = :isDelete WHERE c.id = :id")
+                    .setParameter("id", id)
+                    .setParameter("isDelete", isDelete)
+                    .executeUpdate();
+            transaction.commit();
+
+            return true;
+        } catch (Exception e) {
+            transaction.rollback();
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public long countAllCategory() {
+        entityManager.clear();
+        StringBuilder hql = new StringBuilder();
+        hql.append("SELECT COUNT(*) FROM category c WHERE c.isDelete = false ");
+        try {
+            String queryString = hql.toString();
+            TypedQuery<Long> query = entityManager.createQuery(queryString, Long.class);
+            return query.getSingleResult();
+        } catch (NonUniqueResultException e) {
+            // Log the exception for debugging purposes
+            e.printStackTrace();
+            throw new NonUniqueResultException("Query returned multiple results.", e);
+        } catch (Exception e) {
+            // Log the exception for debugging purposes
+            e.printStackTrace();
+            throw e; // Rethrow the exception to indicate an error in the method
         }
     }
 
-    public boolean isIdExists(int id) {
-        try (Session session = sessionFactory.openSession()) {
-            Query<Long> query = session.createQuery("SELECT COUNT(*) FROM category WHERE id = :id", Long.class);
-            query.setParameter("id", id);
-            Long count = query.uniqueResult();
-            return count != null && count > 0;
+    public List<CategoryEntity> getCategoriesWithPaging(int start, int pageSize) {
+        try {
+            TypedQuery<CategoryEntity> query = entityManager.createQuery(
+                    "SELECT c FROM category c WHERE c.isDelete = false ", CategoryEntity.class);
+            query.setFirstResult(start);
+            query.setMaxResults(pageSize);
+            return query.getResultList();
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
+        return null;
     }
+
 }
