@@ -120,13 +120,24 @@
                                     </span>
                                 </a>
 
+                                <a href="<c:url value="/payment/userhistory"/>" class="dropdown-item">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            receipt_long
+                                        </span>
+                                        <span>
+                                            Lịch sử giao dịch
+                                        </span>
+                                    </span>
+                                </a>
+
                                 <a href="<c:url value="/order"/>" class="dropdown-item">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-outlined">
                                             shopping_cart
                                         </span>
                                         <span>
-                                            Đơn hàng của bạn
+                                            Đơn mua của bạn
                                         </span>
                                     </span>
                                 </a>
