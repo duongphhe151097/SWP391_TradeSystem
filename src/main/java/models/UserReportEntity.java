@@ -43,6 +43,9 @@ public class UserReportEntity extends BaseEntity implements Serializable {
     @Column(name = "`admin_response`")
     private String adminResponse;
 
+    @Column(name = "`seller_response`")
+    private String sellerResponse;
+
     @Column(name = "`status`", nullable = false)
     private short status;
 }

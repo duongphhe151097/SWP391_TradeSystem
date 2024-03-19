@@ -3,6 +3,8 @@ package controllers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dataAccess.InternalTransactionRepository;
+import dataAccess.OrderRepository;
+import dataAccess.ProductRepository;
 import dataAccess.UserReportRepository;
 import dtos.TransactionQueueDto;
 import jakarta.servlet.RequestDispatcher;
@@ -12,8 +14,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import models.InternalTransactionEntity;
+import models.OrderEntity;
+import models.ProductEntity;
 import models.UserReportEntity;
 import utils.annotations.Authorization;
+import utils.constants.OrderConstant;
 import utils.constants.ReportConstant;
 import utils.constants.TransactionConstant;
 import utils.validation.StringValidator;
@@ -29,12 +34,16 @@ import java.util.UUID;
 public class AdminReportDetailController extends BaseController {
     private UserReportRepository userReportRepository;
     private InternalTransactionRepository internalTransactionRepository;
+    private OrderRepository orderRepository;
+    private ProductRepository productRepository;
     private Gson gson;
 
     @Override
     public void init() throws ServletException {
         this.userReportRepository = new UserReportRepository();
         this.internalTransactionRepository = new InternalTransactionRepository();
+        this.orderRepository = new OrderRepository();
+        this.productRepository = new ProductRepository();
         this.gson = new Gson();
     }
 
@@ -100,6 +109,30 @@ public class AdminReportDetailController extends BaseController {
             }
 
             UserReportEntity userReportEntity = optionalUserReport.get();
+            UUID productId = userReportEntity.getProductTarget();
+            Optional<OrderEntity> optionalOrderEntity = orderRepository
+                    .getOrderByUserId(userReportEntity.getUserId(), productId);
+
+            if (optionalOrderEntity.isEmpty()) {
+                resp.setStatus(400);
+                jsonObject.addProperty("code", 400);
+                jsonObject.addProperty("message", "Không tìm thấy giao dịch!");
+                resp.getWriter().write(gson.toJson(jsonObject));
+                return;
+            }
+            OrderEntity order = optionalOrderEntity.get();
+
+            Optional<ProductEntity> optionalProductEntity = productRepository
+                    .getProductById(productId);
+            if (optionalProductEntity.isEmpty()) {
+                resp.setStatus(400);
+                jsonObject.addProperty("code", 400);
+                jsonObject.addProperty("message", "Không tìm thấy đơn trung gian!");
+                resp.getWriter().write(gson.toJson(jsonObject));
+                return;
+            }
+            ProductEntity product = optionalProductEntity.get();
+
             switch (reqType) {
                 case "PROCESSING":
                     userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_CHECKING);
@@ -116,27 +149,46 @@ public class AdminReportDetailController extends BaseController {
 
                     userReportEntity.setAdminResponse(reqAdminResponse.replace("&nbsp;", ""));
 
-                    //Report đúng
+                    //Report sai
                     if (!StringValidator.isNullOrBlank(reqIsRightReport) && reqIsRightReport.equals("checked")) {
-                        //Report sai
                         userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_RESPONSE_BUYER_WRONG);
+
                     } else {
-                        BigInteger returnAmount = BigInteger.valueOf((50000 * 20) / 100);
+                        //Report đúng
                         userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_RESPONSE_BUYER_RIGHT);
-                        InternalTransactionEntity internalTransaction = InternalTransactionEntity.builder()
+
+                        //Trả tiền cọc khiếu nại
+                        BigInteger refundReportFeeAmount = BigInteger.valueOf(50000);
+                        InternalTransactionEntity refundReportFee = InternalTransactionEntity.builder()
                                 .id(UUID.randomUUID())
-                                .from(userReportEntity.getUserId())
-                                .amount(returnAmount)
-                                .description("Trả lại 80% tiền tạo báo cáo!")
+                                .to(userReportEntity.getUserId())
+                                .amount(refundReportFeeAmount)
+                                .description("Trả lại tiền báo cáo thành công!")
                                 .status(TransactionConstant.INTERNAL_ADD)
                                 .build();
-                        internalTransactionRepository.add(internalTransaction);
+                        internalTransactionRepository.add(refundReportFee);
 
+                        //Trả lại tiền mua hàng
+                        BigInteger refundOrderAmount = order.getAmount().add(order.getFee());
+                        InternalTransactionEntity refundOrder = InternalTransactionEntity.builder()
+                                .id(UUID.randomUUID())
+                                .to(userReportEntity.getUserId())
+                                .amount(refundOrderAmount)
+                                .description("Trả lại tiền mua hàng!")
+                                .status(TransactionConstant.INTERNAL_ADD)
+                                .build();
+                        internalTransactionRepository.add(refundOrder);
+
+                        order.setStatus(OrderConstant.ORDER_ABORT);
+                        orderRepository.update(order);
+
+                        //Đưa vào queue để cộng tiền
                         ServletContext context = getServletContext();
                         Queue<TransactionQueueDto> transactionQueue = (Queue<TransactionQueueDto>) context
                                 .getAttribute("transaction_queue");
 
-                        transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserId(), "ADD_AM", returnAmount));
+                        transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserId(), "ADD_AM", refundReportFeeAmount));
+                        transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserId(), "ADD_AM", refundOrderAmount));
                     }
                     break;
             }

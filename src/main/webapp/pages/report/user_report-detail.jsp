@@ -90,6 +90,9 @@
                                                         <c:when test="${report.status eq 8}">
                                                             Đã xử lý (Báo cáo sai)
                                                         </c:when>
+                                                        <c:when test="${report.status eq 9}">
+                                                            Người mua đồng ý với phản hồi của người bán
+                                                        </c:when>
                                                         <c:otherwise>
                                                             Không rõ
                                                         </c:otherwise>
@@ -105,7 +108,9 @@
                                             <tr>
                                                 <th scope="row">Đơn hàng:</th>
                                                 <td>
-                                                    <c:out value="${report.productTarget}"/>
+                                                    <a href="<c:url value="/product/detail?id=${report.productTarget}"/> ">
+                                                        Xem chi tiết đơn trung gian
+                                                    </a>
                                                 </td>
                                             </tr>
                                             <tr>
@@ -116,17 +121,28 @@
                                                     </textarea>
                                                 </td>
                                             </tr>
-                                            <c:if test="${report.status eq 7 || report.status eq 8}">
+
+                                            <c:if test="${report.status eq 9 || report.status eq 3 || report.sellerResponse ne null}">
                                                 <tr>
-                                                    <th scope="row">Phản hồi của admin:</th>
+                                                    <th scope="row">Phản hồi của người bán:</th>
                                                     <td>
-                                                    <textarea id="admin-response" disabled>
-                                                        <c:out value="${report.adminResponse}"/>
-                                                    </textarea>
+                                                        <textarea id="seller-response" class="editor-disabled" disabled>
+                                                            <c:out value="${report.sellerResponse}"/>
+                                                        </textarea>
                                                     </td>
                                                 </tr>
                                             </c:if>
 
+                                            <c:if test="${report.status eq 7 || report.status eq 8}">
+                                                <tr>
+                                                    <th scope="row">Phản hồi của admin:</th>
+                                                    <td>
+                                                        <textarea id="admin-response" disabled>
+                                                            <c:out value="${report.sellerResponse}"/>
+                                                        </textarea>
+                                                    </td>
+                                                </tr>
+                                            </c:if>
                                         </tbody>
                                     </c:otherwise>
                                 </c:choose>
@@ -134,47 +150,55 @@
                         </div>
 
                         <c:choose>
-                            <c:when test="${report.status == 1 && report.userId eq sessionScope.SESSION_USERID}">
-                                <div class="card-footer">
-                                    <div>
-                                        <a class="btn btn-danger" href="<c:url value="/report/detail?id=${report.id}"/>"
-                                           role="button" id="abort-report">Hủy báo cáo</a>
-                                    </div>
-                                </div>
-                            </c:when>
-
-                            <c:when test="${report.status == 4 && report.userId eq sessionScope.SESSION_USERID}">
-                                <div class="card-footer">
-                                    <div>
-                                        <a class="btn btn-danger" href="<c:url value="/report/detail?id=${report.id}"/>"
-                                           role="button" id="request-admin">Yêu cầu admin xử lý</a>
-                                    </div>
+                            <c:when test="${report.userId eq sessionScope.SESSION_USERID}">
+                                <div class="card-footer d-flex">
+                                    <c:if test="${report.status == 4}">
+                                        <div>
+                                            <a class="btn btn-danger"
+                                               href="<c:url value="/report/detail?id=${report.id}"/>"
+                                               role="button" id="request-admin">Yêu cầu admin xử lý</a>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${report.status == 1}">
+                                        <div>
+                                            <a class="btn btn-danger"
+                                               href="<c:url value="/report/detail?id=${report.id}"/>"
+                                               role="button" id="abort-report">Hủy báo cáo</a>
+                                        </div>
+                                    </c:if>
+                                    <c:if test="${report.status == 3}">
+                                        <div>
+                                            <a class="btn btn-danger"
+                                               href="<c:url value="/report/detail?id=${report.id}"/>"
+                                               role="button" id="acp-seller-response">Đồng ý với phản hồi của người bán</a>
+                                        </div>
+                                    </c:if>
                                 </div>
                             </c:when>
 
                             <c:when test="${report.status == 1 && report.userId ne sessionScope.SESSION_USERID}">
-                                <div class="card-footer">
-                                    <div>
+                                <div class="card-footer d-flex">
+                                    <div class="mr-2">
                                         <a class="btn btn-danger" href="<c:url value="/report/detail?id=${report.id}"/>"
                                            role="button" id="denied-report">Không đồng ý với khiếu nại</a>
                                     </div>
 
                                     <div>
-                                        <a class="btn btn-success" href="<c:url value="/report/detail?id=${report.id}"/>"
+                                        <a class="btn btn-success"
+                                           href="<c:url value="/report/detail?id=${report.id}"/>"
                                            role="button" id="accept-report">Đồng ý với khiếu nại</a>
                                     </div>
                                 </div>
                             </c:when>
                         </c:choose>
-
-
                     </div>
                 </div>
             </div>
         </div>
 
-        <jsp:include page="/common/modal.jsp" />
-        <jsp:include page="/common/toast.jsp" />
+        <jsp:include page="/common/modal.jsp"/>
+        <jsp:include page="/common/toast.jsp"/>
+        <jsp:include page="/pages/report/user_report-acp-seller-resp.jsp"/>
     </body>
     <jsp:include page="/common/common-js.jsp"/>
     <script type="module" src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>

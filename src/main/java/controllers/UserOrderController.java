@@ -1,35 +1,54 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import dataAccess.InternalTransactionRepository;
 import dataAccess.OrderRepository;
+import dataAccess.ProductRepository;
+import dataAccess.UserRepository;
+import dtos.TransactionQueueDto;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import models.InternalTransactionEntity;
 import models.OrderEntity;
+import models.ProductEntity;
 import models.UserEntity;
 import models.common.Pagination;
 import models.common.ViewPaging;
 import utils.annotations.Authorization;
+import utils.constants.OrderConstant;
+import utils.constants.ProductConstant;
+import utils.constants.TransactionConstant;
 import utils.constants.UserConstant;
 import utils.convert.DateTimeConvertor;
 import utils.validation.StringValidator;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @WebServlet(name = "UserOrderController", urlPatterns = "/order")
 @Authorization(role = "USER", isPublic = false)
 public class UserOrderController extends BaseController {
     private OrderRepository orderRepository;
+    private UserRepository userRepository;
+    private ProductRepository productRepository;
+    private InternalTransactionRepository internalTransactionRepository;
+    private Gson gson;
 
     @Override
     public void init() throws ServletException {
         this.orderRepository = new OrderRepository();
+        this.userRepository = new UserRepository();
+        this.productRepository = new ProductRepository();
+        this.internalTransactionRepository = new InternalTransactionRepository();
+        this.gson = new Gson();
     }
 
     @Override
@@ -97,6 +116,120 @@ public class UserOrderController extends BaseController {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
+        resp.setContentType("application/json");
+        JsonObject jsonObject = new JsonObject();
+
+        String pId = req.getParameter("pid");
+        try {
+            if (StringValidator.isNullOrBlank(pId) || !StringValidator.isUUID(pId)) {
+                resp.setStatus(400);
+                jsonObject.addProperty("code", 400);
+                jsonObject.addProperty("message", "Không tìm thấy người dùng!");
+                printJson(resp, gson.toJson(jsonObject));
+                return;
+            }
+
+            UUID productId = UUID.fromString(pId);
+            Optional<ProductEntity> productEntity = productRepository
+                    .getProductById(productId);
+
+            if (productEntity.isEmpty()) {
+                resp.setStatus(400);
+                jsonObject.addProperty("code", 400);
+                jsonObject.addProperty("message", "Tham số không hợp lệ!");
+                printJson(resp, gson.toJson(jsonObject));
+                return;
+            }
+            ProductEntity product = productEntity.get();
+
+            if(product.getStatus() == ProductConstant.PRODUCT_STATUS_STOP_TRADING){
+                resp.setStatus(400);
+                jsonObject.addProperty("code", 400);
+                jsonObject.addProperty("message", "Không thể giao dịch đơn trung gian này!");
+                printJson(resp, gson.toJson(jsonObject));
+                return;
+            }
+
+            HttpSession httpSession = req.getSession(false);
+            UUID userId = (UUID) httpSession.getAttribute(UserConstant.SESSION_USERID);
+
+            Optional<UserEntity> userEntity = userRepository
+                    .getUserById(userId);
+            if (userEntity.isEmpty()) {
+                resp.setStatus(400);
+                jsonObject.addProperty("code", 400);
+                jsonObject.addProperty("message", "Không tìm thấy người dùng!");
+                printJson(resp, gson.toJson(jsonObject));
+                return;
+            }
+
+            BigInteger productPrice = product.getPrice();
+            BigInteger userBalance = userEntity.get().getBalance();
+
+            if (userBalance.compareTo(productPrice) < 0) {
+                resp.setStatus(400);
+                jsonObject.addProperty("code", 400);
+                jsonObject.addProperty("message", "NOT_ENOUGH_MONEY");
+                printJson(resp, gson.toJson(jsonObject));
+                return;
+            }
+
+            BigInteger fee;
+            if (productPrice.compareTo(new BigInteger("10000")) >= 0) {
+                fee = (productPrice.multiply(new BigInteger("5")))
+                                .divide(new BigInteger("100"));
+            } else {
+                fee = new BigInteger("1000");
+            }
+            BigInteger needToPay = productPrice.add(fee);
+
+            ServletContext context = getServletContext();
+            Queue<TransactionQueueDto> transactionQueue = (Queue<TransactionQueueDto>) context
+                    .getAttribute("transaction_queue");
+
+            InternalTransactionEntity internalTransaction = InternalTransactionEntity.builder()
+                    .id(UUID.randomUUID())
+                    .from(userId)
+                    .amount(needToPay)
+                    .description("Tạm thu phí giao dịch trung gian cho giao dịch đơn hàng: " + productId)
+                    .status(TransactionConstant.INTERNAL_SUB)
+                    .build();
+
+            internalTransactionRepository.add(internalTransaction);
+            //Đưa vào queue trừ tiền
+            transactionQueue.add(new TransactionQueueDto(userId, "SUB_AM", needToPay));
+
+            product.setStatus(ProductConstant.PRODUCT_STATUS_STOP_TRADING);
+            product.setUpdatable(false);
+            productRepository.update(product);
+
+            OrderEntity orderEntity = OrderEntity.builder()
+                    .id(UUID.randomUUID())
+                    .userId(userId)
+                    .productId(productId)
+                    .amount(productPrice)
+                    .fee(fee)
+                    .status(OrderConstant.ORDER_CHECKING)
+                    .build();
+            boolean isOrderSuccess = orderRepository.add(orderEntity);
+
+            if (!isOrderSuccess) {
+                resp.setStatus(400);
+                jsonObject.addProperty("code", 400);
+                jsonObject.addProperty("message", "Giao dịch không thành công!");
+                printJson(resp, gson.toJson(jsonObject));
+                return;
+            }
+
+            resp.setStatus(200);
+            jsonObject.addProperty("code", 200);
+            jsonObject.addProperty("message", req.getContextPath()+"/order");
+            printJson(resp, gson.toJson(jsonObject));
+        } catch (Exception e) {
+            resp.setStatus(500);
+            jsonObject.addProperty("code", 500);
+            jsonObject.addProperty("message", "Đã có lỗi xảy ra!");
+            printJson(resp, gson.toJson(jsonObject));
+        }
     }
 }
