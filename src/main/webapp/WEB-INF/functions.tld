@@ -34,6 +34,12 @@
     </function>
 
     <function>
+        <name>pagingUrlGenerateUserReport</name>
+        <function-class>utils.generators.StringGenerator</function-class>
+        <function-signature>java.lang.String pagingUrlGenerateUserReport(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)</function-signature>
+    </function>
+
+    <function>
         <name>formatCurrency</name>
         <function-class>utils.convert.StringConvertor</function-class>
         <function-signature>java.lang.String currencyFormat(java.math.BigInteger)</function-signature>

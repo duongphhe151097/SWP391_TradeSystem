@@ -15,6 +15,7 @@ import java.io.Serializable;
 @Builder
 public class CategoryEntity extends BaseEntity implements Serializable {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "`id`", updatable = false, nullable = false)
     private int id;
 

@@ -140,4 +140,23 @@ public class StringGenerator {
 
         return pagingUrlGenerateCommon(currentPage, pageSize, pageRange, filters);
     }
+
+    public static String pagingUrlGenerateUserReport(
+            String currentPage,
+            String pageSize,
+            String pageRange,
+            String title,
+            String status,
+            String start,
+            String end
+    ) {
+        String[] filters = {
+                (!StringValidator.isNullOrBlank(title)) ? "f_title=" + title : "",
+                (!StringValidator.isNullOrBlank(status)) ? "f_status=" + status : "",
+                (!StringValidator.isNullOrBlank(start)) ? "f_start=" + start : "",
+                (!StringValidator.isNullOrBlank(end)) ? "f_end=" + end : "",
+        };
+
+        return pagingUrlGenerateCommon(currentPage, pageSize, pageRange, filters);
+    }
 }

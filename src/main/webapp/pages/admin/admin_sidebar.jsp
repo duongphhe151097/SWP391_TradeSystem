@@ -46,5 +46,17 @@
                 </span>
             </a>
         </li>
+        <li class=" w-100">
+            <a href="<c:url value="/admin/setting"/>">
+                <span class="d-flex align-items-center">
+                    <span class="material-symbols-outlined">
+                        settings
+                    </span>
+                    <span class="item-name">
+                        Quản lý cài đặt
+                    </span>
+                </span>
+            </a>
+        </li>
     </ul>
 </div>

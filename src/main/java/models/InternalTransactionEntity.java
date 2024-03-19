@@ -20,10 +20,10 @@ public class InternalTransactionEntity extends BaseEntity implements Serializabl
     @Column(name = "`id`", columnDefinition = "uuid", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "`from`", columnDefinition = "uuid", updatable = false, nullable = false)
+    @Column(name = "`from`", columnDefinition = "uuid", updatable = false)
     private UUID from;
 
-    @Column(name = "`to`", columnDefinition = "uuid", updatable = false, nullable = false)
+    @Column(name = "`to`", columnDefinition = "uuid", updatable = false)
     private UUID to;
 
     @Column(name = "`amount`", updatable = false, nullable = false)

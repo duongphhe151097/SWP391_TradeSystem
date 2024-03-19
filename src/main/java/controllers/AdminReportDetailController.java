@@ -2,30 +2,39 @@ package controllers;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import dataAccess.InternalTransactionRepository;
 import dataAccess.UserReportRepository;
+import dtos.TransactionQueueDto;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import models.InternalTransactionEntity;
 import models.UserReportEntity;
 import utils.annotations.Authorization;
 import utils.constants.ReportConstant;
+import utils.constants.TransactionConstant;
 import utils.validation.StringValidator;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.Optional;
+import java.util.Queue;
 import java.util.UUID;
 
 @WebServlet(name = "AdminReportDetailController", urlPatterns = "/admin/report/detail")
 @Authorization(role = "ADMIN", isPublic = false)
 public class AdminReportDetailController extends BaseController {
     private UserReportRepository userReportRepository;
+    private InternalTransactionRepository internalTransactionRepository;
     private Gson gson;
 
     @Override
     public void init() throws ServletException {
         this.userReportRepository = new UserReportRepository();
+        this.internalTransactionRepository = new InternalTransactionRepository();
         this.gson = new Gson();
     }
 
@@ -93,7 +102,7 @@ public class AdminReportDetailController extends BaseController {
             UserReportEntity userReportEntity = optionalUserReport.get();
             switch (reqType) {
                 case "PROCESSING":
-                    userReportEntity.setStatus(ReportConstant.REPORT_PROCESSING);
+                    userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_CHECKING);
                     break;
 
                 case "PROCESSED":
@@ -105,18 +114,35 @@ public class AdminReportDetailController extends BaseController {
                         return;
                     }
 
+                    userReportEntity.setAdminResponse(reqAdminResponse.replace("&nbsp;", ""));
+
                     //Report đúng
-                    userReportEntity.setStatus(ReportConstant.REPORT_DONE_CLIENT_RIGHT);
-                    if(!StringValidator.isNullOrBlank(reqIsRightReport) && reqIsRightReport.equals("checked")){
+                    if (!StringValidator.isNullOrBlank(reqIsRightReport) && reqIsRightReport.equals("checked")) {
                         //Report sai
-                        userReportEntity.setStatus(ReportConstant.REPORT_DONE_CLIENT_WRONG);
+                        userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_RESPONSE_BUYER_WRONG);
+                    } else {
+                        BigInteger returnAmount = BigInteger.valueOf((50000 * 20) / 100);
+                        userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_RESPONSE_BUYER_RIGHT);
+                        InternalTransactionEntity internalTransaction = InternalTransactionEntity.builder()
+                                .id(UUID.randomUUID())
+                                .from(userReportEntity.getUserId())
+                                .amount(returnAmount)
+                                .description("Trả lại 80% tiền tạo báo cáo!")
+                                .status(TransactionConstant.INTERNAL_ADD)
+                                .build();
+                        internalTransactionRepository.add(internalTransaction);
+
+                        ServletContext context = getServletContext();
+                        Queue<TransactionQueueDto> transactionQueue = (Queue<TransactionQueueDto>) context
+                                .getAttribute("transaction_queue");
+
+                        transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserId(), "ADD_AM", returnAmount));
                     }
-                    userReportEntity.setAdminResponse(reqAdminResponse);
                     break;
             }
 
             boolean isSuccess = userReportRepository.update(userReportEntity);
-            if(isSuccess){
+            if (isSuccess) {
                 resp.setStatus(200);
                 jsonObject.addProperty("code", 200);
                 jsonObject.addProperty("message", "Cập nhật thành công!");
