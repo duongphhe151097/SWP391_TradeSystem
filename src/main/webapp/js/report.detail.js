@@ -147,7 +147,7 @@ $(document).ready(() => {
         $("#report-acp-seller-modal-confirm").off().click(() => {
             clearTimeout(debounce)
 
-            const resp = $("#modal-seller-response").summernote('code');
+            const resp = $("#modal-seller-response").val();
             debounce = setTimeout(() => {
                 $.ajax({
                     type: 'post',
