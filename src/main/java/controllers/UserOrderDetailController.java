@@ -77,11 +77,17 @@ public class UserOrderDetailController extends BaseController {
             }
 
             OrderEntity order = optionalOrderEntity.get();
+
+            UserReportEntity userReport = null;
+            if(optionalUserReport.isPresent()){
+                userReport = optionalUserReport.get();
+            }
+
             req.setAttribute("VAR_ORDER", order);
-            req.setAttribute("VAR_REPORT", optionalUserReport.get());
+            req.setAttribute("VAR_REPORT", userReport);
             dispatcher.forward(req, resp);
         } catch (Exception e) {
-            req.setAttribute("ERROR_MESSAGE", "Không tìm thấy đơn trung gian!");
+            req.setAttribute("ERROR_MESSAGE", "Lỗi khi tải trang!");
             dispatcher.forward(req, resp);
         }
     }
