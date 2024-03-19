@@ -10,7 +10,7 @@ $(document).ready(() => {
     let tempJson = {};
     $("#payment-check").off().click((e) => {
         e.preventDefault()
-        const hrefUrl = e?.currentTarget?.href;
+        const hrefUrl = e?.currentTarget?.href
 
         $("#modal-title").html("Bạn có chắc?")
         $("#modal-body").html("Truy vấn thông tin thanh toán trên hệ thống vnpay, chỉ truy vấn được 5 phút 1 lần / 1 mã giao dịch")
@@ -72,9 +72,11 @@ $(document).ready(() => {
                                         },
                                         error: (err) => {
                                             $('#myModal').modal('hide')
+
                                             $('#toast-title').html('Không thành công!')
                                             $('#toast-body').html(err?.responseJSON?.message)
-                                            $('#liveToast').toast('show')
+                                            const liveToast = $('#liveToast')
+                                            liveToast.toast('show')
                                         }
                                     })
                                 })

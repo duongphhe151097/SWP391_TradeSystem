@@ -55,6 +55,7 @@
                                                             <th scope="col"></th>
                                                         </tr>
                                                     </thead>
+
                                                     <tbody>
                                                         <tr>
                                                             <th>Id:</th>
@@ -115,7 +116,7 @@
 
                                                         <tr>
                                                             <th>Đơn hàng báo cáo:</th>
-                                                            <td><c:out value="${report.productTarget}"/></td>
+                                                            <td><a href="<c:url value="/product/detail?id=${report.productTarget}"/> ">Xem chi tiết đơn trung gian</a></td>
                                                         </tr>
 
                                                         <tr>

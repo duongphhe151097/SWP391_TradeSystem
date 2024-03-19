@@ -1,8 +1,10 @@
 package dataAccess;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.TypedQuery;
 import models.OrderEntity;
+import models.UserRoleEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -111,9 +113,54 @@ public class OrderRepository {
                     .getSingleResult();
 
             return Optional.of(orderEntity);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return Optional.empty();
+    }
+
+    public Optional<OrderEntity> getOrderById(UUID orderId) {
+        try {
+            entityManager.clear();
+            OrderEntity orderEntity = entityManager
+                    .createQuery("SELECT o FROM order o WHERE o.id = :orderId AND o.isDelete = false", OrderEntity.class)
+                    .setParameter("orderId", orderId)
+                    .getSingleResult();
+
+            return Optional.of(orderEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
+    }
+
+
+    public boolean add(OrderEntity entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.persist(entity);
+            transaction.commit();
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            transaction.rollback();
+        }
+
+        return false;
+    }
+
+    public void update(OrderEntity entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.merge(entity);
+            transaction.commit();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            transaction.rollback();
+        }
     }
 }

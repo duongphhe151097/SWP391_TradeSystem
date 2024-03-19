@@ -139,6 +139,22 @@ public class UserReportRepository {
         return Optional.empty();
     }
 
+    public Optional<UserReportEntity> getReportByProductId(UUID pid) {
+        entityManager.clear();
+        try {
+            UserReportEntity userReport = entityManager
+                    .createQuery("SELECT ur FROM user_rp ur WHERE ur.productTarget = :pid AND ur.isDelete = false", UserReportEntity.class)
+                    .setParameter("pid", pid)
+                    .getSingleResult();
+
+            return Optional.ofNullable(userReport);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Optional.empty();
+    }
+
     public boolean add(UserReportEntity entity) {
         EntityTransaction transaction = entityManager.getTransaction();
         try {

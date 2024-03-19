@@ -6,9 +6,19 @@ $(document).ready(() => {
         placeholder: 'Nhập nội dung vào đây',
         tabsize: 2,
         height: 200,
-        disableGrammar: false,
+        disableGrammar: true,
         disableDragAndDrop: true,
         toolbar: []
+    }
+
+    const enableConf = {
+        lang: 'vi-VN',
+        placeholder: 'Nhập nội dung vào đây',
+        tabsize: 2,
+        minHeight: 200,
+        height: 200,
+        disableGrammar: true,
+        disableDragAndDrop: true
     }
 
     const reportDescription = $("#report-description");
@@ -18,6 +28,17 @@ $(document).ready(() => {
     const adminResponse = $("#admin-response");
     adminResponse.summernote(disableConf)
     adminResponse.summernote('disable')
+
+    const sellerResponse = $("#seller-response");
+    if (sellerResponse.hasClass("editor-disabled")) {
+        sellerResponse.summernote(disableConf)
+        sellerResponse.summernote('disable')
+    } else {
+        sellerResponse.summernote(enableConf)
+    }
+
+    const sellerReponseModal = $("#modal-seller-response");
+    sellerReponseModal.summernote(enableConf)
 
     $("#abort-report").off().click((e) => {
         e.preventDefault()
@@ -120,13 +141,13 @@ $(document).ready(() => {
         const hrefUrl = e?.currentTarget?.href;
         const params = getParams(hrefUrl.split("?")[1]);
 
-        $("#modal-title").html("Bạn có chắc?")
-        $("#modal-body").html("Bạn có chắc chắn đồng ý với khiếu nại này!")
-        $('#myModal').modal('show')
+        $('#modal-seller-response').modal('show')
 
         let debounce = null
-        $("#modal-confirm").off().click(() => {
+        $("#report-acp-seller-modal-confirm").off().click(() => {
             clearTimeout(debounce)
+
+            const resp = $("#modal-seller-response").summernote('code');
             debounce = setTimeout(() => {
                 $.ajax({
                     type: 'post',
@@ -136,7 +157,8 @@ $(document).ready(() => {
                     },
                     data: {
                         id: params?.id,
-                        type: 'ACCEPTED'
+                        type: 'ACCEPTED',
+                        seller_resp: resp
                     },
                     success: (resp) => {
                         $('#myModal').modal('hide')
@@ -217,6 +239,54 @@ $(document).ready(() => {
                             const liveToast = $('#liveToast')
                             liveToast.toast('show')
                         }
+                    }
+                })
+            }, 1000)
+        })
+    })
+
+    $("#acp-seller-response").off().click((e) => {
+        e.preventDefault()
+        const hrefUrl = e?.currentTarget?.href;
+        const params = getParams(hrefUrl.split("?")[1]);
+
+        $("#modal-title").html("Bạn có chắc?")
+        $("#modal-body").html("Bạn có chắc chắn đồng ý với phản hồi của người bán!")
+        $('#myModal').modal('show')
+
+        let debounce = null
+        $("#modal-confirm").off().click(() => {
+            clearTimeout(debounce)
+            debounce = setTimeout(() => {
+                $.ajax({
+                    type: 'post',
+                    url: getLocation(hrefUrl)?.pathname,
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    data: {
+                        id: params?.id,
+                        type: 'BUYER_ACCEPT_SELLER'
+                    },
+                    success: (resp) => {
+                        $('#myModal').modal('hide')
+
+                        $('#toast-title').html('Thành công!')
+                        $('#toast-body').html(resp.message)
+                        const liveToast = $('#liveToast')
+                        liveToast.toast('show')
+
+                        liveToast.on('hide.bs.toast', () => {
+                            location.reload()
+                        })
+                    },
+                    error: (err) => {
+                        $('#myModal').modal('hide')
+
+                        $('#toast-title').html('Không thành công!')
+                        $('#toast-body').html(err?.responseJSON?.message)
+                        const liveToast = $('#liveToast')
+                        liveToast.toast('show')
                     }
                 })
             }, 1000)

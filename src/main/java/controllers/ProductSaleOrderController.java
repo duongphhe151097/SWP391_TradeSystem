@@ -151,7 +151,7 @@ public class ProductSaleOrderController extends BaseController {
                     .price(price)
                     .contact(contact)
                     .isPublic(isPublic != null && isPublic.equals("on"))
-                    .updatable(false)
+                    .updatable(true)
                     .quantity(0)
                     .status((short) 1)
                     .isSeller(true)

@@ -1,10 +1,7 @@
 package models;
 
+import jakarta.persistence.*;
 import models.common.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
@@ -19,7 +16,6 @@ import java.util.UUID;
 @Getter
 @Setter
 @Builder
-
 public class ProductEntity extends BaseEntity implements Serializable {
     @Id
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
@@ -47,9 +43,11 @@ public class ProductEntity extends BaseEntity implements Serializable {
     @Column(name = "`contact`", length = 500)
     private String contact;
 
+    @Basic
     @Column(name = "`is_public`", nullable = false)
     private boolean isPublic;
 
+    @Basic
     @Column(name = "`is_seller`", nullable = false)
     private boolean isSeller;
 

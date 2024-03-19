@@ -82,6 +82,7 @@ public class UserReportDetailController extends BaseController {
 
         String reqId = req.getParameter("id");
         String type = req.getParameter("type");
+        String sellerResp = req.getParameter("seller_resp");
         try {
             HttpSession httpSession = req.getSession(false);
             UUID userId = (UUID) httpSession.getAttribute(UserConstant.SESSION_USERID);
@@ -148,6 +149,16 @@ public class UserReportDetailController extends BaseController {
 
                 case "ACCEPTED":
                     userReportEntity.setStatus(ReportConstant.REPORT_SELLER_ACCEPT);
+                    break;
+
+                case "BUYER_ACCEPT_SELLER":
+                    if(StringValidator.isNullOrBlank(sellerResp)){
+                        returnResult(resp, 400, "Phản hồi không được để trống!");
+                        return;
+                    }
+
+                    userReportEntity.setSellerResponse(sellerResp.replace("&nbsp;", ""));
+                    userReportEntity.setStatus(ReportConstant.REPORT_BUYER_ACCEPT_SELLER_RESPONSE);
                     break;
 
                 default:
