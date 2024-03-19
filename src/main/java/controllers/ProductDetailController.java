@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import models.OrderEntity;
 import models.ProductEntity;
 import utils.annotations.Authorization;
+import utils.constants.OrderConstant;
 import utils.constants.UserConstant;
 import utils.validation.StringValidator;
 
@@ -58,14 +59,21 @@ public class ProductDetailController extends BaseController {
             }
 
             ProductEntity product = productOptional.get();
-            req.setAttribute("product", product);
             HttpSession session = req.getSession(false);
             UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
             Optional<OrderEntity> orderEntity = orderRepository
                     .getOrderByUserId(userId, productId);
+
             boolean canViewSecret = orderEntity.isPresent() || product.getUserId().equals(userId);
 
+//            boolean canReport = false;
+//            if(orderEntity.isPresent()){
+//                canReport = orderEntity.get().getStatus() == OrderConstant.ORDER_CHECKING;
+//            }
+
+            req.setAttribute("product", product);
             req.setAttribute("VAR_CANVIEWSECRET", canViewSecret);
+//            req.setAttribute("VAR_CANREPORT", canReport);
             String secretLink = req.getRequestURL().toString() + "?id=" + productId.toString();
             req.setAttribute("VAR_SECRETURL", secretLink);
 
@@ -78,35 +86,56 @@ public class ProductDetailController extends BaseController {
 
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/product/product-sale.jsp");
+
+        String productIdString = req.getParameter("id");
+        String title = req.getParameter("title");
+        String priceString = req.getParameter("price");
+        String description = req.getParameter("description");
+        String contact = req.getParameter("contact");
+        String secret = req.getParameter("secret");
+        String isPublic = req.getParameter("public");
         try {
-            String productIdString = req.getParameter("id");
-            String title = req.getParameter("title");
-            String priceString = req.getParameter("price");
-            String description = req.getParameter("description");
-            String contact = req.getParameter("contact");
-            String secret = req.getParameter("secret");
-            String isPublic = req.getParameter("public");
-            LocalDateTime updateAt = LocalDateTime.now();
+            if (StringValidator.isNullOrBlank(productIdString) || !StringValidator.isUUID(productIdString)) {
+                req.setAttribute("ERROR_MESSAGE", "Tham số không hợp lệ!");
+                dispatcher.forward(req, resp);
+                return;
+            }
+            UUID productId = (UUID) UUID.fromString(productIdString);
+
+            if(StringValidator.isNullOrBlank(priceString)){
+                req.setAttribute("ERROR_MESSAGE", "Số tiền không hợp lệ!");
+                dispatcher.forward(req, resp);
+                return;
+            }
             BigInteger price = new BigInteger(priceString);
 
-            HttpSession session = req.getSession(false);
-            UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
+            Optional<ProductEntity> productEntity = productRepository
+                    .getProductById(productId);
+            if (productEntity.isEmpty()) {
+                req.setAttribute("ERROR_MESSAGE", "Không tìm thấy đơn trung gian!");
+                dispatcher.forward(req, resp);
+                return;
+            }
+
+            ProductEntity product = productEntity.get();
+            if(!product.isUpdatable()){
+                req.setAttribute("ERROR_MESSAGE", "Không thể cập nhật đơn trung gian này!");
+                dispatcher.forward(req, resp);
+                return;
+            }
 
             // Tạo đối tượng ProductEntity để cập nhật
-            ProductEntity productEntity = new ProductEntity();
-            productEntity.setUserId(userId);
-            productEntity.setTitle(title);
-            productEntity.setDescription(description);
-            productEntity.setPrice(price);
-            productEntity.setContact(contact);
-            productEntity.setSecret(secret);
-            productEntity.setPublic(isPublic != null && isPublic.equals("on"));
+            product.setTitle(title);
+            product.setDescription(description);
+            product.setPrice(price);
+            product.setContact(contact);
+            product.setSecret(secret);
+            product.setPublic(isPublic != null && isPublic.equals("on"));
 
             // Cập nhật thông tin sản phẩm trong cơ sở dữ liệu
             UUID id = UUID.fromString(productIdString);
-            productRepository.updateProduct(id, title, price, description, contact, secret, isPublic, updateAt);
-            resp.sendRedirect(req.getContextPath() + "/market");
-
+            productRepository.update(product);
+            resp.sendRedirect(req.getContextPath() + "/market" + "?id=" + productIdString);
         } catch (Exception e) {
             e.printStackTrace();
             req.setAttribute("resultMessage", "Đã xảy ra lỗi khi cập nhật thông tin sản phẩm!");

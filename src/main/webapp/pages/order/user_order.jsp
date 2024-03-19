@@ -139,7 +139,7 @@
                                                 </c:choose>
                                             </td>
                                             <td>
-                                                <a href="<c:url value="/order/detail?id=${order.id}"/>">
+                                                <a href="<c:url value="/order/detail?id=${order.productId}"/>">
                                                     Xem chi tiết
                                                 </a>
                                             </td>

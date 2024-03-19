@@ -1,16 +1,13 @@
 package dataAccess;
 
-import dataAccess.DbFactory;
 import jakarta.persistence.*;
-import models.ExternalTransactionEntity;
 import models.ProductEntity;
 import utils.constants.ProductConstant;
 
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDateTime;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -63,6 +60,17 @@ public class ProductRepository {
         return Optional.empty();
     }
 
+    public void update(ProductEntity entity) {
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            entityManager.merge(entity);
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            transaction.rollback();
+        }
+    }
 
     public void updateProduct(UUID id, String title, BigInteger price, String description, String contact, String secret, String isPublic, LocalDateTime updateAt) {
         EntityTransaction transaction = entityManager.getTransaction();
@@ -128,7 +136,6 @@ public class ProductRepository {
                     .setParameter("userId", userId)
                     .getSingleResult();
 
-
             return isSeller != null && isSeller;
         } catch (Exception e) {
             e.printStackTrace();
@@ -148,31 +155,11 @@ public class ProductRepository {
         }
     }
 
-    public void updateUserBalance(UUID userId, BigInteger newBalance) {
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            entityManager.createQuery("UPDATE user u SET u.balance = :newBalance WHERE u.id = :userId")
-
-                    .setParameter("newBalance", newBalance)
-                    .setParameter("userId", userId)
-                    .executeUpdate();
-
-            transaction.commit();
-        } catch (RuntimeException e) {
-            if (transaction.isActive()) {
-                transaction.rollback();
-
-            }
-            e.printStackTrace();
-        }
-    }
-
-    public List<ProductEntity> getAllProducts(int start, int end) {
+    public List<ProductEntity> getAllReadyTransactionProduct(int start, int end) {
         try {
             entityManager.clear();
             TypedQuery<ProductEntity> query = entityManager.createQuery(
-                            "SELECT e FROM product e WHERE e.status = :status", ProductEntity.class)
+                            "SELECT e FROM product e WHERE e.status = :status AND e.isPublic = true", ProductEntity.class)
                     .setParameter("status", ProductConstant.PRODUCT_STATUS_READY);
 
             query.setFirstResult(start);
@@ -181,7 +168,21 @@ public class ProductRepository {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
+    }
+
+    public long countAllReadyTransactionProduct() {
+        try {
+            entityManager.clear();
+            long productCount = entityManager.createQuery(
+                            "SELECT e FROM product e WHERE e.status = :status AND e.isPublic = true", Long.class)
+                    .setParameter("status", ProductConstant.PRODUCT_STATUS_READY)
+                    .getSingleResult();
+            return productCount;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
 

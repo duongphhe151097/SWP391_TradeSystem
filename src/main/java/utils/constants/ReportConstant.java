@@ -6,6 +6,7 @@ public class ReportConstant {
 
     public static short REPORT_BUYER_CREATED = 1; //Buyer tạo report
     public static short REPORT_BUYER_ABORT = 2; //Buyer hủy report
+
     public static short REPORT_BUYER_ACCEPT_SELLER_RESPONSE = 9; //Buyer đồng ý với phản hồi của seller
 
     public static short REPORT_SELLER_ACCEPT = 3; //Seller đồng ý với report
@@ -13,6 +14,7 @@ public class ReportConstant {
 
     public static short REPORT_ADMIN_REQUEST = 5; //Yêu cầu admin check
     public static short REPORT_ADMIN_CHECKING = 6; //Admin đang thực hiện check
+
     public static short REPORT_ADMIN_RESPONSE_BUYER_RIGHT = 7; //Admin phản hồi, buyer report đúng
     public static short REPORT_ADMIN_RESPONSE_BUYER_WRONG = 8; //Admin phản hồi, buyer report sai
 }
