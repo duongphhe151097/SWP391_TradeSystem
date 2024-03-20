@@ -3,6 +3,7 @@ package controllers;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import dataAccess.InternalTransactionRepository;
+import dataAccess.OrderRepository;
 import dataAccess.UserReportRepository;
 import dataAccess.UserRepository;
 import dtos.TransactionQueueDto;
@@ -14,9 +15,11 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import models.InternalTransactionEntity;
+import models.OrderEntity;
 import models.UserEntity;
 import models.UserReportEntity;
 import utils.annotations.Authorization;
+import utils.constants.OrderConstant;
 import utils.constants.ReportConstant;
 import utils.constants.TransactionConstant;
 import utils.constants.UserConstant;
@@ -34,14 +37,20 @@ public class UserReportDetailController extends BaseController {
     private UserReportRepository userReportRepository;
     private UserRepository userRepository;
     private InternalTransactionRepository internalTransactionRepository;
+    private OrderRepository orderRepository;
     private Gson gson;
+    private Queue<TransactionQueueDto> transactionQueue;
 
     @Override
     public void init() throws ServletException {
         this.userReportRepository = new UserReportRepository();
         this.userRepository = new UserRepository();
         this.internalTransactionRepository = new InternalTransactionRepository();
+        this.orderRepository = new OrderRepository();
         this.gson = new Gson();
+        ServletContext context = getServletContext();
+        this.transactionQueue = (Queue<TransactionQueueDto>) context
+                .getAttribute("transaction_queue");
     }
 
     @Override
@@ -115,7 +124,7 @@ public class UserReportDetailController extends BaseController {
                     Optional<UserEntity> userEntity = userRepository
                             .getUserById(userId);
 
-                    if(userEntity.isEmpty()){
+                    if (userEntity.isEmpty()) {
                         returnResult(resp, 400, "Không tìm thấy người dùng!");
                         return;
                     }
@@ -124,14 +133,10 @@ public class UserReportDetailController extends BaseController {
                     long fee = 50000;
                     BigInteger bigIntFee = BigInteger.valueOf(fee);
 
-                    if(balance.compareTo(bigIntFee) < 0){
+                    if (balance.compareTo(bigIntFee) < 0) {
                         returnResult(resp, 400, "NOT_ENOUGH_MONEY");
                         return;
                     }
-
-                    ServletContext context = getServletContext();
-                    Queue<TransactionQueueDto> transactionQueue = (Queue<TransactionQueueDto>) context
-                            .getAttribute("transaction_queue");
 
                     InternalTransactionEntity internalTransaction = InternalTransactionEntity.builder()
                             .id(UUID.randomUUID())
@@ -148,17 +153,41 @@ public class UserReportDetailController extends BaseController {
                     break;
 
                 case "ACCEPTED":
-                    userReportEntity.setStatus(ReportConstant.REPORT_SELLER_ACCEPT);
-                    break;
-
-                case "BUYER_ACCEPT_SELLER":
-                    if(StringValidator.isNullOrBlank(sellerResp)){
+                    if (StringValidator.isNullOrBlank(sellerResp)) {
                         returnResult(resp, 400, "Phản hồi không được để trống!");
                         return;
                     }
 
+
                     userReportEntity.setSellerResponse(sellerResp.replace("&nbsp;", ""));
+                    userReportEntity.setStatus(ReportConstant.REPORT_SELLER_ACCEPT);
+                    break;
+
+                case "BUYER_ACCEPT_SELLER":
+                    UUID productId = userReportEntity.getProductTarget();
+                    Optional<OrderEntity> optionalOrderEntity = orderRepository
+                            .getOrderByUserId(userReportEntity.getUserId(), productId);
+                    if (optionalOrderEntity.isEmpty()) {
+                        returnResult(resp, 400, "Không tìm thấy giao dịch!");
+                        return;
+                    }
+                    OrderEntity order = optionalOrderEntity.get();
+
+                    InternalTransactionEntity refundOrder = InternalTransactionEntity.builder()
+                            .id(UUID.randomUUID())
+                            .to(userReportEntity.getUserId())
+                            .amount(order.getAmount())
+                            .description("Trả tiền đơn trung gian thành công!")
+                            .status(TransactionConstant.INTERNAL_ADD)
+                            .build();
+
+                    order.setStatus(OrderConstant.ORDER_SUCCESS);
+                    orderRepository.update(order);
+
+                    internalTransactionRepository.add(refundOrder);
                     userReportEntity.setStatus(ReportConstant.REPORT_BUYER_ACCEPT_SELLER_RESPONSE);
+
+                    transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserId(), "ADD_AM", order.getAmount()));
                     break;
 
                 default:

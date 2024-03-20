@@ -134,7 +134,7 @@
                                     </div>
 
                                     <div class="mr-2">
-                                        <a class="btn btn-success" href="<c:url value="/order/detail?id=${order.productId}"/>"
+                                        <a class="btn btn-success" href="<c:url value="/order/detail?id=${order.id}"/>"
                                            role="button" id="order-confirm">Xác nhận thành công</a>
                                     </div>
                                 </c:when>

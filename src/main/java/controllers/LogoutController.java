@@ -16,6 +16,12 @@ import java.util.UUID;
 @WebServlet(name = "LogoutController", urlPatterns = "/logout")
 @Authorization(role = "", isPublic = false)
 public class LogoutController extends HttpServlet{
+    private SessionManagerRepository sessionManagerRepository;
+
+    @Override
+    public void init() throws ServletException {
+        this.sessionManagerRepository = new SessionManagerRepository();
+    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         /// Invalidate the session (log out the user)
@@ -23,11 +29,9 @@ public class LogoutController extends HttpServlet{
         if (session != null) {
             UUID userId = (UUID) session.getAttribute(UserConstant.SESSION_USERID);
             String sessionId = session.getId();
-            // Perform any additional cleanup actions if needed
-            SessionManagerRepository sessionManagerRepository = new SessionManagerRepository();
 
-            // Delete the session data from the database using the retrieved user ID
             sessionManagerRepository.removeSession(sessionId, userId);
+            session.invalidate();
         }
 
         // Redirect to the login page or any other appropriate page after logout
