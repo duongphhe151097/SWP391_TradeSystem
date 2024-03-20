@@ -50,6 +50,7 @@
                                         <c:set value="6" var="REPORT_ADMIN_CHECKING"/>
                                         <c:set value="7" var="REPORT_ADMIN_RESPONSE_BUYER_RIGHT"/>
                                         <c:set value="8" var="REPORT_ADMIN_RESPONSE_BUYER_WRONG"/>
+                                        <c:set value="9" var="REPORT_BUYER_ACCEPT_SELLER_RESPONSE"/>
 
                                         <option value="0" <c:if test="${filter.equals(ALL)}">selected</c:if>>
                                             Tất cả
@@ -79,6 +80,9 @@
                                         </option>
                                         <option value="8" <c:if test="${filter.equals(REPORT_ADMIN_RESPONSE_BUYER_WRONG)}">selected</c:if>>
                                             Đã xử lý (Báo cáo sai)
+                                        </option>
+                                        <option value="9" <c:if test="${filter.equals(REPORT_BUYER_ACCEPT_SELLER_RESPONSE)}">selected</c:if>>
+                                            Người mua đồng ý với phản hồi của người bán
                                         </option>
                                     </select>
                                 </div>
@@ -185,6 +189,9 @@
                                                     </c:when>
                                                     <c:when test="${report.status eq 8}">
                                                         Đã xử lý (Báo cáo sai)
+                                                    </c:when>
+                                                    <c:when test="${report.status eq 9}">
+                                                        Người mua đồng ý với phản hồi của người bán
                                                     </c:when>
                                                     <c:otherwise>
                                                         Không rõ

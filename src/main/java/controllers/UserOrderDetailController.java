@@ -25,6 +25,8 @@ import utils.constants.UserConstant;
 import utils.validation.StringValidator;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Optional;
 import java.util.Queue;
 import java.util.UUID;
@@ -79,7 +81,7 @@ public class UserOrderDetailController extends BaseController {
             OrderEntity order = optionalOrderEntity.get();
 
             UserReportEntity userReport = null;
-            if(optionalUserReport.isPresent()){
+            if (optionalUserReport.isPresent()) {
                 userReport = optionalUserReport.get();
             }
 
@@ -156,16 +158,22 @@ public class UserOrderDetailController extends BaseController {
             Queue<TransactionQueueDto> transactionQueue = (Queue<TransactionQueueDto>) context
                     .getAttribute("transaction_queue");
 
+            BigInteger needToRefund = product.getPrice();
+            //Nếu người bán chịu phí
+            if (product.isSeller()) {
+                needToRefund = needToRefund.add(order.getFee());
+            }
+
             InternalTransactionEntity internalTransaction = InternalTransactionEntity.builder()
                     .id(UUID.randomUUID())
                     .to(product.getUserId())
-                    .amount(product.getPrice())
+                    .amount(needToRefund)
                     .description("Trả tiền đơn trung gian thành công!")
                     .status(TransactionConstant.INTERNAL_ADD)
                     .build();
 
             internalTransactionRepository.add(internalTransaction);
-            transactionQueue.add(new TransactionQueueDto(product.getUserId(), "ADD_AM", product.getPrice()));
+            transactionQueue.add(new TransactionQueueDto(product.getUserId(), "ADD_AM", needToRefund));
 
             resp.setStatus(200);
             jsonObject.addProperty("code", 200);

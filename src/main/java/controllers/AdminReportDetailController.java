@@ -135,6 +135,7 @@ public class AdminReportDetailController extends BaseController {
                 resp.getWriter().write(gson.toJson(jsonObject));
                 return;
             }
+            ProductEntity product = optionalProductEntity.get();
 
             switch (reqType) {
                 case "PROCESSING":
@@ -156,11 +157,17 @@ public class AdminReportDetailController extends BaseController {
                         //Người mua report sai
                         userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_RESPONSE_BUYER_WRONG);
 
+                        BigInteger needToRefund = product.getPrice();
+                        //Nếu người bán chịu phí
+                        if (product.isSeller()) {
+                            needToRefund = needToRefund.add(order.getFee());
+                        }
+
                         //Tạo giao dịch trả tiền cho người bán
                         InternalTransactionEntity cancelOrder = InternalTransactionEntity.builder()
                                 .id(UUID.randomUUID())
                                 .to(userReportEntity.getUserTarget())
-                                .amount(order.getAmount())
+                                .amount(needToRefund)
                                 .description("Trả tiền đơn trung gian thành công!")
                                 .status(TransactionConstant.INTERNAL_ADD)
                                 .build();
@@ -170,7 +177,7 @@ public class AdminReportDetailController extends BaseController {
                         orderRepository.update(order);
 
                         internalTransactionRepository.add(cancelOrder);
-                        transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserTarget(), "ADD_AM", order.getAmount()));
+                        transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserTarget(), "ADD_AM", needToRefund));
                     } else {
                         //Người mua report đúng
                         userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_RESPONSE_BUYER_RIGHT);
