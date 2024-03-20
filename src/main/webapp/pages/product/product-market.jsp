@@ -97,11 +97,14 @@
                                             <td>${product.contact}</td>
                                             <td>${product.price}</td>
                                             <td>${product.quantity}</td>
-                                            <td>${product.createAt}</td>
-                                            <td>${product.updateAt}</td>
+                                            <td>
+                                                <c:out value="${f:formatLocalDateTime(product.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                            </td>
+                                            <td>
+                                                <c:out value="${f:formatLocalDateTime(product.updatetAt, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                            </td>
                                             <td>
                                                 <a href="<c:url value='/product/detail?id=${product.id}'/>">Chi tiết</a>
-
                                             </td>
 
                                         </tr>

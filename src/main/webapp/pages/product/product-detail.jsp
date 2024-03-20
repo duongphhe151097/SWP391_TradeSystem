@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="f" uri="tradesys.functions" %>
 <html lang="vi">
     <head>
         <meta charset="UTF-8">
@@ -79,24 +80,6 @@
                                                 <tr>
                                                     <th scope="row">Trạng thái (*):</th>
                                                     <td>
-                                                            <%--                                                <c:choose>--%>
-                                                            <%--                                                    <c:when test="${product.userId.equals(sessionScope.SESSION_USERID)}">--%>
-                                                            <%--                                                        <input type="text" class="form-control w-100" id="status" name="status"--%>
-                                                            <%--                                                               value="${product.status}" readonly>--%>
-                                                            <%--                                                    </c:when>--%>
-                                                            <%--                                                    <c:otherwise>--%>
-                                                            <%--                                                        <c:choose>--%>
-                                                            <%--                                                            <c:when test="${product.status eq 1}">--%>
-                                                            <%--                                                                Có thể giao dịch--%>
-                                                            <%--                                                            </c:when>--%>
-
-                                                            <%--                                                            <c:otherwise>--%>
-                                                            <%--                                                                Dừng giao dịch--%>
-                                                            <%--                                                            </c:otherwise>--%>
-                                                            <%--                                                        </c:choose>--%>
-                                                            <%--                                                    </c:otherwise>--%>
-                                                            <%--                                                </c:choose>--%>
-
                                                         <c:choose>
                                                             <c:when test="${product.status eq 1}">
                                                                 Có thể giao dịch
@@ -119,7 +102,7 @@
                                                                        value="${product.price}">
                                                             </c:when>
                                                             <c:otherwise>
-                                                                <c:out value="${product.price}"/>
+                                                                <c:out value="${f:formatCurrency(product.price)}"/>
                                                             </c:otherwise>
                                                         </c:choose>
 
@@ -266,14 +249,14 @@
                                                 <tr>
                                                     <th scope="row">Thời gian tạo (*):</th>
                                                     <td>
-                                                        <c:out value="${product.createAt}"/>
+                                                        <c:out value="${f:formatLocalDateTime(product.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>
                                                     </td>
                                                 </tr>
 
                                                 <tr>
                                                     <th scope="row">Cập nhật lần cuối (*):</th>
                                                     <td>
-                                                        <c:out value="${product.updateAt}"/>
+                                                        <c:out value="${f:formatLocalDateTime(product.updateAt, 'dd/MM/yyyy hh:mm:ss')}"/>
                                                     </td>
                                                 </tr>
                                             </tbody>

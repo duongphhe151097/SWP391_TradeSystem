@@ -166,22 +166,27 @@ public class UserOrderController extends BaseController {
             BigInteger productPrice = product.getPrice();
             BigInteger userBalance = userEntity.get().getBalance();
 
-            if (userBalance.compareTo(productPrice) < 0) {
+            BigInteger fee;
+            if (productPrice.compareTo(BigInteger.valueOf(10000)) > 0) {
+                fee = (productPrice.multiply(BigInteger.valueOf(5)))
+                        .divide(BigInteger.valueOf(100));
+            } else {
+                fee = BigInteger.valueOf(100);
+            }
+
+            BigInteger needToPay = productPrice;
+            if(!product.isSeller()){
+                needToPay = needToPay.add(fee);
+            }
+
+            //Check user có đủ tiền ko và người trả tiền trung gian là người mua
+            if (userBalance.compareTo(needToPay) < 0) {
                 resp.setStatus(400);
                 jsonObject.addProperty("code", 400);
                 jsonObject.addProperty("message", "NOT_ENOUGH_MONEY");
                 printJson(resp, gson.toJson(jsonObject));
                 return;
             }
-
-            BigInteger fee;
-            if (productPrice.compareTo(new BigInteger("10000")) >= 0) {
-                fee = (productPrice.multiply(new BigInteger("5")))
-                                .divide(new BigInteger("100"));
-            } else {
-                fee = new BigInteger("1000");
-            }
-            BigInteger needToPay = productPrice.add(fee);
 
             ServletContext context = getServletContext();
             Queue<TransactionQueueDto> transactionQueue = (Queue<TransactionQueueDto>) context

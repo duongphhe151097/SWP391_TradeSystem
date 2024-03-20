@@ -102,7 +102,7 @@
                                             <tr>
                                                 <th scope="row">Ngày tạo:</th>
                                                 <td>
-                                                    <c:out value="${report.createAt}"/>
+                                                    <c:out value="${f:formatLocalDateTime(report.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>
                                                 </td>
                                             </tr>
                                             <tr>

@@ -158,7 +158,6 @@ public class UserReportDetailController extends BaseController {
                         return;
                     }
 
-
                     userReportEntity.setSellerResponse(sellerResp.replace("&nbsp;", ""));
                     userReportEntity.setStatus(ReportConstant.REPORT_SELLER_ACCEPT);
                     break;
@@ -175,7 +174,7 @@ public class UserReportDetailController extends BaseController {
 
                     InternalTransactionEntity refundOrder = InternalTransactionEntity.builder()
                             .id(UUID.randomUUID())
-                            .to(userReportEntity.getUserId())
+                            .to(userReportEntity.getUserTarget())
                             .amount(order.getAmount())
                             .description("Trả tiền đơn trung gian thành công!")
                             .status(TransactionConstant.INTERNAL_ADD)
@@ -187,7 +186,7 @@ public class UserReportDetailController extends BaseController {
                     internalTransactionRepository.add(refundOrder);
                     userReportEntity.setStatus(ReportConstant.REPORT_BUYER_ACCEPT_SELLER_RESPONSE);
 
-                    transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserId(), "ADD_AM", order.getAmount()));
+                    transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserTarget(), "ADD_AM", order.getAmount()));
                     break;
 
                 default:
