@@ -52,9 +52,10 @@ public class VnPayCreatePaymentController extends BaseController {
             String vnp_Version = "2.1.0";
             String vnp_Command = "pay";
             String orderType = "other";
-            long amount = Long.parseLong(req.getParameter("amount")) * 100L;
+            long rawAmount = Long.parseLong(req.getParameter("amount"));
+            long amount = rawAmount * 100L;
 
-            if (amount < TransactionConstant.MIN_AMOUNT || amount > TransactionConstant.MAX_AMOUNT) {
+            if (rawAmount < TransactionConstant.MIN_AMOUNT || rawAmount > TransactionConstant.MAX_AMOUNT) {
                 req.setAttribute("ERROR_AMOUNT", "Số tiền phải lớn hơn 10,000đ và nhỏ hơn 10,000,000đ");
                 dispatcher.forward(req, resp);
                 return;

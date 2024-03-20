@@ -40,6 +40,7 @@ $(document).ready(() => {
     const sellerReponseModal = $("#modal-seller-response");
     sellerReponseModal.summernote(enableConf)
 
+    //Hủy report
     $("#abort-report").off().click((e) => {
         e.preventDefault()
         const hrefUrl = e?.currentTarget?.href;
@@ -88,6 +89,7 @@ $(document).ready(() => {
         })
     })
 
+    //Seller từ chối report
     $("#denied-report").off().click((e) => {
         e.preventDefault()
         const hrefUrl = e?.currentTarget?.href;
@@ -136,18 +138,20 @@ $(document).ready(() => {
         })
     })
 
+    //Seller xác nhận lỗi report
     $("#accept-report").off().click((e) => {
         e.preventDefault()
         const hrefUrl = e?.currentTarget?.href;
         const params = getParams(hrefUrl.split("?")[1]);
-
+        console.log("mở đây")
         $('#report-acp-seller').modal('show')
 
         let debounce = null
         $("#report-acp-seller-modal-confirm").off().click(() => {
             clearTimeout(debounce)
 
-            const resp = $("#modal-seller-response").val();
+            const resp = $("#modal-seller-response").val()
+            console.log(resp)
             debounce = setTimeout(() => {
                 $.ajax({
                     type: 'post',
@@ -185,6 +189,7 @@ $(document).ready(() => {
         })
     })
 
+    // Buyer gọi admin
     $("#request-admin").off().click((e) => {
         e.preventDefault()
         const hrefUrl = e?.currentTarget?.href;
@@ -245,6 +250,7 @@ $(document).ready(() => {
         })
     })
 
+    // Buyer accept seller response
     $("#acp-seller-response").off().click((e) => {
         e.preventDefault()
         const hrefUrl = e?.currentTarget?.href;

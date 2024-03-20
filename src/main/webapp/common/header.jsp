@@ -148,7 +148,7 @@
                                             report
                                         </span>
                                         <span>
-                                            Báo cáo của bạn
+                                            Quản lý báo cáo
                                         </span>
                                     </span>
                                 </a>
