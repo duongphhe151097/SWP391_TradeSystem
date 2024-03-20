@@ -37,7 +37,7 @@ public class AdminCategoryController extends HttpServlet {
                 pageRange = "5";
             }
 
-            long userCount = CategoryRepository.countAllCategory();
+            long userCount = categoryRepository.countAllCategory();
             Pagination pagination
                     = new Pagination(userCount, Integer.parseInt(currentPage), Integer.parseInt(pageRange), Integer.parseInt(pageSize));
 
@@ -53,7 +53,7 @@ public class AdminCategoryController extends HttpServlet {
                     = new Pagination(0, 1, 5, 10);
             req.setAttribute("VIEW_PAGING", new ViewPaging<CategoryEntity>(new ArrayList<>(), pagination));
         }
-        req.getRequestDispatcher("/pages/admin/admin_category.jsp").forward(req, resp);
+        req.getRequestDispatcher("/pages/admin/admin_setting.jsp").forward(req, resp);
     }
 
     @Override

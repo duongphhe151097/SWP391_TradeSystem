@@ -16,11 +16,11 @@ import java.util.Optional;
 @WebServlet(name = "AdminAddCategoryController", urlPatterns = {"/admin/category/add"})
 @Authorization(role = "ADMIN", isPublic = false)
 public class AdminAddCategoryController extends HttpServlet {
-    private CategoryRepository sRepo;
+    private CategoryRepository cRepo;
 
     @Override
     public void init() throws ServletException {
-        this.sRepo = new CategoryRepository();
+        this.cRepo = new CategoryRepository();
     }
 
     @Override
@@ -30,17 +30,17 @@ public class AdminAddCategoryController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String parent_id = req.getParameter("parent_id");
+        String parentId = req.getParameter("parent_id");
         String title = req.getParameter("title");
         RequestDispatcher dispatcher = req.getRequestDispatcher("/pages/admin/admin_add_category.jsp");
         CategoryEntity categoryEntity = CategoryEntity
                 .builder()
-                .parentId(Integer.parseInt(parent_id))
+                .parentId(Integer.parseInt(parentId))
                 .title(title)
                 .build();
 
         //Kiểu optional là đối tượng trả ra có thể là null hoặc not null
-        Optional<CategoryEntity> categories = sRepo.addCategory(categoryEntity);
+        Optional<CategoryEntity> categories = cRepo.addCategory(categoryEntity);
         if (categories.isEmpty()) {
             req.setAttribute("FAILED_MESSAGE", true);
             dispatcher.forward(req, resp);

@@ -11,22 +11,22 @@
 <head>
     <jsp:include page="/common/common-css.jsp"/>
     <link rel="stylesheet" href="<c:url value="/css/admin.sidenav.css"/> ">
-    <title>Thêm danh mục</title>
+    <title>Thêm cài đặt</title>
 </head>
 <body>
 
 <div id="viewport">
     <!-- Include sidebar -->
-    <jsp:include page="../admin_sidebar.jsp"/>
+    <jsp:include page="admin_sidebar.jsp"/>
 
     <!-- Content -->
     <div id="content">
         <!-- Include navbar -->
-        <jsp:include page="../admin_navbar.jsp"/>
+        <jsp:include page="admin_navbar.jsp"/>
 
         <div class="container-fluid p-3 main-content">
             <div class="container">
-                <h4 class="text-center mt-3 mb-4">Tạo danh mục</h4>
+                <h4 class="text-center mt-3 mb-4">Tạo cài đặt</h4>
 
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
@@ -34,7 +34,7 @@
 
                             <div class="card-header d-flex align-items-center">
                                 <div>
-                                    <a href="<c:url value="/admin/category"/>">
+                                    <a href="<c:url value="/admin/setting"/>">
                                     <span class="material-symbols-outlined">
                                         arrow_back_ios
                                     </span>
@@ -48,16 +48,16 @@
                             <div class="card-body">
                                 <form action="<c:url value="/admin/category/add"/>" method="post">
                                     <div class="form-group">
-                                        <label for="parentidInput">Tên danh mục</label>
-                                        <input type="text" class="form-control" id="parentidInput"
-                                               aria-describedby="parentidHelp"
-                                               placeholder="Nhập tên danh mục" name="parent_id">
+                                        <label for="idInput">Tên cài đặt</label>
+                                        <input type="text" class="form-control" id="idInput"
+                                               aria-describedby="idHelp"
+                                               placeholder="Nhập parent id" name="parent_id">
                                     </div>
                                     <div class="form-group">
                                         <label for="titleInput">Giá trị</label>
                                         <input type="text" class="form-control" id="titleInput"
                                                aria-describedby="titleHelp"
-                                               placeholder="Nhập giá trị" name="title">
+                                               placeholder="Nhập tên danh mục" name="title">
                                     </div>
                                     <div class="text-center">
                                         <button type="submit" class="btn btn-primary">Tạo</button>

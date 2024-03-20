@@ -25,12 +25,12 @@ import java.util.UUID;
 @Authorization(role = "ADMIN", isPublic = false)
 public class AdminDeleteCategoryController extends BaseController {
 
-    private CategoryRepository categoryRepository;
+    private CategoryRepository cRepo;
     private SessionManagerRepository sessionManagerRepository;
 
     public void init() throws ServletException {
         super.init();
-        this.categoryRepository = new CategoryRepository();
+        this.cRepo = new CategoryRepository();
         this.sessionManagerRepository = new SessionManagerRepository();
     }
     @Override
@@ -50,7 +50,7 @@ public class AdminDeleteCategoryController extends BaseController {
 
             boolean categoryStatus = Boolean.parseBoolean(type);
 
-            categoryRepository.updateCategoryStatus(requestCategoryId, categoryStatus);
+            cRepo.updateCategoryStatus(requestCategoryId, categoryStatus);
 
             resp.sendRedirect(req.getContextPath() + "/admin/category");
         } catch (IllegalArgumentException e) {

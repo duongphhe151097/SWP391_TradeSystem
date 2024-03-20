@@ -11,7 +11,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <jsp:include page="../../../common/common-css.jsp"/>
+    <jsp:include page="../../common/common-css.jsp"/>
     <link rel="stylesheet" href="<c:url value="/css/admin.sidenav.css"/> ">
     <link rel="stylesheet" href="<c:url value="/css/admin.manager.css"/> ">
     <title>Danh mục</title>
@@ -19,12 +19,12 @@
 <body>
 
 <div id="viewport">
-    <jsp:include page="../admin_sidebar.jsp"/>
+    <jsp:include page="admin_sidebar.jsp"/>
     <!-- Content -->
     <div id="content">
         <c:set value="${requestScope.VIEW_PAGING.paging}" var="paging"/>
         <c:set value="${requestScope.VIEW_PAGING.items}" var="categoryData"/>
-        <jsp:include page="../admin_navbar.jsp"/>
+        <jsp:include page="admin_navbar.jsp"/>
         <div class="container-fluid p-3 main-content">
             <div>
                 <div class="col-md-12">
@@ -120,6 +120,6 @@
 </div>
 
 
-<jsp:include page="../../../common/common-js.jsp"/>
+<jsp:include page="../../common/common-js.jsp"/>
 </body>
 </html>
