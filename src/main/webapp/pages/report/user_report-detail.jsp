@@ -138,7 +138,7 @@
                                                     <th scope="row">Phản hồi của admin:</th>
                                                     <td>
                                                         <textarea id="admin-response" disabled>
-                                                            <c:out value="${report.sellerResponse}"/>
+                                                            <c:out value="${report.adminResponse}"/>
                                                         </textarea>
                                                     </td>
                                                 </tr>
@@ -152,9 +152,9 @@
                         <c:choose>
                             <c:when test="${report.userId eq sessionScope.SESSION_USERID}">
                                 <div class="card-footer d-flex">
-                                    <c:if test="${report.status == 4}">
+                                    <c:if test="${report.status == 4 || report.status == 3}">
                                         <div>
-                                            <a class="btn btn-danger"
+                                            <a class="btn btn-danger mr-2"
                                                href="<c:url value="/report/detail?id=${report.id}"/>"
                                                role="button" id="request-admin">Yêu cầu admin xử lý</a>
                                         </div>
@@ -168,7 +168,7 @@
                                     </c:if>
                                     <c:if test="${report.status == 3}">
                                         <div>
-                                            <a class="btn btn-danger"
+                                            <a class="btn btn-success"
                                                href="<c:url value="/report/detail?id=${report.id}"/>"
                                                role="button" id="acp-seller-response">Đồng ý với phản hồi của người bán</a>
                                         </div>

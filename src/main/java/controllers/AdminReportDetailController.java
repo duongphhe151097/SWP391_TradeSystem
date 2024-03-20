@@ -37,6 +37,7 @@ public class AdminReportDetailController extends BaseController {
     private OrderRepository orderRepository;
     private ProductRepository productRepository;
     private Gson gson;
+    private Queue<TransactionQueueDto> transactionQueue;
 
     @Override
     public void init() throws ServletException {
@@ -45,6 +46,9 @@ public class AdminReportDetailController extends BaseController {
         this.orderRepository = new OrderRepository();
         this.productRepository = new ProductRepository();
         this.gson = new Gson();
+        ServletContext context = getServletContext();
+        this.transactionQueue = (Queue<TransactionQueueDto>) context
+                .getAttribute("transaction_queue");
     }
 
     @Override
@@ -131,7 +135,6 @@ public class AdminReportDetailController extends BaseController {
                 resp.getWriter().write(gson.toJson(jsonObject));
                 return;
             }
-            ProductEntity product = optionalProductEntity.get();
 
             switch (reqType) {
                 case "PROCESSING":
@@ -149,12 +152,27 @@ public class AdminReportDetailController extends BaseController {
 
                     userReportEntity.setAdminResponse(reqAdminResponse.replace("&nbsp;", ""));
 
-                    //Report sai
                     if (!StringValidator.isNullOrBlank(reqIsRightReport) && reqIsRightReport.equals("checked")) {
+                        //Người mua report sai
                         userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_RESPONSE_BUYER_WRONG);
 
+                        //Tạo giao dịch trả tiền cho người bán
+                        InternalTransactionEntity cancelOrder = InternalTransactionEntity.builder()
+                                .id(UUID.randomUUID())
+                                .to(userReportEntity.getUserTarget())
+                                .amount(order.getAmount())
+                                .description("Trả tiền đơn trung gian thành công!")
+                                .status(TransactionConstant.INTERNAL_ADD)
+                                .build();
+
+                        //Đưa order về trạng thái thành công
+                        order.setStatus(OrderConstant.ORDER_SUCCESS);
+                        orderRepository.update(order);
+
+                        internalTransactionRepository.add(cancelOrder);
+                        transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserTarget(), "ADD_AM", order.getAmount()));
                     } else {
-                        //Report đúng
+                        //Người mua report đúng
                         userReportEntity.setStatus(ReportConstant.REPORT_ADMIN_RESPONSE_BUYER_RIGHT);
 
                         //Trả tiền cọc khiếu nại
@@ -183,10 +201,6 @@ public class AdminReportDetailController extends BaseController {
                         orderRepository.update(order);
 
                         //Đưa vào queue để cộng tiền
-                        ServletContext context = getServletContext();
-                        Queue<TransactionQueueDto> transactionQueue = (Queue<TransactionQueueDto>) context
-                                .getAttribute("transaction_queue");
-
                         transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserId(), "ADD_AM", refundReportFeeAmount));
                         transactionQueue.add(new TransactionQueueDto(userReportEntity.getUserId(), "ADD_AM", refundOrderAmount));
                     }
