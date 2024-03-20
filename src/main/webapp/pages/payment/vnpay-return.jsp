@@ -7,6 +7,7 @@
 --%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="f" uri="tradesys.functions" %>
 <html>
     <head>
         <jsp:include page="../../common/common-css.jsp"/>
@@ -42,7 +43,7 @@
                                     </div>
 
                                     <div class="d-flex justify-content-center mt-3">
-                                        <h5>Số tiền: ${requestScope.VAR_Amount}đ</h5>
+                                        <h5>Số tiền: <c:out value="${f:formatCurrency(requestScope.VAR_Amount)}"/></h5>
                                     </div>
                                     <div class="d-flex justify-content-center">
                                         <h4>${requestScope.MESSAGE_NOTI}</h4>
