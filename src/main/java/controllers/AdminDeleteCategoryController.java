@@ -1,25 +1,15 @@
 package controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import dataAccess.CategoryRepository;
 import dataAccess.SessionManagerRepository;
-import dataAccess.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import models.SessionManagerEntity;
 import utils.annotations.Authorization;
-import utils.constants.UserConstant;
 import utils.validation.StringValidator;
 
 import java.io.IOException;
-import java.util.Optional;
-import java.util.UUID;
-
 
 @WebServlet(name = "AdminDeleteCategoryController", urlPatterns = "/admin/category/delete")
 @Authorization(role = "ADMIN", isPublic = false)
