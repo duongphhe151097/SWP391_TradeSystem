@@ -41,8 +41,8 @@
                     <thead class="thead-dark">
                     <tr>
                         <th>ID</th>
-                        <th>Tên</th>
-                        <th>Giá trị</th>
+                        <th>Parent Id</th>
+                        <th>Tên danh mục</th>
                         <th>Người tạo</th>
                         <th>Ngày tạo</th>
                         <th>Ngày Sửa</th>

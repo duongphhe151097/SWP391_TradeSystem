@@ -11,7 +11,7 @@
 <head>
     <jsp:include page="/common/common-css.jsp"/>
     <link rel="stylesheet" href="<c:url value="/css/admin.sidenav.css"/> ">
-    <title>Thêm cài đặt</title>
+    <title>Thêm danh mục</title>
 </head>
 <body>
 
@@ -26,7 +26,7 @@
 
         <div class="container-fluid p-3 main-content">
             <div class="container">
-                <h4 class="text-center mt-3 mb-4">Tạo cài đặt</h4>
+                <h4 class="text-center mt-3 mb-4">Tạo danh mục</h4>
 
                 <div class="row justify-content-center">
                     <div class="col-lg-6">
@@ -34,7 +34,7 @@
 
                             <div class="card-header d-flex align-items-center">
                                 <div>
-                                    <a href="<c:url value="/admin/setting"/>">
+                                    <a href="<c:url value="/admin/category"/>">
                                     <span class="material-symbols-outlined">
                                         arrow_back_ios
                                     </span>
@@ -48,13 +48,13 @@
                             <div class="card-body">
                                 <form action="<c:url value="/admin/category/add"/>" method="post">
                                     <div class="form-group">
-                                        <label for="idInput">Tên cài đặt</label>
+                                        <label for="idInput">Parent id của danh mục</label>
                                         <input type="text" class="form-control" id="idInput"
                                                aria-describedby="idHelp"
                                                placeholder="Nhập parent id" name="parent_id">
                                     </div>
                                     <div class="form-group">
-                                        <label for="titleInput">Giá trị</label>
+                                        <label for="titleInput">Tên danh mục</label>
                                         <input type="text" class="form-control" id="titleInput"
                                                aria-describedby="titleHelp"
                                                placeholder="Nhập tên danh mục" name="title">
