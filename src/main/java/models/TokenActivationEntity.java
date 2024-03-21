@@ -15,7 +15,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity(name = "tokenActive")
-@Table(name = "`token_activation`")
+@Table(name = "`token_manager`")
 @IdClass(TokenActivationKey.class)
 @Builder
 public class TokenActivationEntity extends BaseEntity {
