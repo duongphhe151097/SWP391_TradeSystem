@@ -60,7 +60,7 @@
                         <div class="link mt-3">
                             <div class="form-row">
                                 <div class="col d-flex justify-content-end">
-                                    <a href="<c:url value="/"/>">Đăng xuất</a>
+                                    <a href="<c:url value="/login"/>">Đăng nhập</a>
                                 </div>
                                 <div class="col d-flex justify-content-start ml-5">
                                     <a href="<c:url value="/home"/>">Trang chủ</a>

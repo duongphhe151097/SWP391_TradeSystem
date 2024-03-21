@@ -142,6 +142,17 @@
                                     </span>
                                 </a>
 
+                                <a href="<c:url value="/sale" />" class="dropdown-item">
+                                    <span class="d-flex align-items-center">
+                                        <span class="material-symbols-outlined">
+                                            sell
+                                        </span>
+                                        <span>
+                                            Đơn bán của bạn
+                                        </span>
+                                    </span>
+                                </a>
+
                                 <a href="<c:url value="/report"/>" class="dropdown-item">
                                     <span class="d-flex align-items-center">
                                         <span class="material-symbols-outlined">
