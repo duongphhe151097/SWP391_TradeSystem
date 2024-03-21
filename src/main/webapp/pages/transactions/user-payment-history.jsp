@@ -147,8 +147,12 @@
                                                     <c:otherwise>Không Thành công</c:otherwise>
                                                 </c:choose>
                                             </td>
-                                            <td>${transaction.createAt}</td>
-                                            <td>${transaction.createBy}</td>
+                                            <td>
+                                                <c:out value="${f:formatLocalDateTime(transaction.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                            </td>
+                                            <td>
+                                                <c:out value="${f:formatLocalDateTime(transaction.createBy, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                            </td>
 
                                         </tr>
                                     </c:forEach>
