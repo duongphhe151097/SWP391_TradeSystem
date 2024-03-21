@@ -74,8 +74,8 @@
                     <thead class="thead-dark">
                         <tr>
                             <th>Mã sản phẩm</th>
-                            <th>Trạng thái</th>
                             <th>Chủ đề trung gian</th>
+                            <th>Trạng thái</th>
                             <th>Phương thức liên hệ</th>
                             <th>Giá tiền</th>
                             <th>Tổng phí</th>
@@ -88,6 +88,7 @@
                         <c:forEach items="${product}" var="product">
                             <tr>
                                 <td>${product.id}</td>
+                                <td>${product.title}</td>
                                 <td>
                                     <c:choose>
                                         <c:when test="${product.status eq 0}">Ngừng Giao Dịch.</c:when>
@@ -95,7 +96,6 @@
                                         <c:otherwise>Được tạo</c:otherwise>
                                     </c:choose>
                                 </td>
-                                <td>${product.title}</td>
                                 <td>${product.contact}</td>
                                 <td>
                                     <c:out value="${f:formatCurrency(product.price)}"/>
@@ -105,7 +105,7 @@
                                     <c:out value="${f:formatLocalDateTime(product.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>
                                 </td>
                                 <td>
-                                    <c:out value="${f:formatLocalDateTime(product.updatetAt, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                    <c:out value="${f:formatLocalDateTime(product.updateAt, 'dd/MM/yyyy hh:mm:ss')}"/>
                                 </td>
                                 <td>
                                     <a href="<c:url value='/product/detail?id=${product.id}'/>">Chi tiết</a>
