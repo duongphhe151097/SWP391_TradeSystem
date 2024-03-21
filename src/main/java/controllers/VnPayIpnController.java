@@ -79,7 +79,7 @@ public class VnPayIpnController extends BaseController {
             resp.getWriter().write(gson.toJson(jsonObject));
             return;
         }
-        ;
+
         UUID transactionId = StringConvertor.convertToUUID(vnpTxnRef);
 
         Optional<ExternalTransactionEntity> optionalExternalTransactionEntity = transactionRepository
@@ -127,6 +127,7 @@ public class VnPayIpnController extends BaseController {
         if (optionalVnPayTransactionEntity.isEmpty()) {
             jsonObject.addProperty("RspCode", "00");
             jsonObject.addProperty("Message", "Confirm Success");
+            resp.getWriter().write(gson.toJson(jsonObject));
             return;
         }
 

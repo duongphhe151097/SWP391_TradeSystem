@@ -7,6 +7,7 @@ import models.UserEntity;
 import services.CaptchaService;
 import services.SendMailService;
 import utils.annotations.Authorization;
+import utils.constants.ActivationType;
 import utils.generators.StringGenerator;
 import utils.validation.StringValidator;
 import jakarta.servlet.RequestDispatcher;
@@ -24,9 +25,13 @@ import java.util.UUID;
 @Authorization(role = "", isPublic = true)
 public class ForgotController extends BaseController {
     private CaptchaService captchaService;
+    private UserRepository userRepository;
+    private TokenActivationRepository tokenRepository;
 
     public void init() throws ServletException {
         this.captchaService = new CaptchaService();
+        this.userRepository = new UserRepository();
+        this.tokenRepository = new TokenActivationRepository();
     }
 
     @Override
@@ -59,19 +64,19 @@ public class ForgotController extends BaseController {
             if (!isValidHiddenCaptcha) {
                 req.setAttribute("CAPTCHA_ERROR", "Captcha không hợp lệ");
             }
+
             boolean isAllValid = StringValidator.isTrue(isValidEmail, isValidCaptcha, isValidHiddenCaptcha);
             if (!isAllValid) {
                 dispatcher.forward(req, resp);
                 return;
             }
+
             if (!captchaService.isValidCaptcha(captcha, hiddenCaptchaId)) {
                 req.setAttribute("VAR_EMAIL", "email");
                 req.setAttribute("CAPTCHA_ERROR", "Captcha bạn nhập không đúng!");
                 dispatcher.forward(req, resp);
                 return;
             }
-
-            UserRepository userRepository = new UserRepository();
 
             Optional<UserEntity> userOptional = userRepository.getUserByEmail(email);
 
@@ -82,12 +87,11 @@ public class ForgotController extends BaseController {
                 String resetToken = StringGenerator.generateRandomString(50);
 
                 // Lưu reset token vào DB
-                TokenActivationRepository tokenRepository = new TokenActivationRepository();
                 TokenActivationEntity tokenEntity = TokenActivationEntity.builder()
                         .id(UUID.randomUUID())
                         .token(resetToken)
                         .userId(user.getId())
-                        .type((short) 2)
+                        .type(ActivationType.RESET_PASSWORD)
                         .isUsed(false)
                         .createAt(LocalDateTime.now())
                         .expriedAt(LocalDateTime.now().plusDays(1))
