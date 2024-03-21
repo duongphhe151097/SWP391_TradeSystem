@@ -23,7 +23,7 @@ public class ProductRepository {
     public long countAllByUser(UUID userId) {
         try {
             entityManager.clear();
-            return entityManager.createQuery("SELECT COUNT(e) FROM product e WHERE e.userId= :userId", Long.class)
+            return entityManager.createQuery("SELECT COUNT(*) FROM product e WHERE e.userId= :userId", Long.class)
                     .setParameter("userId", userId)
                     .getSingleResult();
         } catch (Exception e) {
@@ -71,34 +71,6 @@ public class ProductRepository {
             transaction.rollback();
         }
     }
-
-    public void updateProduct(UUID id, String title, BigInteger price, String description, String contact, String secret, String isPublic, LocalDateTime updateAt) {
-        EntityTransaction transaction = entityManager.getTransaction();
-
-        try {
-            transaction.begin();
-
-            entityManager.createQuery("UPDATE product p " +
-                            "SET p.title = :title, p.price = :price, p.description = :description, p.contact = :contact, p.secret = :secret, p.isPublic = :isPublic, p.updateAt = :updateAt " +
-                            "WHERE p.id = :id")
-
-                    .setParameter("title", title)
-                    .setParameter("price", price)
-                    .setParameter("description", description)
-                    .setParameter("contact", contact)
-                    .setParameter("secret", secret)
-                    .setParameter("isPublic", Boolean.parseBoolean(isPublic))
-                    .setParameter("updateAt", updateAt)
-
-                    .setParameter("id", id)
-                    .executeUpdate();
-            transaction.commit();
-        } catch (Exception e) {
-            transaction.rollback();
-            e.printStackTrace();
-        }
-    }
-
 
     public int getCategoryId() {
         entityManager.clear();
@@ -175,7 +147,7 @@ public class ProductRepository {
         try {
             entityManager.clear();
             long productCount = entityManager.createQuery(
-                            "SELECT e FROM product e WHERE e.status = :status AND e.isPublic = true", Long.class)
+                            "SELECT COUNT(*) FROM product e WHERE e.status = :status AND e.isPublic = true", Long.class)
                     .setParameter("status", ProductConstant.PRODUCT_STATUS_READY)
                     .getSingleResult();
             return productCount;
