@@ -111,9 +111,20 @@ public class UserReportDetailController extends BaseController {
             }
 
             UserReportEntity userReportEntity = optionalUserReport.get();
+            UUID productId = userReportEntity.getProductTarget();
+            Optional<OrderEntity> optionalOrderEntity = orderRepository
+                    .getOrderByUserId(userReportEntity.getUserId(), productId);
+            if (optionalOrderEntity.isEmpty()) {
+                returnResult(resp, 400, "Không tìm thấy giao dịch!");
+                return;
+            }
+
+            OrderEntity order = optionalOrderEntity.get();
             switch (type) {
                 case "ABORTED":
                     userReportEntity.setStatus(ReportConstant.REPORT_BUYER_ABORT);
+                    order.setStatus(OrderConstant.ORDER_CHECKING);
+                    orderRepository.update(order);
                     break;
 
                 case "DENIED":
@@ -163,15 +174,6 @@ public class UserReportDetailController extends BaseController {
                     break;
 
                 case "BUYER_ACCEPT_SELLER":
-                    UUID productId = userReportEntity.getProductTarget();
-                    Optional<OrderEntity> optionalOrderEntity = orderRepository
-                            .getOrderByUserId(userReportEntity.getUserId(), productId);
-                    if (optionalOrderEntity.isEmpty()) {
-                        returnResult(resp, 400, "Không tìm thấy giao dịch!");
-                        return;
-                    }
-                    OrderEntity order = optionalOrderEntity.get();
-
                     InternalTransactionEntity refundOrder = InternalTransactionEntity.builder()
                             .id(UUID.randomUUID())
                             .to(userReportEntity.getUserTarget())
