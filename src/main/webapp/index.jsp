@@ -16,7 +16,7 @@
                     </div>
                 </div>
                 <div class="col-md-12 d-flex flex-column justify-content-center align-items-center">
-                    <h3>TDS</h3>
+                    <h3>Trade System</h3>
                     <h5>Nơi trao đổi trung gian uy tín</h5>
                 </div>
                 <div class="col-md-12 mt-2 d-flex justify-content-center align-items-center">
