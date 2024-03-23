@@ -81,10 +81,7 @@
                                 </div>
                             </div>
                             <c:if test="${requestScope.ERROR_VALIDATE_ID}">
-
                                 <p style="color:red">Mã giao dịch không hợp lệ</p>
-
-
                             </c:if>
                             <div class="form-group row">
                                 <div class="col-sm-12">
@@ -110,13 +107,11 @@
                             <th>Thời gian tạo</th>
                             <th>Người tạo</th>
                             <th>Hành động</th>
-
                         </tr>
                     </thead>
                     <c:choose>
                         <c:when test="${paging.totalItem <= 0}">
                             <tbody>
-
                                 <tr>
                                     <td colspan="8">
                                         <div class="d-flex justify-content-center">
@@ -128,7 +123,6 @@
                         </c:when>
                         <c:otherwise>
                             <tbody>
-
                                 <c:forEach items="${transaction}" var="transaction">
                                     <tr>
                                         <td>${transaction.id}</td>
@@ -147,10 +141,13 @@
                                                 <c:otherwise>Không Thành công</c:otherwise>
                                             </c:choose>
                                         </td>
-                                        <td>${transaction.createAt}</td>
-                                        <td>${transaction.createBy}</td>
+                                        <td>
+                                            <c:out value="${f:formatLocalDateTime(transaction.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                        </td>
+                                        <td>
+                                            <c:out value="${f:formatLocalDateTime(transaction.createBy, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                        </td>
                                         <td><a href="<c:url value="/admin/payment/history/detail?id=${transaction.id}&type=${transaction.type}"/>">Chi tiết</a></td>
-
                                     </tr>
                                 </c:forEach>
 
@@ -193,8 +190,6 @@
                     </nav>
                 </div>
             </c:if>
-
-
         </div>
 
 

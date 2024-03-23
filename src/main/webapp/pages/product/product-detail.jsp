@@ -56,7 +56,8 @@
                                         <c:otherwise>
                                             <tbody>
                                                 <tr>
-                                                    <input type="hidden" value="<c:out value="${product.id}"/>" name="id"/>
+                                                    <input type="hidden" value="<c:out value="${product.id}"/>"
+                                                           name="id"/>
                                                     <th scope="row">Mã trung gian (*):</th>
                                                     <td><c:out value="${product.id}"/></td>
                                                 </tr>
@@ -118,7 +119,8 @@
                                                               name="description">${product.description}</textarea>
 
                                                                 <small>
-                                                                    Càng chi tiết về sản phẩm càng tốt vì đây sẽ là cơ sở pháp
+                                                                    Càng chi tiết về sản phẩm càng tốt vì đây sẽ là cơ
+                                                                    sở pháp
                                                                     lý giải quyết khiếu
                                                                     nại nếu có sau này
                                                                 </small>
@@ -130,7 +132,8 @@
                                                             value="${product.description}"/></textarea>
 
                                                                 <small>
-                                                                    Càng chi tiết về sản phẩm càng tốt vì đây sẽ là cơ sở pháp
+                                                                    Càng chi tiết về sản phẩm càng tốt vì đây sẽ là cơ
+                                                                    sở pháp
                                                                     lý giải quyết khiếu
                                                                     nại nếu có sau này
                                                                 </small>
@@ -153,7 +156,8 @@
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${product.userId.equals(sessionScope.SESSION_USERID) && product.isUpdatable() == true}">
-                                                                <input type="text" class="form-control w-100" id="contact"
+                                                                <input type="text" class="form-control w-100"
+                                                                       id="contact"
                                                                        name="contact"
                                                                        value="${product.contact}">
                                                             </c:when>
@@ -170,7 +174,8 @@
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${product.userId.equals(sessionScope.SESSION_USERID) && product.isUpdatable() == true}">
-                                                                <input type="checkbox" id="public" name="isSeller" checked>
+                                                                <input type="checkbox" id="public" name="isSeller"
+                                                                       checked>
                                                                 Người bán chịu phí (*)
                                                             </c:when>
 
@@ -195,17 +200,29 @@
                                                     <td>
                                                         <c:choose>
                                                             <c:when test="${product.userId.equals(sessionScope.SESSION_USERID) && product.isUpdatable() == true}">
-                                                                <input type="checkbox" id="public" name="public" checked>
+                                                                <c:if test="${product.isPublic() == true}">
+                                                                    <input type="checkbox" id="public" name="public"
+                                                                           checked
+                                                                    >
+                                                                </c:if>
+
+                                                                <c:if test="${product.isPublic() == false}">
+                                                                    <input type="checkbox" id="public" name="public"
+                                                                           checked
+                                                                    >
+                                                                </c:if>
                                                                 Hiện công khai (*)
                                                             </c:when>
                                                             <c:otherwise>
                                                                 <c:if test="${product.isPublic() == true}">
-                                                                    <input type="checkbox" id="public" name="public" checked
+                                                                    <input type="checkbox" id="public" name="public"
+                                                                           checked
                                                                            disabled>
                                                                 </c:if>
 
                                                                 <c:if test="${product.isPublic() == false}">
-                                                                    <input type="checkbox" id="public" name="public" checked
+                                                                    <input type="checkbox" id="public" name="public"
+                                                                           checked
                                                                            disabled>
                                                                 </c:if>
                                                                 Hiện công khai (*)
@@ -222,7 +239,8 @@
                                                             <textarea id="secret" class="form-control w-100"
                                                                       name="secret"
                                                                       class="secret">${product.secret}</textarea>
-                                                                    <small>Các chi tiết nội dung ẩn mà bạn muốn bổ sung</small>
+                                                                    <small>Các chi tiết nội dung ẩn mà bạn muốn bổ
+                                                                        sung</small>
                                                                 </c:when>
                                                                 <c:otherwise>
                                                             <textarea id="secret"
@@ -230,7 +248,8 @@
                                                                       name="secret"
                                                                       class="secret"
                                                                       disabled>${product.secret}</textarea>
-                                                                    <small>Các chi tiết nội dung ẩn mà bạn muốn bổ sung</small>
+                                                                    <small>Các chi tiết nội dung ẩn mà bạn muốn bổ
+                                                                        sung</small>
                                                                 </c:otherwise>
                                                             </c:choose>
                                                         </td>
@@ -274,7 +293,8 @@
 
                                         <c:if test="${not product.userId.equals(sessionScope.SESSION_USERID) && not requestScope.VAR_CANVIEWSECRET}">
                                             <div>
-                                                <a class="btn btn-success" href="<c:url value="/order?pid=${product.id}"/>"
+                                                <a class="btn btn-success"
+                                                   href="<c:url value="/order?pid=${product.id}"/>"
                                                    role="button" id="product-buy">Mua</a>
                                             </div>
                                         </c:if>
@@ -285,12 +305,12 @@
                                             </div>
                                         </c:if>
 
-<%--                                        <c:if test="${requestScope.VAR_CANREPORT == true}">--%>
-<%--                                            <div>--%>
-<%--                                                <a class="btn btn-danger" href="<c:url value="/report?pid=${product.id}"/>"--%>
-<%--                                                   role="button" id="product-report">Khiếu nại</a>--%>
-<%--                                            </div>--%>
-<%--                                        </c:if>--%>
+                                        <%--                                        <c:if test="${requestScope.VAR_CANREPORT == true}">--%>
+                                        <%--                                            <div>--%>
+                                        <%--                                                <a class="btn btn-danger" href="<c:url value="/report?pid=${product.id}"/>"--%>
+                                        <%--                                                   role="button" id="product-report">Khiếu nại</a>--%>
+                                        <%--                                            </div>--%>
+                                        <%--                                        </c:if>--%>
                                     </c:when>
                                 </c:choose>
 

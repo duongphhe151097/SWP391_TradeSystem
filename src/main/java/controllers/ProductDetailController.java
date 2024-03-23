@@ -2,6 +2,7 @@ package controllers;
 
 import dataAccess.OrderRepository;
 import dataAccess.ProductRepository;
+import dataAccess.RoleRepository;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -11,6 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import models.OrderEntity;
 import models.ProductEntity;
+import models.RoleEntity;
 import utils.annotations.Authorization;
 import utils.constants.OrderConstant;
 import utils.constants.UserConstant;
@@ -23,6 +25,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 
 @WebServlet(name = "ProductDetailController", urlPatterns = "/product/detail")
@@ -31,11 +34,13 @@ public class ProductDetailController extends BaseController {
 
     private ProductRepository productRepository;
     private OrderRepository orderRepository;
+    private RoleRepository roleRepository;
 
     @Override
     public void init() throws ServletException {
         this.productRepository = new ProductRepository();
         this.orderRepository = new OrderRepository();
+        this.roleRepository = new RoleRepository();
     }
 
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -64,7 +69,11 @@ public class ProductDetailController extends BaseController {
             Optional<OrderEntity> orderEntity = orderRepository
                     .getOrderByUserId(userId, productId);
 
-            boolean canViewSecret = orderEntity.isPresent() || product.getUserId().equals(userId);
+            Optional<Set<RoleEntity>> userRole = roleRepository
+                    .getRoleByUserId(userId);
+
+            boolean isAdminUser = userRole.get().stream().anyMatch(x -> x.getRoleName().equals("ADMIN"));
+            boolean canViewSecret = orderEntity.isPresent() || product.getUserId().equals(userId) || isAdminUser;
 
 //            boolean canReport = false;
 //            if(orderEntity.isPresent()){
