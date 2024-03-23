@@ -34,7 +34,7 @@ public class ProductEntity extends BaseEntity implements Serializable {
     @Column(name = "`description`", nullable = false)
     private String description;
 
-    @Column(name = "`secret`", nullable = false, length = 500)
+    @Column(name = "`secret`", nullable = false)
     private String secret;
 
     @Column(name = "`price`", nullable = false)
