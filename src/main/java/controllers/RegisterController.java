@@ -189,7 +189,7 @@ public class RegisterController extends BaseController {
             //Send mail
             String activeToken = StringGenerator.generateRandomString(50);
             String activationLink = getBaseURL(req) + "/activate?t=" + activeToken;
-            SendMailService.sendMail(email, "TradeSystem", "Active link: " + getBaseURL(req) + "/active?t=" + activeToken);
+            SendMailService.sendMail(email, "[Trade System] - Kích hoạt tài khoản", "Link kích hoạt: " + getBaseURL(req) + "/active?t=" + activeToken);
 
             //Save active token
             TokenActivationRepository tokenActivationRepository = new TokenActivationRepository();

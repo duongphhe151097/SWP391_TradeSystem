@@ -16,6 +16,7 @@ public class SendMailService {
             props.put("mail.smtp.port", "587");
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true"); //TLS
+            props.put("mail.mime.charset","text/plain; charset=UTF-8");
 
             Session session = Session.getInstance(props, new Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
@@ -38,6 +39,4 @@ public class SendMailService {
         }
         return false;
     }
-
-
 }
