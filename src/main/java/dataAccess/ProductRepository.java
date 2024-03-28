@@ -117,6 +117,7 @@ public class ProductRepository {
 
     public Optional<ProductEntity> getProductById(UUID productId) {
         try {
+            entityManager.clear();
             TypedQuery<ProductEntity> query = entityManager.createQuery(
                             "SELECT p FROM product p WHERE p.id = :productId", ProductEntity.class)
                     .setParameter("productId", productId);
