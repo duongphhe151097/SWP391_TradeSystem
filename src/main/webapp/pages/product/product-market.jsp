@@ -76,7 +76,7 @@
                                         <th>Trạng thái</th>
                                         <th>Phương thức liên hệ</th>
                                         <th>Giá tiền</th>
-                                        <th>Tổng phí</th>
+<%--                                        <th>Tổng phí</th>--%>
                                         <th>Thời gian tạo</th>
                                         <th>Cập nhật lần cuối</th>
                                         <th>Thao tác</th>
@@ -98,7 +98,7 @@
                                             <td>
                                                 <c:out value="${f:formatCurrency(product.price)}"/>
                                             </td>
-                                            <td>${product.quantity}</td>
+<%--                                            <td>${product.quantity}</td>--%>
                                             <td>
                                                 <c:out value="${f:formatLocalDateTime(product.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>
                                             </td>
