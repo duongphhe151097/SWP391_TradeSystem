@@ -70,8 +70,12 @@
                                             <td>${setting.keyName}</td>
                                             <td>${setting.value}</td>
                                             <td>${setting.createBy}</td>
-                                            <td>${setting.createAt}</td>
-                                            <td>${setting.updateAt}</td>
+                                            <td>
+                                                <c:out value="${f:formatLocalDateTime(setting.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                            </td>
+                                            <td>
+                                                <c:out value="${f:formatLocalDateTime(setting.updateAt, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                            </td>
                                             <td>
                                                 <a href="<c:url value="/admin/setting/delete?id=${setting.id}&type=true"/> " class="delete-click">
                                                                         <span class="d-flex align-items-center">

@@ -63,6 +63,7 @@ $(document).ready(() => {
                     },
                     data: data,
                     success: (resp) => {
+                        console.log(resp)
                         $('#addProductModal').modal('hide')
 
                         $('#toast-title').html('Thành công!')
@@ -77,7 +78,7 @@ $(document).ready(() => {
                     },
                     error: (err) => {
                         $('#addProductModal').modal('hide')
-
+                        console.log(err)
                         if (err?.responseJSON?.message === "NOT_ENOUGH_MONEY") {
                             const url = urlBuilder("/payment/vnpay/create");
 

@@ -107,6 +107,9 @@
                                                                     <c:when test="${report.status eq 8}">
                                                                         Đã xử lý (Báo cáo sai)
                                                                     </c:when>
+                                                                    <c:when test="${report.status eq 9}">
+                                                                        Người mua đồng ý với phản hồi của người bán
+                                                                    </c:when>
                                                                     <c:otherwise>
                                                                         Không rõ
                                                                     </c:otherwise>

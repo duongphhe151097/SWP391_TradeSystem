@@ -151,7 +151,7 @@
                                                 <c:out value="${f:formatLocalDateTime(transaction.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>
                                             </td>
                                             <td>
-                                                <c:out value="${f:formatLocalDateTime(transaction.createBy, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                                <c:out value="${transaction.createBy}"/>
                                             </td>
 
                                         </tr>

@@ -95,7 +95,9 @@
                                                 </c:choose>
                                             </td>
                                             <td>${product.contact}</td>
-                                            <td>${product.price}</td>
+                                            <td>
+                                                <c:out value="${f:formatCurrency(product.price)}"/>
+                                            </td>
                                             <td>${product.quantity}</td>
                                             <td>
                                                 <c:out value="${f:formatLocalDateTime(product.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>

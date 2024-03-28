@@ -145,7 +145,7 @@
                                             <c:out value="${f:formatLocalDateTime(transaction.createAt, 'dd/MM/yyyy hh:mm:ss')}"/>
                                         </td>
                                         <td>
-                                            <c:out value="${f:formatLocalDateTime(transaction.createBy, 'dd/MM/yyyy hh:mm:ss')}"/>
+                                            <c:out value="${transaction.createBy}"/>
                                         </td>
                                         <td><a href="<c:url value="/admin/payment/history/detail?id=${transaction.id}&type=${transaction.type}"/>">Chi tiết</a></td>
                                     </tr>

@@ -82,13 +82,13 @@
                                                     <th scope="row">Trạng thái (*):</th>
                                                     <td>
                                                         <c:choose>
-                                                            <c:when test="${product.status eq 1}">
+                                                            <c:when test="${product.status == 1}">
                                                                 Có thể giao dịch
                                                             </c:when>
 
-                                                            <c:otherwise>
+                                                            <c:when test="${product.status == 0}">
                                                                 Dừng giao dịch
-                                                            </c:otherwise>
+                                                            </c:when>
                                                         </c:choose>
                                                     </td>
                                                 </tr>
