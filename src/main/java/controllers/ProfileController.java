@@ -47,15 +47,15 @@ public class ProfileController extends BaseController {
             if (userOptional.isPresent()) {
                 UserEntity user = userOptional.get();
 
-                String username = req.getParameter("username");
+//                String username = req.getParameter("username");
                 String fullname = req.getParameter("fullname");
                 String phone_number = req.getParameter("phone_number");
 
-                user.setUsername(username);
+//                user.setUsername(username);
                 user.setFullName(fullname);
                 user.setPhoneNumber(phone_number);
 
-                userRepository.updateUserProfile(userId, username, fullname, phone_number);
+                userRepository.updateUserProfile(userId, user.getUsername(), fullname, phone_number);
                 resp.sendRedirect("profile");
             }
         } catch (Exception e) {
