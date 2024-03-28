@@ -228,7 +228,7 @@ public class UserOrderController extends BaseController {
 
             resp.setStatus(200);
             jsonObject.addProperty("code", 200);
-            jsonObject.addProperty("message", req.getContextPath()+"/order");
+            jsonObject.addProperty("message", req.getContextPath()+"/order/detail?id="+productId);
             printJson(resp, gson.toJson(jsonObject));
         } catch (Exception e) {
             resp.setStatus(500);

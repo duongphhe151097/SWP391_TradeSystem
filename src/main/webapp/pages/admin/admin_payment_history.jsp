@@ -133,7 +133,7 @@
                                                 <c:otherwise>Rút tiền</c:otherwise>
                                             </c:choose>
                                         </td>
-                                        <td>${transaction.amount}</td>
+                                        <td><c:out value="${f:formatCurrency(transaction.amount)}"/></td>
                                         <td>
                                             <c:choose>
                                                 <c:when test="${transaction.status eq 1}">Đang xử lý</c:when>
